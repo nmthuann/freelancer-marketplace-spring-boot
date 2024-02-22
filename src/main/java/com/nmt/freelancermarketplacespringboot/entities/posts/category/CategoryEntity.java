@@ -3,17 +3,18 @@ package com.nmt.freelancermarketplacespringboot.entities.posts.category;
 
 import com.nmt.freelancermarketplacespringboot.entities.posts.major.MajorEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "Categories")
 public class CategoryEntity {
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
-    private Long categoryId;
+    private int categoryId;
 
     @Column(name = "category_name", nullable = false)
     private String categoryName;
@@ -36,7 +37,7 @@ public class CategoryEntity {
     @Column(name = "right_value", nullable = false)
     private int rightValue;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<MajorEntity> majors;
 
     // Getter and setter methods

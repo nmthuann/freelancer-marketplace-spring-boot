@@ -1,14 +1,16 @@
 package com.nmt.freelancermarketplacespringboot.entities.posts.major;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
-@Table(name = "MajorAttributeValues")
+@Table(name = "MajorValues")
 public class MajorValueEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "value_id")
-    private Long valueId;
+    private int valueId;
 
     @Column(name = "value", nullable = false)
     private String value;

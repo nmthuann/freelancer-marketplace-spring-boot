@@ -2,10 +2,15 @@ package com.nmt.freelancermarketplacespringboot.core.bases;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Date;
+@Setter
+@Getter
 @MappedSuperclass
 public abstract class AbstractBaseEntity {
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
@@ -31,27 +36,4 @@ public abstract class AbstractBaseEntity {
 
     // Getters and setters
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Date getDeletedAt() {
-        return deletedAt;
-    }
-
-    public void setDeletedAt(Date deletedAt) {
-        this.deletedAt = deletedAt;
-    }
 }

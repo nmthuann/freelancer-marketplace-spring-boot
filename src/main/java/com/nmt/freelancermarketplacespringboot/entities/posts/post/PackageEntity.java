@@ -1,14 +1,18 @@
 package com.nmt.freelancermarketplacespringboot.entities.posts.post;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+import java.util.List;
+
+@Data
 @Entity
 @Table(name = "Packages")
 public class PackageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "package_id")
-    private Long packageId;
+    private int packageId;
 
     @Column(name = "package_name", length = 50, nullable = false)
     private String packageName;
@@ -28,6 +32,9 @@ public class PackageEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id", nullable = false)
     private PostEntity post;
+
+    @OneToMany(mappedBy = "packageEntity", cascade = CascadeType.ALL)
+    private List<PriceEntity> prices;
 
     // Getter and setter methods
 }

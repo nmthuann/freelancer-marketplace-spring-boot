@@ -2,20 +2,23 @@ package com.nmt.freelancermarketplacespringboot.entities.users.user;
 
 
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
+import com.nmt.freelancermarketplacespringboot.entities.posts.review.ReviewEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.profile.ProfileEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
-
+@Data
 @Entity
-@Table(name = "Users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "Users", uniqueConstraints={@UniqueConstraint(columnNames ={"email"})}) //, uniqueConstraints = @UniqueConstraint(columnNames = "email")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_id")
+    @Column(name = "user_id", updatable = false, nullable = false)
     private UUID userId;
 
     @Column(name = "first_name", length = 50, nullable = false)
@@ -40,7 +43,7 @@ public class UserEntity {
     private String phone;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "email", referencedColumnName = "email")
+    @JoinColumn(name = "email", referencedColumnName = "email", unique=true)
     // Use referencedColumnName to specify the referenced column
     private AccountEntity account;
 
@@ -53,7 +56,11 @@ public class UserEntity {
     private ProfileEntity profile;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<PostEntity> post;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderBy("title")
+    private Set<PostEntity> post;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private ReviewEntity review;
 
 }

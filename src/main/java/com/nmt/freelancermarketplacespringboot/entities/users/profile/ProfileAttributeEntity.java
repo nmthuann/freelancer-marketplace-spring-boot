@@ -1,9 +1,10 @@
 package com.nmt.freelancermarketplacespringboot.entities.users.profile;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
-
+@Data
 @Entity
 @Table(name = "ProfileAttributes")
 public class ProfileAttributeEntity {

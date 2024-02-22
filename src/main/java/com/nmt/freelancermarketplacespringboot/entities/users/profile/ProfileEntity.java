@@ -3,6 +3,7 @@ package com.nmt.freelancermarketplacespringboot.entities.users.profile;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * attribute
  * value
  */
-
+@Data
 @Entity
 @Table(name = "Profiles")
 public class ProfileEntity extends AbstractBaseEntity {
@@ -22,7 +23,7 @@ public class ProfileEntity extends AbstractBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "profile_id")
-    private Long profileId;
+    private int profileId;
 
     @Column(name = "level", columnDefinition = "VARCHAR(50) DEFAULT 'NEW_SELLER'")
     private String level;

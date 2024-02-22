@@ -1,7 +1,10 @@
 package com.nmt.freelancermarketplacespringboot.entities.users.account;
 
+import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "Accounts")
 public class AccountEntity {
@@ -27,43 +30,53 @@ public class AccountEntity {
         this.email = this.email.toLowerCase();
     }
 
-    public String getEmail() {
-        return email;
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private RoleEntity role;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
-    public String getPassword() {
-        return password;
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "auth_method_id")
+    private AuthMethodEntity authMethod;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
-    public String getSub() {
-        return sub;
-    }
-
-    public void setSub(String sub) {
-        this.sub = sub;
-    }
+//
+//    public String getEmail() {
+//        return email;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
+//
+//    public String getPassword() {
+//        return password;
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
+//
+//    public boolean isStatus() {
+//        return status;
+//    }
+//
+//    public void setStatus(boolean status) {
+//        this.status = status;
+//    }
+//
+//    public String getRefreshToken() {
+//        return refreshToken;
+//    }
+//
+//    public void setRefreshToken(String refreshToken) {
+//        this.refreshToken = refreshToken;
+//    }
+//
+//    public String getSub() {
+//        return sub;
+//    }
+//
+//    public void setSub(String sub) {
+//        this.sub = sub;
+//    }
 }

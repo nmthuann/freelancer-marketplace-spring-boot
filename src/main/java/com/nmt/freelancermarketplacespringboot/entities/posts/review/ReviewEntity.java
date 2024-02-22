@@ -2,7 +2,10 @@ package com.nmt.freelancermarketplacespringboot.entities.posts.review;
 
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
+import com.nmt.freelancermarketplacespringboot.entities.users.profile.ProfileEntity;
+import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
 import jakarta.persistence.*;
+import lombok.Data;
 
 
 /**
@@ -12,16 +15,22 @@ import jakarta.persistence.*;
  *
  */
 
+@Data
 @Entity
 @Table(name = "Reviews")
 public class ReviewEntity extends AbstractBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_id")
-    private Long reviewId;
+    private int reviewId;
 
-    @Column(name = "buyer", nullable = false)
-    private String buyer;
+//    @Column(name = "buyer", nullable = false)
+//    private String buyer; // khóa ngoại
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
 
     @Column(name = "rating", nullable = false)
     private int rating;

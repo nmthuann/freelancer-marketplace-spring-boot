@@ -1,16 +1,17 @@
 package com.nmt.freelancermarketplacespringboot.entities.posts.post;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Date;
 
+@Data
 @Entity
 @Table(name = "Prices")
 public class PriceEntity {
 
     @EmbeddedId
-    private PriceId priceId;
+    private PriceIdEntity priceId;
 
     @Column(name = "unit_price", nullable = false)
     private Double unitPrice;
@@ -23,17 +24,4 @@ public class PriceEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP(6)")
     private Date createdAt;
-}
-
-@Embeddable
-class PriceId implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private Long packageId;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date beginAt;
-
-    // Constructors, getters, setters, and other methods
 }

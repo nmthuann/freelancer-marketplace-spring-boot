@@ -1,16 +1,19 @@
 package com.nmt.freelancermarketplacespringboot.entities.users.user;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.UUID;
-
+@Data
 @Entity
 @Table(name = "UserPayments")
 public class UserPaymentEntity {
 
     @Id
-    @Column(name = "user_payment_id", columnDefinition = "uuid", nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_payment_id", updatable = false, nullable = false)
+    // @Column(name = "user_payment_id", columnDefinition = "uuid", nullable = false)
     private UUID userPaymentId;
 
     @Column(name = "card_number", nullable = false, length = 15, unique = true)
