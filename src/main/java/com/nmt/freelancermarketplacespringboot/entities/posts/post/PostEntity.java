@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "Posts")
@@ -34,7 +35,7 @@ public class PostEntity  extends AbstractBaseEntity  {
     @Column(name = "status", nullable = false, length = 50, columnDefinition = "VARCHAR(50) DEFAULT 'active'")
     private String status;
 
-    @Column(name = "FAQ", nullable = true, columnDefinition = "TEXT DEFAULT ''")
+//    @Column(name = "FAQ", nullable = true) //columnDefinition = "TEXT DEFAULT ''"
     private String FAQ;
 
 
@@ -42,11 +43,13 @@ public class PostEntity  extends AbstractBaseEntity  {
 //    private String seller;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_post_user"))
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "major_id")
+    @JoinColumn(name = "major_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_post_major"))
     private MajorEntity major;
 
 

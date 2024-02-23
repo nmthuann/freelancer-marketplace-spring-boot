@@ -16,11 +16,13 @@ public class ProfileValueEntity {
     private String profileValue;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_value_profile"))
     private ProfileEntity profile;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "profile_attribute_id")
+    @JoinColumn(name = "profile_attribute_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_value_attribute_profile"))
     private ProfileAttributeEntity profileAttribute;
 
     // Getter and setter methods

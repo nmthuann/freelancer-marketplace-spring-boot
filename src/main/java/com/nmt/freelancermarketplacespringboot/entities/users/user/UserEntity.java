@@ -1,12 +1,13 @@
 package com.nmt.freelancermarketplacespringboot.entities.users.user;
 
 
-import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
+// import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.review.ReviewEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.profile.ProfileEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Nationalized;
 
 import java.util.Date;
 import java.util.List;
@@ -21,10 +22,11 @@ public class UserEntity {
     @Column(name = "user_id", updatable = false, nullable = false)
     private UUID userId;
 
-    @Column(name = "first_name", length = 50, nullable = false)
+    @Column(name = "first_name", columnDefinition="NVARCHAR(50)" ,nullable = false)
+    // @Nationalized
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name",  columnDefinition="NVARCHAR(255)")
     private String lastName;
 
     @Column(name = "avatar_url")
@@ -56,9 +58,7 @@ public class UserEntity {
     private ProfileEntity profile;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OrderBy("title")
-    private Set<PostEntity> post;
+// //
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private ReviewEntity review;

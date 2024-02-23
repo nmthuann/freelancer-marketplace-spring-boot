@@ -17,8 +17,8 @@ public class RoleEntity extends AbstractBaseEntity {
     @Column(name = "role_id")
     private int roleId;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "role_name", nullable = false)
+    private String role_name;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private List<AccountEntity> accounts;

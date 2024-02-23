@@ -15,7 +15,8 @@ public class ImageEntity {
     private UUID imageId;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_image_post"))
     private PostEntity post;
 
     @Column(name = "url", nullable = false)

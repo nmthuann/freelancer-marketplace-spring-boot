@@ -2,6 +2,7 @@ package com.nmt.freelancermarketplacespringboot.entities.posts.major;
 
 
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
+// import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,7 +22,8 @@ public class MajorEntity {
     private String majorName;
 
     @ManyToOne() //fetch = FetchType.EAGER
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_major_category"))
     private CategoryEntity category;
 
     @OneToMany(mappedBy = "major", cascade = CascadeType.ALL)

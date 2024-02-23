@@ -12,16 +12,16 @@ public class AccountEntity {
     @Column(length = 50)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name="password", nullable = false)
     private String password;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT true")
+    @Column(name="status", columnDefinition = "BOOLEAN DEFAULT true")
     private boolean status = true;
 
-    @Column
+    @Column(name="refresh_token")
     private String refreshToken;
 
-    @Column
+    @Column(name= "sub")
     private String sub;
 
     @PrePersist
@@ -31,52 +31,13 @@ public class AccountEntity {
     }
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_account_role"))
     private RoleEntity role;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "auth_method_id")
+    @JoinColumn(name = "auth_method_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_account_auth_method"))
     private AuthMethodEntity authMethod;
-
-//
-//    public String getEmail() {
-//        return email;
-//    }
-//
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
-//
-//    public String getPassword() {
-//        return password;
-//    }
-//
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
-//
-//    public boolean isStatus() {
-//        return status;
-//    }
-//
-//    public void setStatus(boolean status) {
-//        this.status = status;
-//    }
-//
-//    public String getRefreshToken() {
-//        return refreshToken;
-//    }
-//
-//    public void setRefreshToken(String refreshToken) {
-//        this.refreshToken = refreshToken;
-//    }
-//
-//    public String getSub() {
-//        return sub;
-//    }
-//
-//    public void setSub(String sub) {
-//        this.sub = sub;
-//    }
 }

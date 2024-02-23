@@ -6,20 +6,22 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "Categories")
 public class CategoryEntity {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
+    @Column(name = "category_id", updatable = false, nullable = false)
     private int categoryId;
 
-    @Column(name = "category_name", nullable = false)
+    @Column(name = "category_name", nullable = false, unique = true)
     private String categoryName;
 
-    @Column(name = "description", nullable = true, columnDefinition = "TEXT DEFAULT ''")
+    @Column(name = "description", nullable = true) // columnDefinition = "TEXT DEFAULT ''"
     private String description;
 
     /**
@@ -38,7 +40,7 @@ public class CategoryEntity {
     private int rightValue;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<MajorEntity> majors;
+    private Set<MajorEntity> majors;
 
     // Getter and setter methods
 }

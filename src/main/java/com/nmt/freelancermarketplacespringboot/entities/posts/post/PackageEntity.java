@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.entities.posts.post;
 
+import com.nmt.freelancermarketplacespringboot.entities.orders.OrderEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -30,11 +31,15 @@ public class PackageEntity {
     // private Double unitPrice;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_package_post"))
     private PostEntity post;
 
+//    @OneToMany(mappedBy = "package", cascade = CascadeType.ALL)
+//    private List<PriceEntity> prices;
+
     @OneToMany(mappedBy = "packageEntity", cascade = CascadeType.ALL)
-    private List<PriceEntity> prices;
+    private List<OrderEntity> orders;
 
     // Getter and setter methods
 }
