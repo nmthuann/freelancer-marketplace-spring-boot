@@ -34,7 +34,6 @@ public class ProfileEntity extends AbstractBaseEntity {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     private List<ProfileValueEntity> profileAttributeValues;
 
-    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "profile")
     private UserEntity user;
-
 }

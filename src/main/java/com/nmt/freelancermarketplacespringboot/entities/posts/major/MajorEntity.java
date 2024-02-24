@@ -21,7 +21,7 @@ public class MajorEntity {
     @Column(name = "major_name", nullable = false)
     private String majorName;
 
-    @ManyToOne() //fetch = FetchType.EAGER
+    @ManyToOne(fetch = FetchType.EAGER) //fetch = FetchType.EAGER
     @JoinColumn(name = "category_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_major_category"))
     private CategoryEntity category;

@@ -12,12 +12,14 @@ public class ReasonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reason_id")
-    private int reasonId;
+    private Long reasonId;
 
-    @Column(nullable = false)
-    private String reason;
+    @Column(name="description", nullable = false)
+    private String description;
 
-    @OneToOne(mappedBy = "reason")
+    @OneToOne(mappedBy = "reason", cascade = CascadeType.ALL)
     private OrderEntity order;
+
+
 
 }

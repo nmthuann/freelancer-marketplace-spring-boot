@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.entities.orders;
 
+import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -8,7 +9,7 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "Transactions")
-public class TransactionEntity {
+public class TransactionEntity extends AbstractBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "transaction_id",  updatable = false, nullable = false)
@@ -17,8 +18,6 @@ public class TransactionEntity {
     @OneToOne
     @JoinColumn(name = "order_id")
     private OrderEntity order;
-
-
 
     @Column(nullable = false)
     private Double amount;

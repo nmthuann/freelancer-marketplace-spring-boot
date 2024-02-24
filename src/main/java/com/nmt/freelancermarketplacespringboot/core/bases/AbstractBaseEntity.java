@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
+//import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 @Setter
@@ -13,6 +14,7 @@ public abstract class AbstractBaseEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
+    // @CreationTimestamp
     private Date createdAt;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -21,6 +23,7 @@ public abstract class AbstractBaseEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "deleted_at")
+
     private Date deletedAt;
 
     @PrePersist
@@ -34,6 +37,10 @@ public abstract class AbstractBaseEntity {
         this.updatedAt = new Date();
     }
 
+    @PreRemove
+    protected void onDelete() {
+        this.deletedAt = new Date();
+    }
     // Getters and setters
 
 }

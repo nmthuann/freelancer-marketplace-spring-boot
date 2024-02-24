@@ -32,24 +32,27 @@ public class OrderEntity {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private TransactionEntity transaction;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "reason_id")
+    private ReasonEntity reason;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "package_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_order_package"))
     private PackageEntity packageEntity;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_order_seller"))
     private UserEntity seller;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "buyer_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_order_buyer"))
     private UserEntity buyer;
 
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    private ReasonEntity reason;
+
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<RevisionEntity> revisions;

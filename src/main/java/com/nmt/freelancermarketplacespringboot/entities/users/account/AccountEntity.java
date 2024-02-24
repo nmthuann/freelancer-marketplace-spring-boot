@@ -1,6 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.entities.users.account;
 
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
+import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -40,4 +41,7 @@ public class AccountEntity {
     @JoinColumn(name = "auth_method_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_account_auth_method"))
     private AuthMethodEntity authMethod;
+
+    @OneToOne(mappedBy = "account")
+    private UserEntity user;
 }
