@@ -43,5 +43,6 @@ public class AccountEntity {
     private AuthMethodEntity authMethod;
 
     @OneToOne(mappedBy = "account")
+    @PrimaryKeyJoinColumn
     private UserEntity user;
 }

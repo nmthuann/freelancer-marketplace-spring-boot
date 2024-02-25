@@ -35,5 +35,6 @@ public class ProfileEntity extends AbstractBaseEntity {
     private List<ProfileValueEntity> profileAttributeValues;
 
     @OneToOne(mappedBy = "profile")
+    @PrimaryKeyJoinColumn
     private UserEntity user;
 }

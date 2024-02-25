@@ -1,0 +1,43 @@
+version: '3.8'
+
+networks:
+  default:
+
+services:
+  mysql-db-container:
+    container_name: mysql-freelancer-db-container
+    image: mysql:8.2.0
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-freelancer-db-container:/etc/mysql/conf.d
+#    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=FreelancerMarketplaceDb
+    networks:
+      - default
+
+  freelancer-marketplace-spring-boot:
+    container_name: freelancer-marketplace-spring-boot
+    image: freelancer-marketplace-spring-boot:1.0 # openjdk:11-jre-slim #Thay thế image NodeJS bằng image OpenJDK
+    ports:
+      - "8888:8888"
+    depends_on:
+      - mysql-db-container
+    build:
+      context: .
+      dockerfile: Dockerfile # Đặt tên Dockerfile cho Java
+#    env_file:
+#      - ./.env
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db-container:3306/FreelancerMarketplaceDb?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=123456
+      - SPRING_DATASOURCE_DRIVER-CLASS-NAME=com.mysql.cj.jdbc.Driver
+      - SPRING_JPA_HIBERNATE_DIALECT=org.hibernate.dialect.MySQLDialect
+    networks:
+      - default
+
+volumes:
+  mysql-freelancer-db-container:
