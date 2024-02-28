@@ -18,9 +18,10 @@ public class AbstractBaseService<T, ID> implements IBaseService<T, ID>{
     }
 
     public T getOneById(ID id) {
-        System.out.println("Hahaha Abstract");
-        return baseRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Entity with id " + id + " not found"));
+        // System.out.println("Hahaha Abstract");
+//        return baseRepository.findById(id)
+//                .orElseThrow(() -> new EntityNotFoundException("Entity with id " + id + " not found"));
+        return baseRepository.findById(id).orElse(null);
     }
 
     public T createOne(T data) {
@@ -47,7 +48,7 @@ public class AbstractBaseService<T, ID> implements IBaseService<T, ID>{
 //                        field.set(existingEntity, value);
 //                    }
 //                } catch (IllegalAccessException e) {
-//                    // Handle exception as needed
+//                    // Handle httpexceptions as needed
 //                    e.printStackTrace();
 //                }
 //            }
@@ -56,7 +57,7 @@ public class AbstractBaseService<T, ID> implements IBaseService<T, ID>{
 //            return baseRepository.save(existingEntity);
 //        }
 //
-//        return null; // Or throw an exception indicating that the entity with the given ID was not found
+//        return null; // Or throw an httpexceptions indicating that the entity with the given ID was not found
     }
 
     public void deleteOneById(ID id) {

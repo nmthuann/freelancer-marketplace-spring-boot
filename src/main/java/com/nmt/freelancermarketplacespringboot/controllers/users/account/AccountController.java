@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/account")
 public class AccountController {
-//    @Autowired
-//    AccountService accountService;
 
     private final IAccountService accountService;
 
@@ -23,24 +21,28 @@ public class AccountController {
 
 
     @GetMapping("/{email}")
-    public ResponseEntity<RestResponse> getAccountById(@PathVariable String email) {
-//        AccountEntity findAccount =
-        System.out.println("Hahaha");
-        // AccountEntity findAcc = accountService.getOneById(email);
+    public ResponseEntity<?> getAccountById(@PathVariable String email) {
         try {
             AccountEntity findAcc = accountService.getOneById(email);
-            //return ResponseEntity.ok(findAcc);
-            return new ResponseEntity<RestResponse>(
-                    new RestResponse("Succesfully Logged In!", findAcc),HttpStatus.OK);
-        }catch (Exception exception){
+
+            if (findAcc != null) {
+                return ResponseEntity.ok(findAcc);
+            } else {
+
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new RestResponse(
+                                false,
+                                "Account not found for email: " + email,
+                                ""));
+            }
+        } catch (Exception exception) {
+
             String errorMessage = "Error retrieving account for email: " + email;
-//            return ResponseEntity.notFound().header("error-message", errorMessage).build();
-           // return ResponseEntity.status(HttpStatus.NOT_FOUND).
-            return new ResponseEntity<RestResponse>(
-                    new RestResponse("Succesfully Logged In!", ""),HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new RestResponse(false,errorMessage, ""));
         }
-        // return null;
     }
+
 
     @PostMapping("/create")
     public AccountEntity createAccount(@RequestBody AccountEntity data){
@@ -48,20 +50,21 @@ public class AccountController {
         return createAccount;
     }
 
-//    @PutMapping("/update/{email}")
-//    public ResponseEntity<RestResponse> updateAccount(
-//            @RequestParam("email") Long accountId,
-//            @RequestBody AccountEntity requestBody
-//    ) {
-//        try {
-//            // Thực hiện logic cập nhật tài khoản với accountId và requestBody
-//
-//            // Nếu thành công, trả về response với HTTP status 200 (OK)
-//            return ResponseEntity.ok(new RestResponse("Account updated successfully"));
-//        } catch (Exception exception) {
-//            // Nếu có lỗi, trả về response với HTTP status 500 (Internal Server Error) và thông điệp lỗi
-//            return ResponseEntity.status(500).body(new RestResponse("Error updating account: " + exception.getMessage()));
-//        }
-//    }
+    @PutMapping("/update/{email}")
+    public ResponseEntity<?> updateAccount(
+            @RequestParam("email") Long accountId,
+            @RequestBody AccountEntity requestBody
+    ) {
+        try {
+            // Thực hiện logic cập nhật tài khoản với accountId và requestBody
+
+            // Nếu thành công, trả về response với HTTP status 200 (OK)
+            return ResponseEntity.ok("");
+        } catch (Exception exception) {
+            return null;
+            // Nếu có lỗi, trả về response với HTTP status 500 (Internal Server Error) và thông điệp lỗi
+            // return ResponseEntity.status(500).body(new RestResponse("Error updating account: " + httpexceptions.getMessage()));
+        }
+    }
 
 }

@@ -19,4 +19,9 @@ public class AccountService
     public AccountService(CrudRepository<AccountEntity, String> baseRepository) {
         super(baseRepository);
     }
+
+//
+//    public AccountEntity CreateOne() {
+//
+//    }
 }
