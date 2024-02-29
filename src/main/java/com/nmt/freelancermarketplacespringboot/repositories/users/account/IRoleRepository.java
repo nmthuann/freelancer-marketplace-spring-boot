@@ -1,4 +1,4 @@
-package com.nmt.freelancermarketplacespringboot.repositories.users;
+package com.nmt.freelancermarketplacespringboot.repositories.users.account;
 
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.RoleEntity;

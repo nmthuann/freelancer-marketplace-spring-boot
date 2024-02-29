@@ -1,4 +1,4 @@
-package com.nmt.freelancermarketplacespringboot.repositories.users;
+package com.nmt.freelancermarketplacespringboot.repositories.users.user;
 
 import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

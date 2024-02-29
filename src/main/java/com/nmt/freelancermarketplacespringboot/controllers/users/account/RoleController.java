@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/roles")
 public class RoleController extends AbstractBaseController<RoleEntity, Integer> {
-    
+
     @Autowired
-    private final IRoleService roleService;
+    IRoleService roleService;
 
 
     public RoleController(IRoleService roleService) {
