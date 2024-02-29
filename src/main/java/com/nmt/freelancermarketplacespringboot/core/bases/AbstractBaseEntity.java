@@ -23,7 +23,6 @@ public abstract class AbstractBaseEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "deleted_at")
-
     private Date deletedAt;
 
     @PrePersist

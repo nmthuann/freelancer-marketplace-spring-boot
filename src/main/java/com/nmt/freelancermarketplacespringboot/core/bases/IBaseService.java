@@ -9,7 +9,7 @@ public interface IBaseService<T, ID> {
 
     T createOne(T data);
 
-    T updateOneById(ID id, T data);  // Change the type of id as needed
+    T updateOneById(ID id, Object data);  // Change the type of id as needed
 
     void deleteOneById(ID id);
 }

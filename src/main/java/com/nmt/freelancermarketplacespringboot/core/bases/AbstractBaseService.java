@@ -1,12 +1,19 @@
 package com.nmt.freelancermarketplacespringboot.core.bases;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.repository.CrudRepository;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-public class AbstractBaseService<T, ID> implements IBaseService<T, ID>{
+public abstract class AbstractBaseService<T, ID> implements IBaseService<T, ID>{
     private final CrudRepository<T, ID> baseRepository;
 
     public AbstractBaseService(CrudRepository<T, ID> baseRepository) {
@@ -28,36 +35,30 @@ public class AbstractBaseService<T, ID> implements IBaseService<T, ID>{
         return baseRepository.save(data);
     }
 
-    public T updateOneById(ID id, T data) {
-        T existingEntity = getOneById(id);
-        // Implement your logic for merging data if needed
-        // For simplicity, I'm assuming it's        a full update
-        return baseRepository.save(data);
-//        T existingEntity = getOneById(id);
+    public T updateOneById(ID id, Object data) {
 
-//        if (existingEntity != null) {
-//            // Use reflection or any other mechanism to get the list of fields from the 'data' object
-//            // and update only those fields in the 'existingEntity'
-//            // For simplicity, I'll assume a simple case where 'T' has public getters and setters
-//
-//            for (Field field : data.getClass().getDeclaredFields()) {
-//                field.setAccessible(true);
-//                try {
-//                    Object value = field.get(data);
-//                    if (value != null) {
-//                        field.set(existingEntity, value);
-//                    }
-//                } catch (IllegalAccessException e) {
-//                    // Handle httpexceptions as needed
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            // Save the updated entity
-//            return baseRepository.save(existingEntity);
-//        }
-//
-//        return null; // Or throw an httpexceptions indicating that the entity with the given ID was not found
+        T findEntity = getOneById(id);
+
+        if (findEntity != null) {
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            try {
+                JsonNode originalNode = objectMapper.convertValue(findEntity, JsonNode.class);
+                JsonNode updateNode = objectMapper.convertValue(data, JsonNode.class);
+
+                ((ObjectNode) originalNode).setAll((ObjectNode) updateNode);
+
+                T updatedEntity =
+                        objectMapper.treeToValue(originalNode, (Class<T>) findEntity.getClass());
+
+                System.out.println(updatedEntity);
+                findEntity = baseRepository.save(updatedEntity);
+            } catch (IOException e) {
+                e.printStackTrace(); // or handle the exception appropriately
+            }
+            return findEntity;
+        }
+        return null;
     }
 
     public void deleteOneById(ID id) {
@@ -69,3 +70,40 @@ public class AbstractBaseService<T, ID> implements IBaseService<T, ID>{
     }
 
 }
+
+
+
+
+
+//        T findEntity = getOneById(id);
+//        ObjectMapper objectMapper = new ObjectMapper();
+//
+//        if(findEntity != null){
+//            try {
+//                JsonNode originalNode = objectMapper.readTree(objectMapper.writeValueAsString(findEntity));
+//                JsonNode updateNode = objectMapper.readTree(objectMapper.writeValueAsString(data));
+//
+//                Iterator<Map.Entry<String, JsonNode>> fields = originalNode.fields();
+//                while (fields.hasNext()) {
+//                    Map.Entry<String, JsonNode> field = fields.next();
+//                    String fieldName = field.getKey();
+//
+//                    if (updateNode.has(fieldName)) {
+//                        // Update the value of the field in originalJsonNode
+//                        JsonNode updatedValue = updateNode.get(fieldName);
+//                        ((ObjectNode) originalNode).set(fieldName, updatedValue);
+//                    }
+//                }
+//
+//                String updatedJson = objectMapper.writeValueAsString(originalNode);
+//
+//                T updatedEntity = (T) objectMapper.readValue(updatedJson, findEntity.getClass());
+//
+//                System.out.println(updatedEntity);
+//                findEntity = baseRepository.save(updatedEntity);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            return findEntity;
+//        }
+//        return null;

@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "Roles")
+// @Where(clause = "deleted = false")
 public class RoleEntity extends AbstractBaseEntity {
 
     @Id
