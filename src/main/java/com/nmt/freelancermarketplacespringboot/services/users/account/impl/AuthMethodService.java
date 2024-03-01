@@ -5,7 +5,6 @@ import com.nmt.freelancermarketplacespringboot.entities.users.account.AuthMethod
 import com.nmt.freelancermarketplacespringboot.repositories.users.account.IAuthMethodRepository;
 import com.nmt.freelancermarketplacespringboot.services.users.account.IAuthMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,8 +15,8 @@ public class AuthMethodService
 //    @Autowired
 //    IAuthMethodRepository authMethodRepository;
 //
-//    public AuthMethodService(CrudRepository<AuthMethodEntity, Integer> baseRepository) {
-//        super(baseRepository);
+//    public AuthMethodService(IAuthMethodRepository authMethodRepository) { //CrudRepository<AuthMethodEntity, Integer> baseRepository
+//        super(authMethodRepository);
 //    }
 
     @Autowired

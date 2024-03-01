@@ -1,27 +1,34 @@
 package com.nmt.freelancermarketplacespringboot.core.bases;
 
+import com.nmt.freelancermarketplacespringboot.dto.users.account.CreateAccountDto;
+import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-public abstract class AbstractBaseController <T, ID> {
+public abstract class AbstractBaseController <T, ID>  { //implements IBaseController<T, ID>
     private final IBaseService<T, ID> baseService;
 
-    protected AbstractBaseController(IBaseService<T, ID> baseService) {
+    public AbstractBaseController(IBaseService<T, ID> baseService) {
         this.baseService = baseService;
     }
 
     @GetMapping("/{id}")
-    protected ResponseEntity<T> getOneById(@PathVariable ID id) {
+    public ResponseEntity<T> getOneById(@PathVariable ID id) {
         T findEntity = baseService.getOneById(id);
-        return ResponseEntity.ok(findEntity);
+        if (findEntity != null) {
+            return ResponseEntity.ok(findEntity);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/create")
-    protected ResponseEntity<T> createOne(@RequestBody T data) {
+    public  ResponseEntity<T> createOne(@RequestBody T data) {
         T created = baseService.createOne(data);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<T> updateOneById(@PathVariable ID id, @RequestBody Object data) {
@@ -37,9 +44,11 @@ public abstract class AbstractBaseController <T, ID> {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+
 }
 
-
+//@PostMapping("/create")
+//public abstract ResponseEntity<AccountEntity> createOne(@RequestBody CreateAccountDto data);
 
 //package com.nmt.freelancermarketplacespringboot.core.bases;
 //

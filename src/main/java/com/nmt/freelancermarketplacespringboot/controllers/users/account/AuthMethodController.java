@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/authMethods")
 public class AuthMethodController extends AbstractBaseController<AuthMethodEntity, Integer> {
 
-//    @Autowired
-//    IAuthMethodService authMethodService;
-//
-//    public  AuthMethodController(IAuthMethodService authMethodService) {
-//        super(authMethodService);
-//        this.authMethodService = authMethodService;
-//    }
-
     @Autowired
-    public AuthMethodController(IAuthMethodService authMethodService) {
+    IAuthMethodService authMethodService;
+
+    public  AuthMethodController(IAuthMethodService authMethodService) {
         super(authMethodService);
+        this.authMethodService = authMethodService;
     }
+
+//    @Autowired
+//    public AuthMethodController(IAuthMethodService authMethodService) {
+//        super(authMethodService);
+//    }
 }

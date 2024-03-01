@@ -1,5 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.entities.users.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,7 +22,17 @@ public class AuthMethodEntity {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "authMethod")
+    // @JsonManagedReference
+    @OneToMany(mappedBy = "authMethod", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<AccountEntity> accounts;
 
+    @Override
+    public String toString() {
+        return "AuthMethodEntity{" +
+                "authMethodId=" + authMethodId +
+                ", authMethodName='" + authMethodName + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

@@ -13,21 +13,22 @@ import java.util.Optional;
 
 @Service
 public class RoleService extends AbstractBaseService<RoleEntity, Integer> implements IRoleService {
+
     @Autowired
     IRoleRepository roleRepository;
 
-    public RoleService(CrudRepository<RoleEntity, Integer> baseRepository) {
-        super(baseRepository);
+    public RoleService(IRoleRepository roleRepository) {  //CrudRepository<RoleEntity, Integer> baseRepository
+        super(roleRepository);
     }
 
 
     @Override
     public void softDeleteRole(Integer id) {
         Date now = new Date();
-        Optional<RoleEntity> findRoleById = roleRepository.findById(id);
+        Optional<RoleEntity> findRoleById = this.roleRepository.findById(id);
         findRoleById.ifPresent(role -> {
             role.setDeletedAt(now);
-            roleRepository.save(role);
+            this.roleRepository.save(role);
         });
     }
 }

@@ -29,7 +29,7 @@ public class OrderEntity {
     private Date deliveryDay;
 
 
-    @OneToOne(mappedBy = "orders", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private TransactionEntity transaction;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -54,7 +54,7 @@ public class OrderEntity {
 
 
 
-    @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<RevisionEntity> revisions;
 
 }
