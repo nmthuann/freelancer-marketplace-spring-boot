@@ -33,12 +33,7 @@ public class JwtServiceUtil {
     @Value("${refresh.jwt.access.token.expiration}")
     private Long refreshTokenExpiration;
 
-//    public JwtServiceUtil(String jwtSecretKey, String refreshJwtSecretKey, int accessTokenExpiration, int refreshTokenExpiration) {
-//        this.jwtSecretKey = jwtSecretKey;
-//        this.refreshJwtSecretKey = refreshJwtSecretKey;
-//        this.accessTokenExpiration = accessTokenExpiration;
-//        this.refreshTokenExpiration = refreshTokenExpiration;
-//    }
+
 
     public Tokens getTokens(Payload payload) {
 

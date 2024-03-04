@@ -32,4 +32,17 @@ public class AuthController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register (@RequestBody LoginDto data) {
+        System.out.println("REGISTER");
+        return new ResponseEntity<>("REGISTER", HttpStatus.OK);
+//        try {
+//            Tokens tokens = this.authService.login(data).get();
+//
+//            return new ResponseEntity<>(tokens, HttpStatus.OK);
+//        }catch (Exception ex){
+//            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+    }
 }
