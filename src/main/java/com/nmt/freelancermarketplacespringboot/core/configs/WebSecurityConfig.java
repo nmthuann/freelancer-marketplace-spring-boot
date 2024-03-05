@@ -1,6 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.core.configs;
 
 
+import com.nmt.freelancermarketplacespringboot.common.filters.AuthMiddlewareFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -17,19 +19,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class WebSecurityConfig  {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        try {
-            http.authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers(HttpMethod.POST, "/auth/user/login").permitAll()
-//                    .anyRequest().authenticated()
-            ).httpBasic(httpSecurityHttpBasicConfigurer -> {});
-        }catch (Exception ex ){
-            System.out.println("An error occurred while configuring security: " + ex.getMessage());
-        }
+    private final AuthMiddlewareFilter authMiddlewareFilter;
 
+    @Bean
+    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
+        http.addFilterBefore(authMiddlewareFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(
+                        req -> { req
+                                    .requestMatchers("auth/user/login").permitAll()
+                                    .anyRequest().authenticated();
+                        });
         return http.build();
     }
+
+
+
 }
 
 

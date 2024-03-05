@@ -2,13 +2,11 @@ package com.nmt.freelancermarketplacespringboot.common.utils;
 
 import com.nmt.freelancermarketplacespringboot.dto.Payload;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.InvalidClaimException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -21,11 +19,11 @@ import java.util.function.Function;
 
 @Service
 public class JwtServiceUtil {
-    @Value("${jwt.secret-key}")
-    private String jwtSecretKey;
+    // @Value("${jwt.secret-key}")
+    private static final String jwtSecretKey = "873f4786-9c45-4e32-b09a-992174b28063";
 
-    @Value("${jwt.refresh-secret-key}")
-    private String refreshJwtSecretKey;
+    // @Value("${jwt.refresh-secret-key}")
+    private static final String refreshJwtSecretKey = "873f4786-9c45-4e32-b09a-992174b88073";
 
     @Value("${jwt.access.token.expiration}")
     private Long accessTokenExpiration;
@@ -82,6 +80,49 @@ public class JwtServiceUtil {
         }
     }
 
+    private Claims extractAllClaims(String token){
+        Jwt<?,?> jwt;
+        try {
+//            jwt =
+////                    Jwts.parser()
+////                    .keyLocator((Locator<Key>) jwtSecretKey)
+////                    .build();
+            Jwts.parser()
+
+                    .verifyWith(jwtSecretKey) // <----
+
+                    .build()
+                    .parseSignedClaims(token);
+        }
+        catch (JwtException  ex ){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private Key getSignInKey(){
+        byte[] keyBytes= Decoders.BASE64.decode(jwtSecretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+
+    public String extractUsername(String token){
+        return extractClaim(token,Claims::getSubject);
+    }
+
+    public String extractUsername(String token) {
+
+        return "";
+    }
+
+    public Boolean isTokenValid(String token, UserDetails userDetails){
+        return true;
+    }
+
 
 //    public Date extractExpiration(String token) {
 //        return extractClaim(token, Claims::getExpiration);
@@ -100,4 +141,7 @@ public class JwtServiceUtil {
 //        final String username = extractUsername(token);
 //        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 //    }
+
+
+
 }
