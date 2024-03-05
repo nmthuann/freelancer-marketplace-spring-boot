@@ -1,6 +1,5 @@
 package com.nmt.freelancermarketplacespringboot.common.filters;
 
-
 import com.nmt.freelancermarketplacespringboot.common.utils.JwtServiceUtil;
 import com.nmt.freelancermarketplacespringboot.services.users.account.IAccountService;
 import jakarta.servlet.FilterChain;
