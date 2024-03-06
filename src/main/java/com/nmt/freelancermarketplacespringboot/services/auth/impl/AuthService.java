@@ -1,7 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.services.auth.impl;
 
 import com.nmt.freelancermarketplacespringboot.common.errors.exceptions.AuthException;
-import com.nmt.freelancermarketplacespringboot.common.httpexceptions.InvalidException;
 import com.nmt.freelancermarketplacespringboot.common.utils.JwtServiceUtil;
 import com.nmt.freelancermarketplacespringboot.dto.Payload;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
@@ -10,15 +9,17 @@ import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterDto;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
 import com.nmt.freelancermarketplacespringboot.services.auth.IAuthService;
 import com.nmt.freelancermarketplacespringboot.services.users.account.IAccountService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class AuthService implements IAuthService {
-    // private final BCryptPasswordEncoder passwordEncoder;
+public class AuthService implements IAuthService, UserDetailsService {
 
     @Autowired
     JwtServiceUtil jwtService;
@@ -48,30 +49,7 @@ public class AuthService implements IAuthService {
 
     @Override
     public CompletableFuture<Tokens> login(LoginDto data) {
-//        AccountEntity findAccount = this.accountService.getOneById(data.email());
-//        if(findAccount != null && findAccount.isStatus()) {
-//            Boolean checkPass = this.comparePassword(data.password(), findAccount.getPassword());
-//            if(!checkPass){
-//                // return Map.of("message", AuthException.PASSWORD_WRONG);
-//                // throw new InvalidPasswordException(AuthExceptionMessages.PASSWORD_WRONG);
-//                System.out.println(AuthException.PASSWORD_WRONG);
-//                throw new InvalidException(AuthException.PASSWORD_WRONG);
-//            }
-//        }
-//        else {
-//            System.out.println(AuthException.LOGIN_INVALID);
-//        }
-//
-//        // GetToken
-//        Tokens tokens = this.jwtService.getTokens(
-//                new Payload(
-//                        findAccount.getEmail(),
-//                        findAccount.getRole().getRole_name()
-//                ));
-//
-//
-//
-//        return tokens;
+
         return CompletableFuture.supplyAsync(() -> {
             AccountEntity findAccount = this.accountService.getOneById(data.email());
 
@@ -84,13 +62,17 @@ public class AuthService implements IAuthService {
                 }
             } else {
                 System.out.println(AuthException.LOGIN_INVALID);
-                // Handle the case where the account is not found or has an invalid status
-                // You might want to throw an exception or handle it according to your business logic
+                // throw err
             }
 
-            // Assuming this.jwtService.getTokens returns a CompletableFuture<Tokens>
-            Tokens tokens = this.jwtService.getTokens(
-                    new Payload(findAccount.getEmail(), findAccount.getRole().getRole_name()));
+
+            // ensure findAccount != null
+            assert findAccount != null;
+            Tokens tokens = this.jwtService.getTokens(new Payload(
+                    findAccount.getEmail(),
+                    findAccount.getRole().getRole_name(),
+                    findAccount.getSub()
+            ));
 
             System.out.println("tokens" + tokens);
 
@@ -100,7 +82,29 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public CompletableFuture<Tokens> register(RegisterDto data) {
+    public CompletableFuture<Tokens> register (RegisterDto data) {
         return null;
     }
+
+
+    @Override
+    // from UserDetail interface
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        AccountEntity account = this.accountService.getOneById(username);
+
+        if (account != null) {
+            return org.springframework.security.core.userdetails.User
+                    .withUsername(username)
+                    .password("{noop}password")
+                    // {noop} để sử dụng mật khẩu không mã hóa (trong thực tế, bạn sẽ sử dụng mật khẩu từ account)
+                    .roles("USER")
+                    .build();
+        } else {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+
+    }
 }
+
+

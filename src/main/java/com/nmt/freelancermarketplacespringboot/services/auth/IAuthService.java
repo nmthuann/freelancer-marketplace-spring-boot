@@ -4,7 +4,7 @@ import com.nmt.freelancermarketplacespringboot.dto.Payload;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import com.nmt.freelancermarketplacespringboot.dto.auth.LoginDto;
 import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterDto;
-
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.concurrent.CompletableFuture;
 
 public interface IAuthService {

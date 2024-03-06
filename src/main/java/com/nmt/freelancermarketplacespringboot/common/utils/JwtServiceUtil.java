@@ -1,4 +1,5 @@
 package com.nmt.freelancermarketplacespringboot.common.utils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nmt.freelancermarketplacespringboot.dto.Payload;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import io.jsonwebtoken.*;
@@ -10,16 +11,17 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 @Service
 public class JwtServiceUtil {
     // @Value("${jwt.secret-key}")
-    private static final String jwtSecretKey = "873f4786-9c45-4e32-b09a-992174b28063";
+    private static final String jwtSecretKey = "873f47869c454e32b09a992174b280631234ab77720";
 
     // @Value("${jwt.refresh-secret-key}")
-    private static final String refreshJwtSecretKey = "873f4786-9c45-4e32-b09a-992174b88073";
+    private static final String refreshJwtSecretKey = "873f47869c454e32b09a992174b880731234ab77720";
 
     @Value("${jwt.access.token.expiration}")
     private Long accessTokenExpiration;
@@ -28,19 +30,13 @@ public class JwtServiceUtil {
     private Long refreshTokenExpiration;
 
 
-
     public Tokens getTokens(Payload payload) {
-
         try {
             String jwt = generateToken(payload, jwtSecretKey, accessTokenExpiration);
-            System.out.println("jwt:" + jwt);
             String refreshJwt = generateToken(payload, refreshJwtSecretKey, refreshTokenExpiration);
-            System.out.println("refreshJwt:" + refreshJwt);
             return new Tokens(jwt, refreshJwt);
         } catch (Exception ex) {
-            ex.printStackTrace(); // Hoặc log thông báo lỗi
             System.out.println("getTokens" + ex.getMessage());
-            // return null; // Hoặc xử lý khác tùy thuộc vào yêu cầu của bạn
             throw ex;
         }
     }
@@ -51,15 +47,13 @@ public class JwtServiceUtil {
             claims.put("payload", payload);
 
             return Jwts.builder()
-                    .setSubject(payload.email())
-                    .setClaims(claims)
-                    .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
-                    .signWith(SignatureAlgorithm.HS256, Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey))) //Keys.secretKeyFor(SignatureAlgorithm.HS256)
+                    .subject(payload.sub())
+                    .claims(claims)
+                    .expiration(new Date(System.currentTimeMillis() + expiration * 1000L))
+                    .signWith(SignatureAlgorithm.HS256, Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)))
                     .compact();
         } catch (InvalidClaimException e) {
-            // Bắt lỗi và xử lý nếu có vấn đề khi tạo token
-            e.printStackTrace(); // Hoặc log thông báo lỗi
-            throw new RuntimeException("Failed to generate token", e); // Hoặc xử lý khác tùy vào yêu cầu của bạn
+            throw new RuntimeException("Failed to generate token", e);
         }
     }
 
@@ -71,7 +65,6 @@ public class JwtServiceUtil {
                     .parseSignedClaims(token).getPayload();
         }
         catch (JwtException  ex ){
-            // System.out.println(ex.getMessage());
             throw new JwtException(ex.getMessage());
         }
     }
@@ -87,7 +80,18 @@ public class JwtServiceUtil {
     }
 
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+
+        try {
+
+            //  refactor code here
+            return extractClaim(token, claims -> {
+                LinkedHashMap<String, Object> payloadMap = claims.get("payload", LinkedHashMap.class);
+                Payload payload = new ObjectMapper().convertValue(payloadMap, Payload.class);
+                return payload.email();
+            });
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e) {
+            throw new RuntimeException("Failed to extract email from token", e);
+        }
     }
 
     private boolean isTokenExpired(String token) {
@@ -104,27 +108,9 @@ public class JwtServiceUtil {
 
     }
 
+}
 
 //    public Boolean validateToken(String token, UserDetails userDetails) {
 //        final String username = extractUsername(token);
 //        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 //    }
-
-
-
-}
-
-
-
-
-
-//        Map<String, Object> claims = new HashMap<>();
-//        claims.put("payload", payload);
-//
-//        return Jwts.builder()
-//                .setClaims(claims)
-//                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
-//                .signWith(SignatureAlgorithm.HS256, secretKey) //HS512
-//                .compact();
-// SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
-//  SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));

@@ -3,67 +3,71 @@ package com.nmt.freelancermarketplacespringboot.core.configs;
 
 import com.nmt.freelancermarketplacespringboot.common.filters.AuthMiddlewareFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
-@EnableMethodSecurity
 public class WebSecurityConfig  {
 
-    private final AuthMiddlewareFilter authMiddlewareFilter;
+    @Autowired
+    AuthMiddlewareFilter authMiddlewareFilter;
+
+    @Autowired
+    UserDetailsService authService;
 
     @Bean
-    public SecurityFilterChain filterChain (HttpSecurity http) throws Exception {
-        http.addFilterBefore(authMiddlewareFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(
-                        req -> { req
-                                    .requestMatchers("auth/user/login").permitAll()
-                                    .anyRequest().authenticated();
-                        });
-        return http.build();
+    public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/auth/**", "/public/**").permitAll()
+                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/user/**").hasAnyAuthority("USER")
+                        .anyRequest().authenticated())
+                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider()).addFilterBefore(
+                        authMiddlewareFilter, UsernamePasswordAuthenticationFilter.class
+                );
+        return httpSecurity.build();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(authService);
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
 
-
 }
-
-
-
-
-
-
-
-
-// http.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry.requestMatchers("/**").authenticated())
-//                .httpBasic(Customizer.withDefaults())
-//                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .addFilterBefore(new AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
-
-//        http.addFilterBefore(new PublicFilter(), BasicAuthenticationFilter.class.class)
-////                .csrf(httpSecurityCsrfConfigurer -> {})
-//                .authorizeHttpRequests(requests -> {
-//                    requests.requestMatchers("/auth/user/login").permitAll()// Permit access to /auth/user/login without authentication
-//                            .requestMatchers("/auth/user/register").permitAll(); // Permit access to /auth/user/register without authentication
-//                            // .anyRequest().authenticated();
-//                });
-
-//        http.authorizeHttpRequests(expressionInterceptUrlRegistry ->
-//                        expressionInterceptUrlRegistry.requestMatchers("/auth/user/login").permitAll()
-//                                .anyRequest().authenticated())
-//                .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.authenticationEntryPoint(authenticationEntryPoint));
-//        http.addFilterBefore(new PublicFilter(), BasicAuthenticationFilter.class);
-
-//        http.authorizeHttpRequests()
-//                addFilterBefore(
-//                new PublicFilter(), BasicAuthenticationFilter.class);
