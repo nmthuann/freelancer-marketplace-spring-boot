@@ -1,6 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.services.auth.impl;
 
-import com.nmt.freelancermarketplacespringboot.common.errors.exceptions.AuthException;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.AuthException;
 import com.nmt.freelancermarketplacespringboot.common.utils.JwtServiceUtil;
 import com.nmt.freelancermarketplacespringboot.dto.Payload;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
@@ -9,7 +9,6 @@ import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterDto;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
 import com.nmt.freelancermarketplacespringboot.services.auth.IAuthService;
 import com.nmt.freelancermarketplacespringboot.services.users.account.IAccountService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -98,7 +97,7 @@ public class AuthService implements IAuthService, UserDetailsService {
                     .withUsername(username)
                     .password("{noop}password")
                     // {noop} để sử dụng mật khẩu không mã hóa (trong thực tế, bạn sẽ sử dụng mật khẩu từ account)
-                    .roles("USER")
+                    .roles(account.getRole().getRole_name())
                     .build();
         } else {
             throw new UsernameNotFoundException("User not found with username: " + username);

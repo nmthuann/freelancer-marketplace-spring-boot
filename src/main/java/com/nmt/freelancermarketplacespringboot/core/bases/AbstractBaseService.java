@@ -25,8 +25,7 @@ public abstract class AbstractBaseService<T, ID> implements IBaseService<T, ID>{
     }
 
     public T getOneById(ID id) {
-        // System.out.println("Hahaha Abstract");
-//        return baseRepository.findById(id)
+//        return Optional.ofNullable(baseRepository.findById(id).orElse(null))
 //                .orElseThrow(() -> new EntityNotFoundException("Entity with id " + id + " not found"));
         return baseRepository.findById(id).orElse(null);
     }

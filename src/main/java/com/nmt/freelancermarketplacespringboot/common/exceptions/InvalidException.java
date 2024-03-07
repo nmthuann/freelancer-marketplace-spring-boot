@@ -1,6 +1,6 @@
-package com.nmt.freelancermarketplacespringboot.common.httpexceptions;
+package com.nmt.freelancermarketplacespringboot.common.exceptions;
 
-import com.nmt.freelancermarketplacespringboot.common.errors.exceptions.AuthException;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.AuthException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

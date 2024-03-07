@@ -1,4 +1,4 @@
-package com.nmt.freelancermarketplacespringboot.common.errors;
+package com.nmt.freelancermarketplacespringboot.common.exceptions.errors;
 
 
 public class CustomError extends Exception{
