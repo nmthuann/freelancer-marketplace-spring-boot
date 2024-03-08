@@ -4,6 +4,7 @@ import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseController
 import com.nmt.freelancermarketplacespringboot.dto.users.account.CreateAccountDto;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
 import com.nmt.freelancermarketplacespringboot.services.users.account.IAccountService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,7 @@ public class AccountController   { //extends AbstractBaseController<AccountEntit
     }
 
     @PostMapping("/create")
-    public ResponseEntity<AccountEntity> createOne(@RequestBody CreateAccountDto data) {
+    public ResponseEntity<AccountEntity> createOne(@RequestBody @Valid CreateAccountDto data) {
         AccountEntity created =  this.accountService.createOne(data);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
@@ -55,3 +56,9 @@ public class AccountController   { //extends AbstractBaseController<AccountEntit
 
 
 
+//@GetMapping("/{id}")
+//public ResponseEntity<Student> getStudent(@PathVariable("id") int id) throws StudentNotFoundException {
+//    log.debug("Entered into GetStudent method");
+//    Student studentById = studentService.getStudentById(id);
+//    return ResponseEntity.ok(studentById);
+//}

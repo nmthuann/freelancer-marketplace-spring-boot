@@ -1,10 +1,12 @@
 package com.nmt.freelancermarketplacespringboot.services.auth;
 
+import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
 import com.nmt.freelancermarketplacespringboot.dto.Payload;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import com.nmt.freelancermarketplacespringboot.dto.auth.LoginDto;
 import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterDto;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
+
 import java.util.concurrent.CompletableFuture;
 
 public interface IAuthService {
@@ -17,7 +19,8 @@ public interface IAuthService {
 
     String randomPassword(int length, String base);
 
-    CompletableFuture<Tokens> login(LoginDto data);
+    // CompletableFuture<Tokens> login(LoginDto data);
+    Tokens login (LoginDto data) throws AuthException, ConstraintViolationException;
 
     CompletableFuture<Tokens> register(RegisterDto data);
 

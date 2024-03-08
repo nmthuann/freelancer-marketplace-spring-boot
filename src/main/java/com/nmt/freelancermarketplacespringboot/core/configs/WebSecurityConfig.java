@@ -38,10 +38,10 @@ public class WebSecurityConfig  {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/**", "/public/**").permitAll()
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/user/**").hasAnyAuthority("USER")
-                        .anyRequest().authenticated())
+                        .requestMatchers("/auth/**", "/public/**").permitAll() // public
+                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN") // admin
+                        .requestMatchers("/user/**").hasAnyAuthority("USER") // user
+                        .anyRequest().authenticated()) // private
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         authMiddlewareFilter, UsernamePasswordAuthenticationFilter.class
@@ -50,7 +50,7 @@ public class WebSecurityConfig  {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider() { // can add parameter UserDetailService and PasswordEncoder
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(authService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
