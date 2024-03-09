@@ -14,3 +14,4 @@ public record RegisterDto (
         @NotEmpty Date birthday,
         @NotEmpty String phone
 ){}
+

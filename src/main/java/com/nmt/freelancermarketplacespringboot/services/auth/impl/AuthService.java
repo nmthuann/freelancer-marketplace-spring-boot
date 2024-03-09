@@ -1,5 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.services.auth.impl;
 
+import com.nmt.freelancermarketplacespringboot.common.enums.AuthMethodEnum;
+import com.nmt.freelancermarketplacespringboot.common.enums.RoleEnum;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.AuthExceptionMessage;
 import com.nmt.freelancermarketplacespringboot.common.utils.JwtServiceUtil;
@@ -7,16 +9,29 @@ import com.nmt.freelancermarketplacespringboot.dto.Payload;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import com.nmt.freelancermarketplacespringboot.dto.auth.LoginDto;
 import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterDto;
+import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterResultDto;
+import com.nmt.freelancermarketplacespringboot.dto.users.account.CreateAccountDto;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
+import com.nmt.freelancermarketplacespringboot.entities.users.account.AuthMethodEntity;
+import com.nmt.freelancermarketplacespringboot.entities.users.account.RoleEntity;
+import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
 import com.nmt.freelancermarketplacespringboot.services.auth.IAuthService;
 import com.nmt.freelancermarketplacespringboot.services.users.account.IAccountService;
+import com.nmt.freelancermarketplacespringboot.services.users.account.IAuthMethodService;
+import com.nmt.freelancermarketplacespringboot.services.users.account.IRoleService;
+import com.nmt.freelancermarketplacespringboot.services.users.user.IUserService;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -28,24 +43,56 @@ public class AuthService implements IAuthService, UserDetailsService {
     @Autowired
     IAccountService accountService;
 
-    @Override
-    public CompletableFuture<Tokens> getTokens(Payload payload) {
-        return null;
-    }
+    @Autowired
+    IAuthMethodService authMethodService;
 
+    @Autowired
+    IRoleService roleService;
+
+    @Autowired
+    IUserService userService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+//    @Override
+//    public CompletableFuture<Tokens> getTokens(Payload payload) {
+//        return null;
+//    }
+
+    /**
+     * using BCrypt to Hash Password in Spring Security 6
+     * @param password
+     * @return
+     */
     @Override
     public String hashPassword(String password) {
-        return null;
+       return this.passwordEncoder.encode(password);
     }
 
     @Override
     public Boolean comparePassword(String password, String storePasswordHash) {
-        return password.equals(storePasswordHash);
+        return this.passwordEncoder.matches(password, storePasswordHash);
     }
 
+    /**
+     * using forget password...
+     * @param length
+     * @param base
+     * @return
+     */
     @Override
-    public String randomPassword(int length, String base) {
-        return null;
+    public String randomPassword(@NotNull int length, @NotNull String base) {
+        SecureRandom random = new SecureRandom();
+        StringBuilder result = new StringBuilder();
+
+        int baseLength = base.length();
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(baseLength);
+            result.append(base.charAt(randomIndex));
+        }
+
+        return result.toString();
     }
 
     @Override
@@ -65,7 +112,7 @@ public class AuthService implements IAuthService, UserDetailsService {
             throw new AuthException(AuthExceptionMessage.LOGIN_INVALID.getMessage());
         }
 
-        // ensure findAccount != null
+        // ensure findAccount != null ///assert  findAccount != null;
         return this.jwtService.getTokens(new Payload(
                 findAccount.getEmail(),
                 findAccount.getRole().getRole_name(),
@@ -73,10 +120,76 @@ public class AuthService implements IAuthService, UserDetailsService {
         ));
     }
 
-
+    /**
+     * 1. get email, password
+     * @param data
+     * @return
+     */
     @Override
-    public CompletableFuture<Tokens> register (RegisterDto data) {
-        return null;
+    public CompletableFuture<?> register (RegisterDto data) {
+
+        CompletableFuture<AccountEntity> findAccount =
+                CompletableFuture.supplyAsync(() -> this.accountService.getOneById(data.email()));
+
+        try {
+            if (findAccount.get() != null && findAccount.get().isStatus()) {
+                throw new UsernameNotFoundException("");
+            }
+        }catch (Exception ex){
+            throw new RuntimeException("");
+        }
+
+
+        try {
+            String hashedPassword = this.hashPassword(data.password());
+            // Create account
+
+
+
+            AuthMethodEntity authMethod =
+                    this.authMethodService.getOneById(AuthMethodEnum.LOCAL_AUTHENTICATION.ordinal());
+
+            RoleEntity role =
+                    this.roleService.getOneById(RoleEnum.USER.ordinal());
+
+            Tokens tokens = this.jwtService.getTokens(new Payload(
+                    data.email(),
+                    role.getRole_name(),
+                    null
+            ));
+
+
+            AccountEntity newAccount = new AccountEntity();
+            newAccount.setEmail(data.email());
+            newAccount.setPassword(hashedPassword);
+            newAccount.setRefreshToken(tokens.refreshToken());
+            newAccount.setStatus(true);
+            newAccount.setSub(null);
+            newAccount.setAuthMethod(authMethod);
+            newAccount.setRole(role);
+
+
+            AccountEntity accountCreated = this.accountService.createOne(newAccount);
+
+
+
+            UserEntity newUser = new UserEntity();
+            newUser.setAccount(accountCreated);
+            newUser.setFirstName(data.firstName());
+            newUser.setLastName(data.lastName());
+            newUser.setBirthday(data.birthday());
+            newUser.setGender(data.gender());
+            newUser.setPhone(data.phone());
+
+            UserEntity userCreated = this.userService.createOne(newUser);
+
+            return CompletableFuture.completedFuture(
+                    new RegisterResultDto(tokens.accessToken(), userCreated.getFirstName()));
+        }
+        catch (Exception ex) {
+            System.out.println("ĐĂNG KÝ:::: " + ex.getMessage());
+            throw new RuntimeException("REGISTER FAIL");
+        }
     }
 
 
@@ -133,3 +246,52 @@ public class AuthService implements IAuthService, UserDetailsService {
 //            return tokens;
 //
 //        });
+
+//
+//return CompletableFuture.supplyAsync(() -> this.accountService.getOneById(data.email()))
+//        .thenApply(accountEntity -> {
+//        if (accountEntity != null && accountEntity.isStatus()) {
+//        throw new UsernameNotFoundException("");
+//                }
+//                        return accountEntity;
+//            })
+//                    .thenApplyAsync(accountEntity -> {
+//        try {
+//String hashedPassword = this.hashPassword(data.password());
+//
+//AuthMethodEntity authMethod = this.authMethodService.getOneById(AuthMethodEnum.LOCAL_AUTHENTICATION.ordinal());
+//RoleEntity role = this.roleService.getOneById(RoleEnum.USER.ordinal());
+//
+//Tokens tokens = this.jwtService.getTokens(new Payload(
+//        data.email(),
+//        role.getRole_name(),
+//        null
+//));
+//
+//AccountEntity newAccount = new AccountEntity();
+//                    newAccount.setEmail(data.email());
+//        newAccount.setPassword(hashedPassword);
+//                    newAccount.setRefreshToken(tokens.refreshToken());
+//        newAccount.setStatus(true);
+//                    newAccount.setSub(null);
+//                    newAccount.setAuthMethod(authMethod);
+//                    newAccount.setRole(role);
+//
+//AccountEntity accountCreated = this.accountService.createOne(newAccount);
+//
+//UserEntity newUser = new UserEntity();
+//                    newUser.setAccount(accountCreated);
+//                    newUser.setFirstName(data.firstName());
+//        newUser.setLastName(data.lastName());
+//        newUser.setBirthday(data.birthday());
+//        newUser.setGender(data.gender());
+//        newUser.setPhone(data.phone());
+//
+//UserEntity userCreated = this.userService.createOne(newUser);
+//
+//                    return new RegisterResultDto(tokens.accessToken(), userCreated.getFirstName());
+//        } catch (Exception ex) {
+//        System.out.println("ĐĂNG KÝ:::: " + ex.getMessage());
+//        throw new RuntimeException("REGISTER FAIL");
+//                }
+//                        });

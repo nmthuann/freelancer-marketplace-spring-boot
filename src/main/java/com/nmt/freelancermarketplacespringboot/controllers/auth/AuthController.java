@@ -25,14 +25,6 @@ public class AuthController {
     @Autowired
     IAuthService authService;
 
-    private final UserDetailsService userDetailsService;
-
-    @Autowired
-    JwtServiceUtil jwtService;
-
-    public AuthController(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
 
     @PostMapping("/user/login")
@@ -43,15 +35,9 @@ public class AuthController {
 
 
     @PostMapping("/user/register")
-    public ResponseEntity<?> register (@NonNull HttpServletRequest request, @RequestBody LoginDto data) {
-        System.out.println("REGISTER");
-        final String token = request.getHeader("Authorization").substring(7);
-        String username =
-                this.jwtService.extractUsername(token);
-        System.out.println("username::: " +username);
-        UserDetails userDetails=this.userDetailsService.loadUserByUsername(username);
-        boolean checkExp = this.jwtService.isTokenValid(token, userDetails);
-        System.out.println("checkExp::: " + checkExp);
+    public ResponseEntity<?> register (@Valid @RequestBody LoginDto data) {
+        System.out.println("REGISTER.....");
+
         return new ResponseEntity<>("REGISTER", HttpStatus.OK);
     }
 }

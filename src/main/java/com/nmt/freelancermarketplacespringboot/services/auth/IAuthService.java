@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface IAuthService {
 
-    CompletableFuture<Tokens> getTokens(Payload payload);
+//    CompletableFuture<Tokens> getTokens(Payload payload);
 
     String hashPassword(String password);
 
@@ -22,7 +22,7 @@ public interface IAuthService {
     // CompletableFuture<Tokens> login(LoginDto data);
     Tokens login (LoginDto data) throws AuthException, ConstraintViolationException;
 
-    CompletableFuture<Tokens> register(RegisterDto data);
+    CompletableFuture<?> register(RegisterDto data);
 
 
 }
