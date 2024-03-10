@@ -4,6 +4,8 @@ import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthExce
 import com.nmt.freelancermarketplacespringboot.common.utils.JwtServiceUtil;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import com.nmt.freelancermarketplacespringboot.dto.auth.LoginDto;
+import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterDto;
+import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterResultDto;
 import com.nmt.freelancermarketplacespringboot.services.auth.IAuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -35,9 +37,25 @@ public class AuthController {
 
 
     @PostMapping("/user/register")
-    public ResponseEntity<?> register (@Valid @RequestBody LoginDto data) {
+    public ResponseEntity<?> register (@Valid @RequestBody RegisterDto data) {
         System.out.println("REGISTER.....");
+        RegisterResultDto result = this.authService.register(data);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
-        return new ResponseEntity<>("REGISTER", HttpStatus.OK);
+
+    @PostMapping("/user/verify-email")
+    public ResponseEntity<?> verifyEmail (@Valid @RequestBody String email) {
+        System.out.println("VERIFY EMAIL.....");
+        String result = this.authService.verifyEmail(email);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
+
+/*
+    Auth Module:
+    - Login OK
+    - register -> no test
+    - verify email -> no test
+    - forgot password -> NO
+ */

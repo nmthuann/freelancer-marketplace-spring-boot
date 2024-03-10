@@ -5,6 +5,7 @@ import com.nmt.freelancermarketplacespringboot.common.enums.RoleEnum;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.AuthExceptionMessage;
 import com.nmt.freelancermarketplacespringboot.common.utils.JwtServiceUtil;
+import com.nmt.freelancermarketplacespringboot.common.utils.MailServiceUtil;
 import com.nmt.freelancermarketplacespringboot.dto.Payload;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import com.nmt.freelancermarketplacespringboot.dto.auth.LoginDto;
@@ -24,6 +25,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -54,6 +56,9 @@ public class AuthService implements IAuthService, UserDetailsService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    MailServiceUtil mailSender;
 
 //    @Override
 //    public CompletableFuture<Tokens> getTokens(Payload payload) {
@@ -122,29 +127,23 @@ public class AuthService implements IAuthService, UserDetailsService {
 
     /**
      * 1. get email, password
+     * -> find acc by email -> [find role, find method] -> generate tokens -> create acc -> create user -> return
      * @param data
      * @return
      */
     @Override
-    public CompletableFuture<?> register (RegisterDto data) {
+    public RegisterResultDto register (RegisterDto data) {
 
-        CompletableFuture<AccountEntity> findAccount =
-                CompletableFuture.supplyAsync(() -> this.accountService.getOneById(data.email()));
-
-        try {
-            if (findAccount.get() != null && findAccount.get().isStatus()) {
-                throw new UsernameNotFoundException("");
-            }
-        }catch (Exception ex){
-            throw new RuntimeException("");
+        // step 1: find Acc
+        AccountEntity findAccount = this.accountService.getOneById(data.email());
+        if (findAccount != null && findAccount.isStatus()) {
+            throw new UsernameNotFoundException("");
         }
 
-
+        // step 2: prepare value for create Account
         try {
-            String hashedPassword = this.hashPassword(data.password());
-            // Create account
-
-
+            String hashedPassword =
+                    this.hashPassword(data.password());
 
             AuthMethodEntity authMethod =
                     this.authMethodService.getOneById(AuthMethodEnum.LOCAL_AUTHENTICATION.ordinal());
@@ -152,11 +151,12 @@ public class AuthService implements IAuthService, UserDetailsService {
             RoleEntity role =
                     this.roleService.getOneById(RoleEnum.USER.ordinal());
 
-            Tokens tokens = this.jwtService.getTokens(new Payload(
-                    data.email(),
-                    role.getRole_name(),
-                    null
-            ));
+            Tokens tokens =
+                    this.jwtService.getTokens(new Payload(
+                            data.email(),
+                            role.getRole_name(),
+                            null
+                    ));
 
 
             AccountEntity newAccount = new AccountEntity();
@@ -168,10 +168,8 @@ public class AuthService implements IAuthService, UserDetailsService {
             newAccount.setAuthMethod(authMethod);
             newAccount.setRole(role);
 
-
+            // step 3: create Account
             AccountEntity accountCreated = this.accountService.createOne(newAccount);
-
-
 
             UserEntity newUser = new UserEntity();
             newUser.setAccount(accountCreated);
@@ -181,14 +179,42 @@ public class AuthService implements IAuthService, UserDetailsService {
             newUser.setGender(data.gender());
             newUser.setPhone(data.phone());
 
+            // create User
             UserEntity userCreated = this.userService.createOne(newUser);
 
-            return CompletableFuture.completedFuture(
-                    new RegisterResultDto(tokens.accessToken(), userCreated.getFirstName()));
+            return new RegisterResultDto(tokens.accessToken(), userCreated.getFirstName());
         }
-        catch (Exception ex) {
+        catch (Exception ex ){
             System.out.println("ĐĂNG KÝ:::: " + ex.getMessage());
             throw new RuntimeException("REGISTER FAIL");
+        }
+    }
+
+    @Override
+    public String verifyEmail(String email) {
+        try {
+            AccountEntity checkUser = accountService.getOneById(email);
+
+            if (checkUser != null) {
+                throw new AuthException(AuthExceptionMessage.VERIFY_MAIL_FAILED.getMessage());
+            } else {
+                String baseString = "0123456789";
+                String defaultPassword = randomPassword(8, baseString);
+
+                String subject = "VERIFY EMAIL";
+                String content = "Default Password " + ": " + defaultPassword;
+
+                // Send email
+                mailSender.sendEmail(email, subject, content);
+
+                // Create account
+                // RegisterDto data = new RegisterDto(email, defaultPassword);
+                return "SUCCESS"; // Assuming registerEmployee returns a success message
+            }
+        } catch (RuntimeException ex) {
+            throw new RuntimeException(ex.getMessage());
+        } catch (AuthException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -209,8 +235,10 @@ public class AuthService implements IAuthService, UserDetailsService {
         } else {
             throw new UsernameNotFoundException(AuthExceptionMessage.USERNAME_NOT_FOUND + username);
         }
-
     }
+
+
+
 }
 
 
@@ -295,3 +323,68 @@ public class AuthService implements IAuthService, UserDetailsService {
 //        throw new RuntimeException("REGISTER FAIL");
 //                }
 //                        });
+
+
+
+//CompletableFuture<AccountEntity> findAccount =
+//        CompletableFuture.supplyAsync(() -> this.accountService.getOneById(data.email()));
+//
+//        try {
+//                if (findAccount.get() != null && findAccount.get().isStatus()) {
+//        throw new UsernameNotFoundException("");
+//            }
+//                    }catch (Exception ex){
+//        throw new RuntimeException("");
+//        }
+//
+//
+//                try {
+//String hashedPassword = this.hashPassword(data.password());
+//// Create account
+//
+//
+//
+//AuthMethodEntity authMethod =
+//        this.authMethodService.getOneById(AuthMethodEnum.LOCAL_AUTHENTICATION.ordinal());
+//
+//RoleEntity role =
+//        this.roleService.getOneById(RoleEnum.USER.ordinal());
+//
+//Tokens tokens = this.jwtService.getTokens(new Payload(
+//        data.email(),
+//        role.getRole_name(),
+//        null
+//));
+//
+//
+//AccountEntity newAccount = new AccountEntity();
+//            newAccount.setEmail(data.email());
+//        newAccount.setPassword(hashedPassword);
+//            newAccount.setRefreshToken(tokens.refreshToken());
+//        newAccount.setStatus(true);
+//            newAccount.setSub(null);
+//            newAccount.setAuthMethod(authMethod);
+//            newAccount.setRole(role);
+//
+//
+//AccountEntity accountCreated = this.accountService.createOne(newAccount);
+//
+//
+//
+//UserEntity newUser = new UserEntity();
+//            newUser.setAccount(accountCreated);
+//            newUser.setFirstName(data.firstName());
+//        newUser.setLastName(data.lastName());
+//        newUser.setBirthday(data.birthday());
+//        newUser.setGender(data.gender());
+//        newUser.setPhone(data.phone());
+//
+//UserEntity userCreated = this.userService.createOne(newUser);
+//
+//            return CompletableFuture.completedFuture(
+//                    new RegisterResultDto(tokens.accessToken(), userCreated.getFirstName()));
+//        }
+//        catch (Exception ex) {
+//        System.out.println("ĐĂNG KÝ:::: " + ex.getMessage());
+//        throw new RuntimeException("REGISTER FAIL");
+//        }
