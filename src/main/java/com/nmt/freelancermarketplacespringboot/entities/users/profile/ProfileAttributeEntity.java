@@ -20,7 +20,7 @@ public class ProfileAttributeEntity {
      * Ex:
      * 1. education,
      * 2. skill,
-     * 3. experence
+     * 3. experience
      */
 
     @OneToMany(mappedBy = "profileAttribute", cascade = CascadeType.ALL)
