@@ -5,6 +5,7 @@ import java.util.Set;
 
 public record CreateProfileDto(
         String occupation,
+
         Set<CreateProfileAttributeDto> profileAttributes
 ) {
 }

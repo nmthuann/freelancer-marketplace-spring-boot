@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.entities.users.profile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
 import jakarta.persistence.*;
@@ -32,9 +33,11 @@ public class ProfileEntity extends AbstractBaseEntity {
     private String occupation;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ProfileValueEntity> profileAttributeValues;
 
     @OneToOne(mappedBy = "profile")
     @PrimaryKeyJoinColumn
+    @JsonIgnore
     private UserEntity user;
 }

@@ -1,6 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.dto.users.profile;
 
-public record CreateProfileValueDto(
+public record ProfileValueDto(
         String profileValue
 ) {
 }

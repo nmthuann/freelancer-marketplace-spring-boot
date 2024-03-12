@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.entities.users.profile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,6 +25,7 @@ public class ProfileAttributeEntity {
      */
 
     @OneToMany(mappedBy = "profileAttribute", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ProfileValueEntity> profileAttributeValues;
 
     // Getter and setter methods
