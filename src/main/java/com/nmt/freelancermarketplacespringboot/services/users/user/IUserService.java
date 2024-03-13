@@ -7,19 +7,22 @@ import com.nmt.freelancermarketplacespringboot.dto.users.user.CreateUserPaymentD
 import com.nmt.freelancermarketplacespringboot.dto.users.user.UserDto;
 import com.nmt.freelancermarketplacespringboot.dto.users.user.UserPaymentDto;
 import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
+import com.nmt.freelancermarketplacespringboot.entities.users.user.UserPaymentEntity;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IUserService extends IBaseService<UserEntity, UUID> {
-    ProfileDto updateUserInformation (String email, CreateProfileDto data);
+    UserEntity updateUserInformation (String email, UserDto data);
     ProfileDto createProfile (String email, CreateProfileDto data);
     ProfileDto updateProfile (String email, CreateProfileDto data);
-    CreateUserPaymentDto createUserPayment (String email, CreateUserPaymentDto data);
-    UserDto getUserByEmail (String email);
+    UserPaymentEntity createUserPayment (String email, CreateUserPaymentDto data);
+    UserEntity getUserByEmail (String email);
     ProfileDto getProfileByEmail (String email);
-    UserPaymentDto getUserPaymentIsEmail  (String email);
-    void getAllUser(Integer pageNumber, Integer pageSize ); // keyword, sort ...
-    void getUsersIsSellerOrBuyer(Boolean isSeller);
+    UserPaymentEntity getUserPaymentIsEmail  (String email);
+    Page<UserEntity> getAllUser(Integer pageNumber, Integer pageSize ); // keyword, sort ...
+    Page<UserEntity> getUsersIsSellerOrBuyer(Boolean isSeller, int page, int size);
 
 }

@@ -16,22 +16,22 @@ public class UserPaymentService
         extends AbstractBaseService<UserPaymentEntity, UUID>
         implements IUserPaymentService {
 
-    @Autowired
-    IAccountService accountService;
+//    @Autowired
+//    IAccountService accountService;
 
     @Autowired
     public UserPaymentService(IUserPaymentRepository userPaymentRepository) {
         super(userPaymentRepository);
     }
 
-    @Override
-    public UserPaymentEntity createOne(UserPaymentEntity data, String email) throws AuthException {
-        AccountEntity account = this.accountService.getOneById(email);
-        if( account == null || !account.isStatus()){
-            throw new AuthException(AuthExceptionMessage.EMAIL_INVALID.getMessage());
-        }
-        return super.createOne(data);
-    }
+//    @Override
+//    public UserPaymentEntity createOne(UserPaymentEntity data, String email) throws AuthException {
+//        AccountEntity account = this.accountService.getOneById(email);
+//        if( account == null || !account.isStatus()){
+//            throw new AuthException(AuthExceptionMessage.EMAIL_INVALID.getMessage());
+//        }
+//        return super.createOne(data);
+//    }
 
     public UserPaymentEntity getUserPaymentByEmail(String email){
         return null;

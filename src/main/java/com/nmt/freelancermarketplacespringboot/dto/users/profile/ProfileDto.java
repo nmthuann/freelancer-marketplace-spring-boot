@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.util.Set;
 
-@Data
+
 public record ProfileDto (
         String email,
         String firstName,
@@ -14,4 +14,9 @@ public record ProfileDto (
         String occupation,
         Set<ProfileAttributeDto> profileAttributes
 ) {
+//    public ProfileDto(
+//            String email, String lastName, String firstName, String level, String occupation,
+//                      Set<ProfileAttributeDto> profileAttributes) {
+//        this(email, lastName, firstName, level, occupation, profileAttributes);
+//    }
 }

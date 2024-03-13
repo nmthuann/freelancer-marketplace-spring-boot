@@ -48,6 +48,7 @@ public class ProfileService extends AbstractBaseService<ProfileEntity, Integer> 
      * @param data
      * @return
      */
+    @Override
     public ProfileEntity createOne(CreateProfileDto data){
 
         // check CreateProfileDto is JSON

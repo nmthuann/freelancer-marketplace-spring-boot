@@ -12,6 +12,9 @@ public record RegisterDto (
         @NotEmpty String lastName,
         @NotEmpty String gender,
         @NotEmpty Date birthday,
-        @NotEmpty String phone
+        @NotEmpty String phone,
+
+        @NotEmpty String location
+
 ){}
 

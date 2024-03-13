@@ -7,5 +7,5 @@ import com.nmt.freelancermarketplacespringboot.entities.users.user.UserPaymentEn
 import java.util.UUID;
 
 public interface IUserPaymentService extends IBaseService<UserPaymentEntity, UUID> {
-    UserPaymentEntity createOne(UserPaymentEntity data, String email) throws AuthException;
+    // UserPaymentEntity createOne(UserPaymentEntity data, String email) throws AuthException;
 }

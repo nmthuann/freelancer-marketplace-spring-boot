@@ -42,7 +42,7 @@ public class UserPaymentController {
 
 
         // must be seller
-        UserPaymentEntity created = this.userPaymentService.createOne(createUserPayment, email);
+        UserPaymentEntity created = this.userPaymentService.createOne(createUserPayment);
 
         return new ResponseEntity<>(created, HttpStatus.OK);
     }
