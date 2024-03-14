@@ -1,13 +1,14 @@
 package com.nmt.freelancermarketplacespringboot.controllers.auth;
 
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
-import com.nmt.freelancermarketplacespringboot.common.utils.JwtServiceUtil;
+
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import com.nmt.freelancermarketplacespringboot.dto.auth.LoginDto;
 import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterDto;
 import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterResultDto;
 import com.nmt.freelancermarketplacespringboot.services.auth.IAuthService;
-import jakarta.servlet.http.HttpServletRequest;
+
+import com.nmt.freelancermarketplacespringboot.services.users.account.IAccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,10 @@ public class AuthController {
 
     @Autowired
     IAuthService authService;
-
+//    @Autowired
+//    public AuthController(IAuthService authService) {
+//        this.authService = authService;
+//    }
 
 
     @PostMapping("/user/login")

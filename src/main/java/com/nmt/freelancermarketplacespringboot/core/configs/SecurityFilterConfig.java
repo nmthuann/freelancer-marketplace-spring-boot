@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -16,7 +16,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,49 +24,33 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig  {
+@RequiredArgsConstructor
+public class SecurityFilterConfig {
 
-    @Autowired
-    AuthMiddlewareFilter authMiddlewareFilter;
+//    @Autowired
+//    AuthMiddlewareFilter authMiddlewareFilter;
 
-    @Autowired
-    UserDetailsService authService;
+    private final AuthMiddlewareFilter authMiddlewareFilter;
+    private final AuthenticationProvider authenticationProvider;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/**", "/public/**").permitAll() // public
+                        .requestMatchers("/auth/**", "/public/**", "/user/**").permitAll() // public
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN") // admin
-                        .requestMatchers("/user/**").hasAnyAuthority("USER") // user
+                        // .requestMatchers("/user/**").hasAnyAuthority("USER") // user
                         .anyRequest().authenticated()) // private
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider()).addFilterBefore(
+                .authenticationProvider(authenticationProvider).addFilterBefore(
                         authMiddlewareFilter, UsernamePasswordAuthenticationFilter.class
                 );
         return httpSecurity.build();
     }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider() { // can add parameter UserDetailService and PasswordEncoder
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService(authService);
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-        return daoAuthenticationProvider;
-    }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration
-    ) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
 
 
 }

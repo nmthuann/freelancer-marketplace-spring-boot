@@ -165,7 +165,7 @@ public class UserService extends AbstractBaseService<UserEntity, UUID> implement
             throw new RuntimeException("Not Found Email or Email Invalid");
         }
 
-        return this.userRepository.findByEmail(findAcc.getEmail());
+        return this.userRepository.findByAccountEmail(findAcc.getEmail());
     }
 
     /**

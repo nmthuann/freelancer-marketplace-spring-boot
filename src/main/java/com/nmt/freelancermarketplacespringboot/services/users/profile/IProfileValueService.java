@@ -11,7 +11,7 @@ import java.util.Set;
 public interface IProfileValueService extends IBaseService<ProfileValueEntity, Integer> {
 
     void saveAll(Set<ProfileValueEntity> profileValues);
-    List<ProfileValueEntity> findByProfileId(Integer profileId);
+    List<ProfileValueEntity> findByProfileProfileId(Integer profileId);
 
 
 }

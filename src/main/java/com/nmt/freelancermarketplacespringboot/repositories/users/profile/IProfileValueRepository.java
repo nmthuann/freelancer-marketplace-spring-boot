@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface IProfileValueRepository extends JpaRepository<ProfileValueEntity, Integer> {
-    List<ProfileValueEntity> findByProfileId(Integer profileId);
+    // List<ProfileValueEntity> findByProfileId(Integer profileId);
+    List<ProfileValueEntity> findByProfileProfileId(Integer profileId);
 
 }

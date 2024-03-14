@@ -228,7 +228,8 @@ public class AuthService implements IAuthService, UserDetailsService {
         if (account != null) {
             return org.springframework.security.core.userdetails.User
                     .withUsername(username)
-                    .password("{noop}password")
+                    // .password("{noop}password")
+                    .password(this.passwordEncoder.encode("password"))
                     // {noop} để sử dụng mật khẩu không mã hóa (trong thực tế, bạn sẽ sử dụng mật khẩu từ account)
                     .roles(account.getRole().getRole_name())
                     .build();

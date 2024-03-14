@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class ProfileValueService extends AbstractBaseService<ProfileValueEntity, Integer> implements IProfileValueService {
+public class ProfileValueService
+        extends AbstractBaseService<ProfileValueEntity, Integer>
+        implements IProfileValueService {
 
     @Autowired
     IProfileValueRepository profileValueRepository;
@@ -32,9 +34,10 @@ public class ProfileValueService extends AbstractBaseService<ProfileValueEntity,
         profileValueRepository.saveAll(profileValues);
     }
 
+
     @Override
-    public List<ProfileValueEntity> findByProfileId(Integer profileId) {
-        return profileValueRepository.findByProfileId(profileId); // may be wrong
+    public List<ProfileValueEntity> findByProfileProfileId(Integer profileId) {
+        return this.profileValueRepository.findByProfileProfileId(profileId);
     }
 
 
