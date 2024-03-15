@@ -22,11 +22,11 @@ import java.io.IOException;
 public class AuthMiddlewareFilter extends OncePerRequestFilter {
 
     @Autowired
-    JwtServiceUtil jwtServiceUtil;
+    UserDetailsService userDetailsService;
+
 
     @Autowired
-    UserDetailsService  authService;
-
+    JwtServiceUtil jwtServiceUtil;
 
 
     @Override
@@ -44,15 +44,17 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
             return;
         }
         token = authHeader.substring(7);
+
         // userEmail = jwtUtils.extractUsername(jwtToken);
+
         email = this.jwtServiceUtil.extractUsername(token);
         try {
-
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 //  UserDetails userDetails = (UserDetails) this.accountService.getOneById(email); // bug in here???
 
-                UserDetails userDetails = authService.loadUserByUsername(email);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email); // may be throw exception
+
                 if (jwtServiceUtil.isTokenValid(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,

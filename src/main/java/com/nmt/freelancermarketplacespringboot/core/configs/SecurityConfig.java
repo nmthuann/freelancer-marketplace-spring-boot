@@ -20,20 +20,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    // @Autowired
-    private final IAccountRepository accountRepository;
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return username -> (UserDetails) accountRepository.findById(username)
-                .orElseThrow(()->new UsernameNotFoundException("User Not Found") );
-    }
+    @Autowired
+    UserDetailsService userDetailsService;
 
 
     @Bean
     public AuthenticationProvider authenticationProvider() { // can add parameter UserDetailService and PasswordEncoder
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setUserDetailsService((UserDetailsService) accountRepository);
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
     }

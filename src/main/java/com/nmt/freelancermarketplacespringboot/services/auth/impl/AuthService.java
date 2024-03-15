@@ -11,7 +11,6 @@ import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import com.nmt.freelancermarketplacespringboot.dto.auth.LoginDto;
 import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterDto;
 import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterResultDto;
-import com.nmt.freelancermarketplacespringboot.dto.users.account.CreateAccountDto;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AuthMethodEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.RoleEntity;
@@ -21,13 +20,10 @@ import com.nmt.freelancermarketplacespringboot.services.users.account.IAccountSe
 import com.nmt.freelancermarketplacespringboot.services.users.account.IAuthMethodService;
 import com.nmt.freelancermarketplacespringboot.services.users.account.IRoleService;
 import com.nmt.freelancermarketplacespringboot.services.users.user.IUserService;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -37,7 +33,7 @@ import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class AuthService implements IAuthService, UserDetailsService {
+public class AuthService implements IAuthService {
 
     @Autowired
     JwtServiceUtil jwtService;
@@ -219,24 +215,7 @@ public class AuthService implements IAuthService, UserDetailsService {
     }
 
 
-    @Override
-    // from UserDetail interface
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        AccountEntity account = this.accountService.getOneById(username);
-
-        if (account != null) {
-            return org.springframework.security.core.userdetails.User
-                    .withUsername(username)
-                    // .password("{noop}password")
-                    .password(this.passwordEncoder.encode("password"))
-                    // {noop} để sử dụng mật khẩu không mã hóa (trong thực tế, bạn sẽ sử dụng mật khẩu từ account)
-                    .roles(account.getRole().getRole_name())
-                    .build();
-        } else {
-            throw new UsernameNotFoundException(AuthExceptionMessage.USERNAME_NOT_FOUND + username);
-        }
-    }
 
 
 
