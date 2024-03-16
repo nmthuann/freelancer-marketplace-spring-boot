@@ -1,5 +1,8 @@
 package com.nmt.freelancermarketplacespringboot.common.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum AuthMethodEnum {
     LOCAL_AUTHENTICATION(1),
     GOOGLE(2),

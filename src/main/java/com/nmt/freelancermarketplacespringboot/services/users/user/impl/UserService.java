@@ -188,7 +188,7 @@ public class UserService extends AbstractBaseService<UserEntity, UUID> implement
     }
 
     @Override
-    public UserPaymentEntity getUserPaymentIsEmail(String email) {
+    public UserPaymentEntity getUserPaymentByEmail(String email) {
         UserEntity findUser = this.getUserByEmail(email);
         return findUser.getUserPayment();
     }

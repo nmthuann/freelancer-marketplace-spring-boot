@@ -1,5 +1,8 @@
 package com.nmt.freelancermarketplacespringboot.common.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum RoleEnum {
 
     ADMIN(1),
@@ -12,4 +15,5 @@ public enum RoleEnum {
     RoleEnum(int roleId){
         this.roleId = roleId;
     }
+
 }

@@ -20,6 +20,7 @@ import com.nmt.freelancermarketplacespringboot.services.users.account.IAccountSe
 import com.nmt.freelancermarketplacespringboot.services.users.account.IAuthMethodService;
 import com.nmt.freelancermarketplacespringboot.services.users.account.IRoleService;
 import com.nmt.freelancermarketplacespringboot.services.users.user.IUserService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -128,12 +129,14 @@ public class AuthService implements IAuthService {
      * @return
      */
     @Override
-    public RegisterResultDto register (RegisterDto data) {
+    @Transactional
+    public RegisterResultDto register ( RegisterDto data) throws AuthException {
 
         // step 1: find Acc
         AccountEntity findAccount = this.accountService.getOneById(data.email());
-        if (findAccount != null && findAccount.isStatus()) {
-            throw new UsernameNotFoundException("");
+        if (findAccount != null) {
+            // email tồn tại
+            throw new AuthException(AuthExceptionMessage.EMAIL_EXIST.getMessage());
         }
 
         // step 2: prepare value for create Account
@@ -142,10 +145,10 @@ public class AuthService implements IAuthService {
                     this.hashPassword(data.password());
 
             AuthMethodEntity authMethod =
-                    this.authMethodService.getOneById(AuthMethodEnum.LOCAL_AUTHENTICATION.ordinal());
+                    this.authMethodService.getOneById(AuthMethodEnum.LOCAL_AUTHENTICATION.getAuthMethodId());
 
             RoleEntity role =
-                    this.roleService.getOneById(RoleEnum.USER.ordinal());
+                    this.roleService.getOneById(RoleEnum.USER.getRoleId());
 
             Tokens tokens =
                     this.jwtService.getTokens(new Payload(
@@ -174,6 +177,7 @@ public class AuthService implements IAuthService {
             newUser.setBirthday(data.birthday());
             newUser.setGender(data.gender());
             newUser.setPhone(data.phone());
+            newUser.setLocation(data.location());
 
             // create User
             UserEntity userCreated = this.userService.createOne(newUser);
@@ -214,9 +218,20 @@ public class AuthService implements IAuthService {
         }
     }
 
+    @Override
+    public String changePassword(String email) {
+        return "Not Implement changePassword";
+    }
 
+    @Override
+    public String forgetPassword(String email) {
+        return "Not Implement forgetPassword";
+    }
 
-
+    @Override
+    public String logout(String email) {
+        return "Not Implement logout";
+    }
 
 
 }

@@ -21,7 +21,7 @@ public interface IUserService extends IBaseService<UserEntity, UUID> {
     UserPaymentEntity createUserPayment (String email, CreateUserPaymentDto data);
     UserEntity getUserByEmail (String email);
     ProfileDto getProfileByEmail (String email);
-    UserPaymentEntity getUserPaymentIsEmail  (String email);
+    UserPaymentEntity getUserPaymentByEmail  (String email);
     Page<UserEntity> getAllUser(Integer pageNumber, Integer pageSize ); // keyword, sort ...
     Page<UserEntity> getUsersIsSellerOrBuyer(Boolean isSeller, int page, int size);
 

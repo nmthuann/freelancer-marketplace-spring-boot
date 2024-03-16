@@ -54,11 +54,3 @@ public class AccountController   { //extends AbstractBaseController<AccountEntit
 
 }
 
-
-
-//@GetMapping("/{id}")
-//public ResponseEntity<Student> getStudent(@PathVariable("id") int id) throws StudentNotFoundException {
-//    log.debug("Entered into GetStudent method");
-//    Student studentById = studentService.getStudentById(id);
-//    return ResponseEntity.ok(studentById);
-//}

@@ -24,8 +24,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 @RequiredArgsConstructor
 public class SecurityFilterConfig {
 
-//    @Autowired
-//    AuthMiddlewareFilter authMiddlewareFilter;
 
     private final AuthMiddlewareFilter authMiddlewareFilter;
     private final AuthenticationProvider authenticationProvider;

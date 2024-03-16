@@ -23,9 +23,14 @@ public interface IAuthService {
     // CompletableFuture<Tokens> login(LoginDto data);
     Tokens login (LoginDto data) throws AuthException, ConstraintViolationException;
 
-    RegisterResultDto register(RegisterDto data);
+    RegisterResultDto register(RegisterDto data) throws AuthException;
 
     String verifyEmail(String email);
 
+    String changePassword(String email);
+
+    String forgetPassword(String email);
+
+    String logout(String email);
 
 }
