@@ -8,6 +8,7 @@ import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import com.nmt.freelancermarketplacespringboot.dto.auth.LoginDto;
 import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterDto;
 import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterResultDto;
+import com.nmt.freelancermarketplacespringboot.dto.auth.ResultLogoutDto;
 import com.nmt.freelancermarketplacespringboot.services.auth.IAuthService;
 
 import jakarta.validation.Valid;
@@ -18,7 +19,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 
 
 /**
@@ -55,8 +58,8 @@ public class AuthController {
     }
 
 
-    @PostMapping("/user/verify-email")
-    public ResponseEntity<?> verifyEmail (@Valid @RequestBody String email) {
+    @GetMapping("/user/verify-email/{email}")
+    public ResponseEntity<?> verifyEmail (@Valid @PathVariable String email) {
         System.out.println("VERIFY EMAIL.....");
         String result = this.authService.verifyEmail(email);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -65,11 +68,18 @@ public class AuthController {
 
     // will need access Token -> for logout Method
     @PostMapping("/user/logout")
-    public ResponseEntity<?> logout (@Valid @RequestBody String email) {
+    public ResponseEntity<?> logout (@AuthenticationPrincipal UserDetails userDetails) {
         System.out.println("LOGOUT.....");
-        String result = this.authService.logout(email);
+        String logout = this.authService.logout(userDetails.getUsername());
+        ResultLogoutDto result = new ResultLogoutDto(
+                userDetails.getUsername(),
+                HttpStatus.OK.value(),
+                logout,
+                LocalDateTime.now()
+        );
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
 
     // will need access Token -> for changePassword Method
     @PostMapping("/user/change-password")

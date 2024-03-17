@@ -31,17 +31,20 @@ public class SecurityFilterConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
+        httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/**", "/public/**", "/user/**").permitAll() // public
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN") // admin
-                        // .requestMatchers("/user/**").hasAnyAuthority("USER") // user
+//                        .requestMatchers("/user/**").hasAnyAuthority("USER") // user
+                        // .requestMatchers("/auth/user/logout").authenticated() // user
                         .anyRequest().authenticated()) // private
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider).addFilterBefore(
                         authMiddlewareFilter, UsernamePasswordAuthenticationFilter.class
-                );
+                )
+                .logout((logout) -> logout.logoutUrl("/auth/user/logout/uri")); //"/auth/user/logout/uri"
         return httpSecurity.build();
     }
 

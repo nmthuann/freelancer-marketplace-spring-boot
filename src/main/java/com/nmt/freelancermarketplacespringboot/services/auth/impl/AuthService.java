@@ -196,7 +196,7 @@ public class AuthService implements IAuthService {
             AccountEntity checkUser = accountService.getOneById(email);
 
             if (checkUser != null) {
-                throw new AuthException(AuthExceptionMessage.VERIFY_MAIL_FAILED.getMessage());
+                throw new AuthException(AuthExceptionMessage.EMAIL_EXIST.getMessage());
             } else {
                 String baseString = "0123456789";
                 String defaultPassword = randomPassword(8, baseString);
@@ -230,7 +230,9 @@ public class AuthService implements IAuthService {
 
     @Override
     public String logout(String email) {
-        return "Not Implement logout";
+        System.out.println("logout service"+email);
+        AccountEntity findAcc = this.accountService.updateRefreshToken(email);
+        return "Login Success " + findAcc.getEmail();
     }
 
 

@@ -6,4 +6,5 @@ import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEnt
 
 public interface IAccountService extends IBaseService <AccountEntity, String> {
     AccountEntity createOne(CreateAccountDto data);
+    AccountEntity updateRefreshToken(String email);
 }

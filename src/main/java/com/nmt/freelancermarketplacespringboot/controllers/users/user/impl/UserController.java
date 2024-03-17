@@ -10,10 +10,13 @@ import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.user.UserPaymentEntity;
 import com.nmt.freelancermarketplacespringboot.services.users.user.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +34,12 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/users")
-public class UserController implements IUserController {
+public class UserController { // implements IUserController
 
 
     @Autowired
     IUserService userService;
 
-//    @Autowired
-//    UserDetails userDetails;
 
     @Autowired
     public UserController(IUserService userService){
@@ -47,63 +48,76 @@ public class UserController implements IUserController {
     }
 
     @PutMapping("/update")
-    @Override
-    public ResponseEntity<UserEntity> updateUserInformation(HttpServletRequest request, UserDto data) {
-        UserEntity result = this.userService.updateUserInformation("userDetails.getUsername()", data);
+
+    public ResponseEntity<UserEntity> updateUserInformation (
+            @Valid @RequestBody UserDto data,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        UserEntity result = this.userService.updateUserInformation(userDetails.getUsername(), data);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("/create-profile")
-    @Override
-    public ResponseEntity<ProfileDto> createProfile(HttpServletRequest request, CreateProfileDto data) {
-        ProfileDto result = this.userService.createProfile("userDetails.getUsername()", data);
+
+    public ResponseEntity<ProfileDto> createProfile(
+            @Valid @RequestBody CreateProfileDto data,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        ProfileDto result = this.userService.createProfile(userDetails.getUsername(), data);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PutMapping("/update-profile")
-    @Override
-    public ResponseEntity<ProfileDto> updateProfile(HttpServletRequest request, CreateProfileDto data) {
-        return null;
+    public ResponseEntity<ProfileDto> updateProfile(
+            @Valid @RequestBody CreateProfileDto data,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        ProfileDto result = this.userService.updateProfile(userDetails.getUsername(), data);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("/create-user-payment")
-    @Override
-    public ResponseEntity<UserPaymentEntity> createUserPayment(HttpServletRequest request, CreateUserPaymentDto data) {
-        return null;
+    public ResponseEntity<UserPaymentEntity> createUserPayment(
+            @Valid @RequestBody CreateUserPaymentDto data,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        UserPaymentEntity result = this.userService.createUserPayment(userDetails.getUsername(), data);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/get-user")
-    @Override
-    public ResponseEntity<UserEntity> getUserByEmail(HttpServletRequest request) {
-        return null;
+    public ResponseEntity<UserEntity> getUserByEmail(@AuthenticationPrincipal UserDetails userDetails) {
+        UserEntity result = this.userService.getUserByEmail(userDetails.getUsername());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/get-profile")
-    @Override
-    public ResponseEntity<ProfileDto> getProfileByEmail(HttpServletRequest request) {
-        return null;
+    public ResponseEntity<ProfileDto> getProfileByEmail(@AuthenticationPrincipal UserDetails userDetails) {
+        ProfileDto result = this.userService.getProfileByEmail(userDetails.getUsername());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/get-user-payment")
-    @Override
-    public ResponseEntity<UserPaymentEntity> getUserPaymentByEmail(HttpServletRequest request) {
-        return null;
+    public ResponseEntity<UserPaymentEntity> getUserPaymentByEmail(@AuthenticationPrincipal UserDetails userDetails) {
+        UserPaymentEntity result = this.userService.getUserPaymentByEmail(userDetails.getUsername());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/get-all")
-    @Override
-    public ResponseEntity<UserEntity> getAllUser(HttpServletRequest request) {
-        return null;
+    @GetMapping("/")
+    public ResponseEntity<?> getAllUser(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<UserEntity> result = this.userService.getAllUser(page, size);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/get-sellers")
-    @Override
     public ResponseEntity<UserEntity> getUsersIsSeller(HttpServletRequest request) {
         return null;
     }
 
     @GetMapping("/get-buyers")
-    @Override
     public ResponseEntity<UserEntity> getUsersIsBuyer(@NonNull HttpServletRequest request) {
         return null;
     }

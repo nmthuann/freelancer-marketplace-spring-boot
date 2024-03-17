@@ -47,6 +47,13 @@ public class AccountService
         return createAccount;
     }
 
+    @Override
+    public AccountEntity updateRefreshToken(String email) {
+        AccountEntity findAcc = this.getOneById(email);
+        findAcc.setRefreshToken(null);
+        this.accountRepository.save(findAcc);
+        return findAcc;
+    }
 
 
 }
