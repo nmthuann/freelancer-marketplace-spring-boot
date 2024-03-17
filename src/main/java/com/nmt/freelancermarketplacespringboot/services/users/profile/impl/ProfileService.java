@@ -55,12 +55,13 @@ public class ProfileService extends AbstractBaseService<ProfileEntity, Integer> 
 
         ProfileEntity newProfile = new ProfileEntity();
         newProfile.setOccupation(data.occupation());
+
+
         // fix error JSon -> fix in Entity file
-        ProfileEntity profileCreated = super.createOne(newProfile);
+        ProfileEntity profileCreated = super.createOne(newProfile); // -> save newProfile
 
 
         // create Transaction
-
         Set<ProfileValueEntity>  profileValueEntities = new HashSet<>();
         for (CreateProfileAttributeDto attribute : data.profileAttributes()){
             for (CreateProfileValueDto value: data.profileAttributes().iterator().next().profileValues()){

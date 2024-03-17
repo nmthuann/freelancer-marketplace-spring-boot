@@ -2,6 +2,7 @@ package com.nmt.freelancermarketplacespringboot.entities.users.user;
 
 
 // import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nmt.freelancermarketplacespringboot.entities.orders.OrderEntity;
 import com.nmt.freelancermarketplacespringboot.entities.orders.RevisionEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.review.ReviewEntity;
@@ -72,13 +73,16 @@ public class UserEntity {
     private ProfileEntity profile;
 
 
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private ReviewEntity review;
 
 
+    @JsonIgnore
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
     private Set<OrderEntity> sellerOrders;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL)
     private Set<OrderEntity> buyerOrders;
 

@@ -3,7 +3,6 @@ package com.nmt.freelancermarketplacespringboot.common.exceptions.messages;
 import lombok.Getter;
 
 @Getter
-
 public enum AuthExceptionMessage {
     PASSWORD_WRONG("Bạn nhập sai mật khẩu."),
     LOGIN_INVALID("Email hoặc Password của bạn không hợp lệ."),

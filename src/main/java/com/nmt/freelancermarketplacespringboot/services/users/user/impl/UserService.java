@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.services.users.user.impl;
 
+import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseService;
 import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileDto;
 import com.nmt.freelancermarketplacespringboot.dto.users.profile.ProfileAttributeDto;
@@ -19,7 +20,9 @@ import com.nmt.freelancermarketplacespringboot.services.users.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -64,8 +67,8 @@ public class UserService extends AbstractBaseService<UserEntity, UUID> implement
         findUserByEmail.setGender(data.gender());
         findUserByEmail.setAvatarURL(data.avatarURL());
         findUserByEmail.setLocation(data.location());
-
-        return this.updateOneById(findUserByEmail.getUserId(), findUserByEmail);
+        return this.userRepository.save(findUserByEmail);
+        // return this.updateOneById(findUserByEmail.getUserId(), findUserByEmail);
     }
 
     /**
@@ -77,26 +80,31 @@ public class UserService extends AbstractBaseService<UserEntity, UUID> implement
      * @return
      */
     @Override
-    public ProfileDto createProfile(String email, CreateProfileDto data) {
+    public UserEntity createProfile(String email, CreateProfileDto data) {
 
-        AccountEntity checkAccount = this.accountService.getOneById(email);
-        if (checkAccount == null){
-            return null;
+        UserEntity checkUser = this.getUserByEmail(email);
+        if (checkUser == null){
+            throw new UsernameNotFoundException("Username Not Found!");
         }
 
         ProfileEntity newProfile =  this.profileService.createOne(data);
+
         UserEntity getUserByEmail = this.getUserByEmail(email);
         getUserByEmail.setProfile(newProfile);
+
+
         // save value
-        Set<ProfileAttributeDto> attributes = null;
+        // Set<ProfileAttributeDto> attributes = null;
 
+        System.out.println("newProfile: " + newProfile);
 
-        return new ProfileDto(email,
-                getUserByEmail.getLastName(),
-                getUserByEmail.getFirstName(),
-                getUserByEmail.getProfile().getLevel(),
-                getUserByEmail.getProfile().getOccupation(),
-                null );
+        return this.userRepository.save(getUserByEmail);
+//                new ProfileDto(email,
+//                getUserByEmail.getLastName(),
+//                getUserByEmail.getFirstName(),
+//                getUserByEmail.getProfile().getLevel(),
+//                getUserByEmail.getProfile().getOccupation(),
+//                null );
     }
 
     /**
@@ -137,19 +145,30 @@ public class UserService extends AbstractBaseService<UserEntity, UUID> implement
      */
     @Override
     public UserPaymentEntity createUserPayment(String email, CreateUserPaymentDto data) {
-        AccountEntity checkAccount = this.accountService.getOneById(email);
-        if (checkAccount == null){
-            return null;
-        }
-        UserPaymentEntity createUserPayment = new UserPaymentEntity();
-        createUserPayment.setCardNumber(data.cardNumber());
-        createUserPayment.setCardholderName(data.cardholderName());
-        createUserPayment.setCvv(data.cvv());
-        createUserPayment.setExpired(data.expired());
-        createUserPayment.setCountry(data.country());
 
-        // UserPaymentEntity created = this.userPaymentService.createOne(createUserPayment, email);
-        return this.userPaymentService.createOne(createUserPayment);
+        UserEntity checkUser = this.getUserByEmail(email);
+        if (checkUser == null){
+            throw new UsernameNotFoundException("Username Not Found!");
+        }
+
+        try {
+            UserPaymentEntity createUserPayment = new UserPaymentEntity();
+            createUserPayment.setCardNumber(data.cardNumber());
+            createUserPayment.setCardholderName(data.cardholderName());
+            createUserPayment.setCvv(data.cvv());
+            createUserPayment.setExpired(data.expired());
+            createUserPayment.setCountry(data.country());
+
+            checkUser.setUserPayment(createUserPayment);
+            this.userRepository.save(checkUser);
+
+
+            // UserPaymentEntity created = this.userPaymentService.createOne(createUserPayment, email);
+            return this.userPaymentService.createOne(createUserPayment);
+        }catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException("Failed to create user payment");
+        }
     }
 
     /**
@@ -196,7 +215,8 @@ public class UserService extends AbstractBaseService<UserEntity, UUID> implement
 
     @Override
     public Page<UserEntity> getAllUser(Integer pageNumber, Integer pageSize) {
-        PageRequest pageable = PageRequest.of(pageNumber, pageSize);
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize - 1);
         return this.userRepository.findAll(pageable);
     }
 
@@ -204,7 +224,7 @@ public class UserService extends AbstractBaseService<UserEntity, UUID> implement
     public Page<UserEntity> getUsersIsSellerOrBuyer(Boolean isSeller, int page, int size) {
         if (isSeller) {
             // Query for users where the profile is not null (sellers)
-            return userRepository.findByProfileIsNotNull(PageRequest.of(page, size));
+            return userRepository.findByProfileIsNotNull(PageRequest.of(page - 1, size - 1));
         } else {
             // Query for all users (buyers)
             return userRepository.findAll(PageRequest.of(page, size));

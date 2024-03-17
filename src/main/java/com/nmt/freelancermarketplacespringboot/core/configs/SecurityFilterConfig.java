@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 
 import org.springframework.security.config.Customizer;
@@ -35,9 +36,12 @@ public class SecurityFilterConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/**", "/public/**", "/user/**").permitAll() // public
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN") // admin
-//                        .requestMatchers("/user/**").hasAnyAuthority("USER") // user
+                        .requestMatchers("/auth/**", "/public/**").permitAll() // public
+                        .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
+                        // .requestMatchers("/admin/**").hasAnyAuthority("WRITE_PRODUCT") // admin
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/users/**").hasRole("USER") // user
+                        //.requestMatchers("/users/get-sellers/**").hasRole("USER")
                         // .requestMatchers("/auth/user/logout").authenticated() // user
                         .anyRequest().authenticated()) // private
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

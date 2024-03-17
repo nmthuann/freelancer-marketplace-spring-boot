@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.entities.users.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,7 +17,7 @@ public class UserPaymentEntity {
     // @Column(name = "user_payment_id", columnDefinition = "uuid", nullable = false)
     private UUID userPaymentId;
 
-    @Column(name = "card_number", nullable = false, length = 15, unique = true)
+    @Column(name = "card_number", nullable = false, length = 16, unique = true)
     private String cardNumber;
 
     @Column(name = "cardholder_name", nullable = false, length = 50)
@@ -31,6 +32,7 @@ public class UserPaymentEntity {
     @Column(name = "country", nullable = false)
     private String country;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "userPayment", cascade = CascadeType.ALL)
     private UserEntity user;
 

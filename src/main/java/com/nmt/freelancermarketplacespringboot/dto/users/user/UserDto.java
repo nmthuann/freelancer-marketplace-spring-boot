@@ -9,9 +9,8 @@ public record UserDto (
         @NotEmpty String firstName,
         @NotEmpty String lastName,
         @NotEmpty String gender,
-        @NotEmpty Date birthday,
+        Date birthday,
         @NotEmpty String phone,
-
         @NotEmpty String location,
         String avatarURL
 ){

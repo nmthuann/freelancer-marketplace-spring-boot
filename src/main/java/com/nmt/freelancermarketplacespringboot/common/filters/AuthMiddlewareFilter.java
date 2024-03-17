@@ -72,6 +72,8 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
             // }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            throw ex;
+
         }
 
     }

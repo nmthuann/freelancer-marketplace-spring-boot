@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +25,13 @@ import org.springframework.web.bind.annotation.*;
 /**
  * - 1. Create Profile (Seller) -> OK
  * - 2. Create User Payment(Seller) -> OK
- * - 3. Update User Information (Seller - Buyer)
- * - 4. Get User Is Seller
- * - 5. Get User Is Buyer
- * - 6. Get User By Email
- * - 7. Get Profile By Email -> NO
- * - 8. Get User Payment By Email
+ * - 3. Update User Information (Seller - Buyer) -> OK
+ * - 4. Get User By Email -> OK
+ * - 5. Get Profile By Email -> NO
+ * - 6. Get User Payment By Email
+ * - 7. Get User Is Seller (Page)
+ * - 8. Get User Is Buyer (Page)
+ * - 9. Get Users (Page)
  * =>  Call API in User Controller affect to handle User Service too much code line.
  */
 @RestController
@@ -47,8 +49,8 @@ public class UserController { // implements IUserController
 
     }
 
+    // @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/update")
-
     public ResponseEntity<UserEntity> updateUserInformation (
             @Valid @RequestBody UserDto data,
             @AuthenticationPrincipal UserDetails userDetails
@@ -58,12 +60,12 @@ public class UserController { // implements IUserController
     }
 
     @PostMapping("/create-profile")
-
-    public ResponseEntity<ProfileDto> createProfile(
+    public ResponseEntity<?> createProfile (
             @Valid @RequestBody CreateProfileDto data,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        ProfileDto result = this.userService.createProfile(userDetails.getUsername(), data);
+        System.out.println(data.toString());
+        UserEntity result = this.userService.createProfile(userDetails.getUsername(), data);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -77,7 +79,7 @@ public class UserController { // implements IUserController
     }
 
     @PostMapping("/create-user-payment")
-    public ResponseEntity<UserPaymentEntity> createUserPayment(
+    public ResponseEntity<UserPaymentEntity> createUserPayment (
             @Valid @RequestBody CreateUserPaymentDto data,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
@@ -108,18 +110,28 @@ public class UserController { // implements IUserController
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+//        Pageable pageable = PageRequest.of(0, 10);
+//        Page<Student> studentPage = studentRepository.findAll(pageable);
         Page<UserEntity> result = this.userService.getAllUser(page, size);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/get-sellers")
-    public ResponseEntity<UserEntity> getUsersIsSeller(HttpServletRequest request) {
-        return null;
+    @GetMapping("/get-sellers") //  require TOKEN
+    public ResponseEntity<?> getUsersIsSeller (
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<UserEntity> result = this.userService.getUsersIsSellerOrBuyer(true, page, size);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping("/get-buyers")
-    public ResponseEntity<UserEntity> getUsersIsBuyer(@NonNull HttpServletRequest request) {
-        return null;
+    @GetMapping("/get-buyers") //  require TOKEN # get All User
+    public ResponseEntity<?> getUsersIsBuyer(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<UserEntity> result = this.userService.getUsersIsSellerOrBuyer(false, page, size);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
 
