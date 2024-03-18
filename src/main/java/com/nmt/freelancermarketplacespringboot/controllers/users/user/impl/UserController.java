@@ -1,5 +1,16 @@
 package com.nmt.freelancermarketplacespringboot.controllers.users.user.impl;
-
+/**
+ * - 1. Create Profile (Seller) -> OK
+ * - 2. Create User Payment(Seller) -> OK
+ * - 3. Update User Information (Seller - Buyer) -> OK
+ * - 4. Get User By Email -> OK
+ * - 5. Get Profile By Email -> NO
+ * - 6. Get User Payment By Email
+ * - 7. Get User Is Seller (Page)
+ * - 8. Get User Is Buyer (Page)
+ * - 9. Get Users (Page)
+ * =>  Call API in User Controller affect to handle User Service too much code line.
+ */
 
 import com.nmt.freelancermarketplacespringboot.controllers.users.user.IUserController;
 import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileDto;
@@ -22,18 +33,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 
-/**
- * - 1. Create Profile (Seller) -> OK
- * - 2. Create User Payment(Seller) -> OK
- * - 3. Update User Information (Seller - Buyer) -> OK
- * - 4. Get User By Email -> OK
- * - 5. Get Profile By Email -> NO
- * - 6. Get User Payment By Email
- * - 7. Get User Is Seller (Page)
- * - 8. Get User Is Buyer (Page)
- * - 9. Get Users (Page)
- * =>  Call API in User Controller affect to handle User Service too much code line.
- */
+
 @RestController
 @RequestMapping("/users")
 public class UserController { // implements IUserController
@@ -70,11 +70,11 @@ public class UserController { // implements IUserController
     }
 
     @PutMapping("/update-profile")
-    public ResponseEntity<ProfileDto> updateProfile(
+    public ResponseEntity<?> updateProfile (
             @Valid @RequestBody CreateProfileDto data,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        ProfileDto result = this.userService.updateProfile(userDetails.getUsername(), data);
+        UserEntity result = this.userService.updateProfile(userDetails.getUsername(), data);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

@@ -17,7 +17,7 @@ import java.util.UUID;
 public interface IUserService extends IBaseService<UserEntity, UUID> {
     UserEntity updateUserInformation (String email, UserDto data);
     UserEntity createProfile (String email, CreateProfileDto data);
-    ProfileDto updateProfile (String email, CreateProfileDto data);
+    UserEntity updateProfile (String email, CreateProfileDto data);
     UserPaymentEntity createUserPayment (String email, CreateUserPaymentDto data);
     UserEntity getUserByEmail (String email);
     ProfileDto getProfileByEmail (String email);

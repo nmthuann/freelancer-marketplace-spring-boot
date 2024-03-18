@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.nmt.freelancermarketplacespringboot.common.exceptions.messages.UserExceptionMessage.USERNAME_NOT_FOUND;
+
 @Service
 public class UserService extends AbstractBaseService<UserEntity, UUID> implements IUserService {
 
@@ -82,29 +84,19 @@ public class UserService extends AbstractBaseService<UserEntity, UUID> implement
     @Override
     public UserEntity createProfile(String email, CreateProfileDto data) {
 
-        UserEntity checkUser = this.getUserByEmail(email);
-        if (checkUser == null){
-            throw new UsernameNotFoundException("Username Not Found!");
+        UserEntity findUser = this.getUserByEmail(email);
+        if (findUser == null){
+            throw new UsernameNotFoundException(USERNAME_NOT_FOUND.getMessage());
         }
 
         ProfileEntity newProfile =  this.profileService.createOne(data);
 
-        UserEntity getUserByEmail = this.getUserByEmail(email);
-        getUserByEmail.setProfile(newProfile);
+        findUser.setProfile(newProfile);
 
 
-        // save value
-        // Set<ProfileAttributeDto> attributes = null;
+        System.out.println("newProfile: " + newProfile.toString());
 
-        System.out.println("newProfile: " + newProfile);
-
-        return this.userRepository.save(getUserByEmail);
-//                new ProfileDto(email,
-//                getUserByEmail.getLastName(),
-//                getUserByEmail.getFirstName(),
-//                getUserByEmail.getProfile().getLevel(),
-//                getUserByEmail.getProfile().getOccupation(),
-//                null );
+        return this.userRepository.save(findUser);
     }
 
     /**
@@ -115,26 +107,19 @@ public class UserService extends AbstractBaseService<UserEntity, UUID> implement
      * @return
      */
     @Override
-    public ProfileDto updateProfile(String email, CreateProfileDto data) {
-        // AccountEntity checkAccount = this.accountService.getOneById(email);
-        UserEntity getUserByEmail = this.getUserByEmail(email);
-        if ((getUserByEmail.getAccount() == null) && (getUserByEmail.getProfile() == null)){
-            return null;
+    public UserEntity updateProfile(String email, CreateProfileDto data) {
+        UserEntity findUser = this.getUserByEmail(email);
+        if (findUser == null){
+            throw new UsernameNotFoundException(USERNAME_NOT_FOUND.getMessage());
         }
 
         ProfileEntity newProfile =  this.profileService.createOne(data);
 
-        getUserByEmail.setProfile(newProfile);
+        findUser.setProfile(newProfile);
         // save value
-        Set<ProfileAttributeDto> attributes = null;
+        System.out.println("updateProfile: " + newProfile.toString());
 
-
-        return new ProfileDto(email,
-                getUserByEmail.getLastName(),
-                getUserByEmail.getFirstName(),
-                getUserByEmail.getProfile().getLevel(),
-                getUserByEmail.getProfile().getOccupation(),
-                null );
+        return this.userRepository.save(findUser);
     }
 
     /**
