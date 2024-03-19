@@ -15,6 +15,10 @@ public class RestError {
     private String description;
     private LocalDateTime timestamp;
 
-    public RestError(int value, String authenticationFailedAtControllerAdvice, String s, LocalDateTime now) {
+    public RestError(int statusCode, String message, String description, LocalDateTime timestamp) {
+        this.statusCode = statusCode;
+        this.message = message;
+        this.description = description;
+        this.timestamp = timestamp;
     }
 }

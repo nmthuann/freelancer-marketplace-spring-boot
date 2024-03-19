@@ -12,7 +12,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
-@Component("delegatedAuthenticationEntryPoint")
+@Component   //("delegatedAuthenticationEntryPoint")
 public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Autowired

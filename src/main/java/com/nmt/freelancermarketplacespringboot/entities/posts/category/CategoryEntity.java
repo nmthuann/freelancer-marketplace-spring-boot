@@ -1,6 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.entities.posts.category;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nmt.freelancermarketplacespringboot.entities.posts.major.MajorEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -39,6 +40,7 @@ public class CategoryEntity {
     @Column(name = "right_value", nullable = false)
     private int rightValue;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<MajorEntity> majors;
 

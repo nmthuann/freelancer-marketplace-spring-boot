@@ -64,7 +64,7 @@ public class JwtServiceUtil {
                     .build()
                     .parseSignedClaims(token).getPayload();
         }
-        catch (JwtException  ex ){
+        catch (JwtException ex ){
             throw new JwtException(ex.getMessage());
         }
     }

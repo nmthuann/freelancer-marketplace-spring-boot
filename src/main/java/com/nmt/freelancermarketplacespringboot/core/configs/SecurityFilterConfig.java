@@ -2,10 +2,11 @@ package com.nmt.freelancermarketplacespringboot.core.configs;
 
 
 import com.nmt.freelancermarketplacespringboot.common.filters.AuthMiddlewareFilter;
+import com.nmt.freelancermarketplacespringboot.components.security.DelegatedAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+//import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,8 +30,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 public class SecurityFilterConfig {
 
     @Autowired
-    @Qualifier("delegatedAuthenticationEntryPoint")
-    AuthenticationEntryPoint authEntryPoint;
+    // @Qualifier("delegatedAuthenticationEntryPoint")
+    DelegatedAuthenticationEntryPoint authEntryPoint;
 
     private final AuthMiddlewareFilter authMiddlewareFilter;
     private final AuthenticationProvider authenticationProvider;
@@ -59,6 +60,7 @@ public class SecurityFilterConfig {
                 .exceptionHandling(
                         (exceptionHandling) ->
                                 exceptionHandling
+                                        // .accessDeniedHandler(DefaultExceptionHandler)
                                        // .accessDeniedPage("/errors/access-denied")
                                         .authenticationEntryPoint(authEntryPoint)
                 )

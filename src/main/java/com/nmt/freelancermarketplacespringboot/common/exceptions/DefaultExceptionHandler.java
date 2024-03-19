@@ -16,8 +16,12 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     public ResponseEntity<RestError> handleAuthenticationException(Exception ex) {
 
-        RestError re = new RestError(HttpStatus.UNAUTHORIZED.value(),
-                "Authentication failed at controller advice", "Des: Spring security", LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(re);
+        RestError re = new RestError(
+                HttpStatus.UNAUTHORIZED.value(),
+                ex.getMessage(),
+                "Spring security threw error!",
+                LocalDateTime.now());
+        // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(re);
+        return new ResponseEntity<>(re, HttpStatus.UNAUTHORIZED);
     }
 }
