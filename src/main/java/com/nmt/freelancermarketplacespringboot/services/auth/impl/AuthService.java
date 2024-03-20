@@ -230,7 +230,7 @@ public class AuthService implements IAuthService {
 
     @Override
     public String logout(String email) {
-        System.out.println("logout service"+email);
+        System.out.println("logout services"+email);
         AccountEntity findAcc = this.accountService.updateRefreshToken(email);
         return "Login Success " + findAcc.getEmail();
     }
