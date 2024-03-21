@@ -31,7 +31,7 @@ public class CategoryService extends AbstractBaseService<CategoryEntity, Integer
      */
     @Override
     @Transactional
-    public CategoryEntity creatOne(CreateCategoryDto data) throws CategoryException {
+    public CategoryEntity createOne(CreateCategoryDto data) throws CategoryException {
 
         CategoryEntity findParentNode = this.getOneById(data.categoryParentId());
 
@@ -41,11 +41,11 @@ public class CategoryService extends AbstractBaseService<CategoryEntity, Integer
 
         /*
          * Kỹ thuật: Nested Set Model
-         * (1, 'Electronics', 1, 10),
-         * (2, 'Mobile Phones', 2, 5),
-         * (3, 'Laptops', 6, 9),
-         * (4, 'Smartphones', 3, 4),
-         * (5, 'Gaming Laptops', 7, 8);
+         * (1, 'ROOT', 1, 10),
+         * (2, 'Graphic and Design', 2, 5),
+         * (3, 'Digital Marketing', 6, 9),
+         * (4, 'Programing and Tech', 3, 4),
+         * (5, 'Photography', 7, 8);
          *
          * 2 update command, 1 insert command
          *

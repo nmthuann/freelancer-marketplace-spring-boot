@@ -7,7 +7,7 @@ import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryE
 
 public interface ICategoryService extends IBaseService<CategoryEntity, Integer> {
 
-    CategoryEntity creatOne(CreateCategoryDto data) throws CategoryException;
+    CategoryEntity createOne(CreateCategoryDto data) throws CategoryException;
     CategoryEntity initCategory();
 
 

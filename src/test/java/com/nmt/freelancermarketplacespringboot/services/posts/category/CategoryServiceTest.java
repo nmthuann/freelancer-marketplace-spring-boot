@@ -6,8 +6,15 @@ import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryE
 import com.nmt.freelancermarketplacespringboot.repositories.posts.category.ICategoryRepository;
 import com.nmt.freelancermarketplacespringboot.services.posts.category.impl.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Optional;
 
@@ -17,44 +24,73 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest {
-
-    private CategoryService categoryService;
+    @Mock
     private ICategoryRepository categoryRepository;
 
+    @InjectMocks
+    private CategoryService categoryService;
+
+//    @BeforeEach
+//    public void setUp() {
+//        categoryRepository = mock(ICategoryRepository.class);
+//        categoryService = new CategoryService(categoryRepository);
+//    }
+
+    // Mocking mocking;
     @BeforeEach
-    public void setUp() {
-        categoryRepository = mock(ICategoryRepository.class);
-        categoryService = new CategoryService(categoryRepository);
+    void setUp() {
+        // Initialize mocks
+        MockitoAnnotations.openMocks(this);
+        // mocking = new Mocking();
     }
 
     @Test
+    @DisplayName("testCreateOne created successfully")
     public void testCreateOne() throws CategoryException {
-        // Arrange
-        CreateCategoryDto createCategoryDto
-                = new CreateCategoryDto(1, "Test Category");
-        // Provide categoryParentId and categoryName
-
+        // Mocking data
 
         CategoryEntity parentCategory = new CategoryEntity();
         parentCategory.setCategoryId(1);
         parentCategory.setLeftValue(1);
         parentCategory.setRightValue(2);
 
-        when(categoryRepository.findById(anyInt())).thenReturn(Optional.of(parentCategory));
 
-        // Act
-        CategoryEntity createdCategory = categoryService.creatOne(createCategoryDto);
+        when(categoryRepository.findById(Integer.valueOf(Mockito.anyString()))).thenReturn(Optional.of(parentCategory));
 
-        // Assert
-        // Add assertions as per your requirement
-        assertNotNull(createdCategory);
+        CreateCategoryDto createCategoryDto = new CreateCategoryDto(1, "Test Category");
+        // Execute service method
+        CategoryEntity createdCategory = categoryService.createOne(createCategoryDto);
+
+        // Assertions
         assertEquals("Test Category", createdCategory.getCategoryName());
-        assertEquals(2, createdCategory.getLeftValue()); // Assuming increment by 2
-        assertEquals(3, createdCategory.getRightValue()); // Assuming increment by 2
+        assertEquals(2, createdCategory.getCategoryId());
+        assertEquals(3, createdCategory.getLeftValue());
+        assertEquals(4, createdCategory.getRightValue());
     }
 
 }
+//        // Mocking repository behavior
+//        when(categoryRepository.findById(1)).thenReturn(Optional.of(parentCategory));
+//
+//        // Mocking repository method behavior
+//        when(categoryRepository.save(Mockito.any(CategoryEntity.class))).thenAnswer(invocation -> {
+//            CategoryEntity entityToSave = invocation.getArgument(0);
+//            entityToSave.setCategoryId(2); // Mocking the saved entity's ID
+//            return entityToSave;
+//        });
+//
+//        // Test the service method
+//        CategoryEntity createdCategory = categoryService.creatOne(createCategoryDto);
+//
+//        // Assertions
+//        assertNotNull(createdCategory);
+//        assertEquals("Test Category", createdCategory.getCategoryName());
+//        assertEquals(2, createdCategory.getCategoryId()); // Asserting the saved entity's ID
+
+
+
 
 //
 //    @Mock
