@@ -2,6 +2,7 @@ package com.nmt.freelancermarketplacespringboot.repositories.posts.category;
 
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,6 +16,11 @@ class CategoryRepositoryTest {
     @Autowired
     private ICategoryRepository categoryRepository;
 
+
+    @AfterEach
+    void tearDown() {
+        // categoryRepository.deleteAll();
+    }
 
     @Test
     void itShouldCheckIfCategoryIncrementRightValue() {

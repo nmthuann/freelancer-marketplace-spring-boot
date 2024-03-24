@@ -1,6 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.entities.posts.major;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
 // import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
@@ -26,9 +27,11 @@ public class MajorEntity {
             foreignKey = @ForeignKey(name = "fk_major_category"))
     private CategoryEntity category;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "major", cascade = CascadeType.ALL)
     private List<MajorValueEntity> majorValues;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "major", cascade = CascadeType.ALL)
     private List<PostEntity> posts;
 }

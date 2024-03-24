@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.entities.posts.major;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class MajorAttributeEntity {
     @Column(name = "major_attribute_name", nullable = false)
     private String majorAttributeName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "majorAttribute", cascade = CascadeType.ALL)
     private List<MajorValueEntity> majorAttributeValues;
 }
