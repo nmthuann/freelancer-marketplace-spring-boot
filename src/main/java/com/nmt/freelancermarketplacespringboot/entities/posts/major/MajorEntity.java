@@ -19,7 +19,7 @@ public class MajorEntity {
     @Column(name = "major_id")
     private int majorId;
 
-    @Column(name = "major_name", nullable = false)
+    @Column(name = "major_name", nullable = false) // service_type
     private String majorName;
 
     @ManyToOne(fetch = FetchType.EAGER) //fetch = FetchType.EAGER

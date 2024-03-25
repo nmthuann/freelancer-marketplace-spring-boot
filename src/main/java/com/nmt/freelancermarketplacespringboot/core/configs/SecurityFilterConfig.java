@@ -43,7 +43,7 @@ public class SecurityFilterConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/**", "/public/**").permitAll() // public
+                        .requestMatchers("/auth/**", "/public/**", "/categories/**").permitAll() // public
                         .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
                         // .requestMatchers("/admin/**").hasAnyAuthority("WRITE_PRODUCT") // admin
                         .requestMatchers("/admin/**").hasRole("ADMIN")

@@ -7,6 +7,8 @@ import com.nmt.freelancermarketplacespringboot.services.posts.major.IMajorValueS
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class MajorValueService
         extends AbstractBaseService<MajorValueEntity, Integer>
@@ -18,5 +20,10 @@ public class MajorValueService
     @Autowired
     public MajorValueService(IMajorValueRepository majorValueRepository) {
         super(majorValueRepository);
+    }
+
+    @Override
+    public void saveAll(Set<MajorValueEntity> majorValues) {
+        majorValueRepository.saveAll(majorValues);
     }
 }

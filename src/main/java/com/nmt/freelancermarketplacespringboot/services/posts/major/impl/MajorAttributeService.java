@@ -17,3 +17,9 @@ public class MajorAttributeService
         super(majorAttributeRepository);
     }
 }
+/*
+ * 1. Service Type
+ * 2. Service include
+ * 3. Language
+ * 4.
+ */

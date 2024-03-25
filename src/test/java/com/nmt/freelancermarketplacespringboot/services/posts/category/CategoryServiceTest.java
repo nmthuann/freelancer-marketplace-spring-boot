@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -35,6 +36,9 @@ public class CategoryServiceTest {
 
     // private AutoCloseable autoCloseable;
 
+    private ArrayList<CategoryEntity> categoryEntitiesList;
+
+
     // Mocking mocking;
     @BeforeEach
     void setUp() {
@@ -44,16 +48,24 @@ public class CategoryServiceTest {
 //        categoryService = new CategoryService(categoryRepository);
         MockitoAnnotations.openMocks(this);
 
-        // Mocking data
-        CategoryEntity parentCategory = new CategoryEntity();
-        // parentCategory.setCategoryId(1);
-        parentCategory.setCategoryName("ROOT");
-        parentCategory.setLeftValue(1);
-        parentCategory.setRightValue(2);
+        categoryEntitiesList = new ArrayList<>();
 
-        // Mock repository method
-        when(categoryRepository.save(parentCategory)).thenReturn(parentCategory);
+//        categoryEntitiesList.add(
+//                new CategoryEntity(1, "ROOT", "",1, 10,null));
+//        categoryEntitiesList.add(
+//                new CategoryEntity(2, "Graphic and Design", "",2, 3, null));
+//        categoryEntitiesList.add(
+//                new CategoryEntity(3, "Digital Marketing", "",4, 5, null));
+//        categoryEntitiesList.add(
+//                new CategoryEntity(4, "Programing and Tech","", 6, 7, null));
+//        categoryEntitiesList.add(
+//                new CategoryEntity(5, "Photography", "",8, 9, null));
 
+        // for (CategoryEntity category : categoryEntitiesList) {
+            // categoryRepository.saveAll(categoryEntitiesList);
+        when(categoryRepository.saveAll(categoryEntitiesList)).thenReturn(categoryEntitiesList);
+
+        // }
 
     }
 
@@ -77,10 +89,10 @@ public class CategoryServiceTest {
     @DisplayName("testCreateOne created successfully")
     void canCreateOne() {
         // Mocking data
-        CreateCategoryDto createCategoryDto = new CreateCategoryDto(0, "Test Category");
+        CreateCategoryDto createCategoryDto = new CreateCategoryDto(2, "AB", "");
 
         // Mock repository method to return null for findById
-        when(categoryRepository.findById(0)).thenReturn(null);
+        when(categoryRepository.findById(2)).thenReturn(categoryRepository.findById(2));
 
         // when and then
         assertThatThrownBy(() -> {

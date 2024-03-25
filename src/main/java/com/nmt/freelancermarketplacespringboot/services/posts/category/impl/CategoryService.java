@@ -11,6 +11,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Set;
+
 @Service
 public class CategoryService extends AbstractBaseService<CategoryEntity, Integer> implements ICategoryService {
 
@@ -33,7 +36,7 @@ public class CategoryService extends AbstractBaseService<CategoryEntity, Integer
     @Transactional
     public CategoryEntity createOne(CreateCategoryDto data) throws CategoryException {
 
-        CategoryEntity findParentNode = this.getOneById(data.categoryParentId());
+        CategoryEntity findParentNode = this.getOneById(data.parentId());
 
         if (findParentNode == null){
             throw new CategoryException(CategoryExceptionMessage.CATEGORY_PARENT_NOT_FOUND.getMessage());
@@ -62,7 +65,8 @@ public class CategoryService extends AbstractBaseService<CategoryEntity, Integer
 
         CategoryEntity newCategory = new CategoryEntity();
         newCategory.setCategoryName(data.categoryName());
-        newCategory.setDescription("");
+        newCategory.setDescription(data.description());
+        newCategory.setParentId(findParentNode.getCategoryId());
         newCategory.setLeftValue(findParentNode.getRightValue());
         newCategory.setRightValue(findParentNode.getRightValue() + 1);
 
@@ -77,9 +81,17 @@ public class CategoryService extends AbstractBaseService<CategoryEntity, Integer
             root.setLeftValue(1);
             root.setRightValue(2);
             root.setDescription("Node Root");
+            root.setParentId(0);
             return this.createOne(root);
         }
         return null;
     }
+
+    @Override
+    public List<CategoryEntity> getCategoriesByParentId(Integer parentId) {
+        return categoryRepository.findByParentId(parentId);
+    }
+
+
 }
 
