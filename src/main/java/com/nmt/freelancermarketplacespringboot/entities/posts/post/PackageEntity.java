@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.entities.posts.post;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nmt.freelancermarketplacespringboot.entities.orders.OrderEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -38,6 +39,7 @@ public class PackageEntity {
 //    @OneToMany(mappedBy = "package", cascade = CascadeType.ALL)
 //    private List<PriceEntity> prices;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "packageEntity", cascade = CascadeType.ALL)
     private List<OrderEntity> orders;
 
