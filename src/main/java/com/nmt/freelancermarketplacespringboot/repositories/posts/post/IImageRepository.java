@@ -12,5 +12,6 @@ import java.util.UUID;
 public interface IImageRepository extends CrudRepository<ImageEntity, UUID> {
 
     List<ImageEntity> findByPost(PostEntity post);
+    boolean findByUrl(String url);
 
 }

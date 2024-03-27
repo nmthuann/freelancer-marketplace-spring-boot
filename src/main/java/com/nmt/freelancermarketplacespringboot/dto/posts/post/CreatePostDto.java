@@ -4,7 +4,7 @@ import jakarta.persistence.Column;
 
 import java.util.List;
 
-public record CreatePostDto(
+public record CreatePostDto (
         String title,
         String description,
         String faq,

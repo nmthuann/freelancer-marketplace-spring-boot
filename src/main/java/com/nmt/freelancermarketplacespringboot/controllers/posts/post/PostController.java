@@ -2,6 +2,7 @@ package com.nmt.freelancermarketplacespringboot.controllers.posts.post;
 
 
 import com.nmt.freelancermarketplacespringboot.dto.posts.post.CreatePostDto;
+import com.nmt.freelancermarketplacespringboot.dto.posts.post.PostDto;
 import com.nmt.freelancermarketplacespringboot.dto.posts.post.UpdatePostDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.nmt.freelancermarketplacespringboot.services.posts.post.IPostService;
@@ -30,7 +31,6 @@ import java.util.UUID;
 @RequestMapping("/posts")
 public class PostController {
 
-
     @Autowired
     IPostService postService;
 
@@ -45,7 +45,7 @@ public class PostController {
             @AuthenticationPrincipal UserDetails userDetails
     ) {
         System.out.println(data.toString());
-        PostEntity result = this.postService.createOne(userDetails.getUsername(), data);
+        PostDto result = this.postService.createOne(userDetails.getUsername(), data);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

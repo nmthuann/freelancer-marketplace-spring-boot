@@ -12,5 +12,6 @@ import java.util.UUID;
 public interface IImageService extends IBaseService<ImageEntity, UUID> {
 
     List<ImageEntity> insertImages (PostEntity postCreated, List<ImageDto> data); //InsertImagesDto data
+    List<ImageEntity> updateImages (PostEntity postUpdated, List<ImageDto> data);
 
 }
