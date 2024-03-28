@@ -1,18 +1,14 @@
 package com.nmt.freelancermarketplacespringboot.controllers.posts.category;
 
 
-import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.CategoryException;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.posts.CategoryException;
 import com.nmt.freelancermarketplacespringboot.dto.posts.category.CreateCategoryDto;
-import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
-import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
 import com.nmt.freelancermarketplacespringboot.services.posts.category.ICategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

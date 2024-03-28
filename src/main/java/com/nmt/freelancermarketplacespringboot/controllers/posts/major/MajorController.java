@@ -1,9 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.controllers.posts.major;
 
-import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.CategoryException;
-import com.nmt.freelancermarketplacespringboot.dto.posts.category.CreateCategoryDto;
 import com.nmt.freelancermarketplacespringboot.dto.posts.major.CreateMajorDto;
-import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.major.MajorEntity;
 import com.nmt.freelancermarketplacespringboot.services.posts.major.IMajorService;
 import jakarta.validation.Valid;

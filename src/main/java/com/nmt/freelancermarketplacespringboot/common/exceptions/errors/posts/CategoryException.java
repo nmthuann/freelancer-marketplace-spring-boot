@@ -1,4 +1,4 @@
-package com.nmt.freelancermarketplacespringboot.common.exceptions.errors;
+package com.nmt.freelancermarketplacespringboot.common.exceptions.errors.posts;
 
 public class CategoryException extends  Exception{
     public CategoryException() {

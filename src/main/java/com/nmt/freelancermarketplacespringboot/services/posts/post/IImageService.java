@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.services.posts.post;
 
+import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.posts.ImageException;
 import com.nmt.freelancermarketplacespringboot.core.bases.IBaseService;
 import com.nmt.freelancermarketplacespringboot.dto.posts.post.ImageDto;
 import com.nmt.freelancermarketplacespringboot.dto.posts.post.InsertImagesDto;
@@ -11,7 +12,7 @@ import java.util.UUID;
 
 public interface IImageService extends IBaseService<ImageEntity, UUID> {
 
-    List<ImageEntity> insertImages (PostEntity postCreated, List<ImageDto> data); //InsertImagesDto data
-    List<ImageEntity> updateImages (PostEntity postUpdated, List<ImageDto> data);
+    List<ImageEntity> insertImages (PostEntity postCreated, List<ImageDto> data) throws ImageException; //InsertImagesDto data
+    List<ImageEntity> updateImages (PostEntity postUpdated, List<ImageDto> data) throws ImageException;
 
 }

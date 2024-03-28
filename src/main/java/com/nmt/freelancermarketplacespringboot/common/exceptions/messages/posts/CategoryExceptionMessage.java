@@ -1,4 +1,4 @@
-package com.nmt.freelancermarketplacespringboot.common.exceptions.messages;
+package com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts;
 
 import lombok.Getter;
 

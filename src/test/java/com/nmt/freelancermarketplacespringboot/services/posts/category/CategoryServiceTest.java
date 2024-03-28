@@ -1,7 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.services.posts.category;
 
-import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.CategoryException;
-import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.CategoryExceptionMessage;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.posts.CategoryException;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.CategoryExceptionMessage;
 import com.nmt.freelancermarketplacespringboot.dto.posts.category.CreateCategoryDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
 import com.nmt.freelancermarketplacespringboot.repositories.posts.category.ICategoryRepository;
@@ -10,18 +10,14 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

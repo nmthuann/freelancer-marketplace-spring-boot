@@ -3,7 +3,7 @@ package com.nmt.freelancermarketplacespringboot.services.auth.impl;
 import com.nmt.freelancermarketplacespringboot.common.enums.AuthMethodEnum;
 import com.nmt.freelancermarketplacespringboot.common.enums.RoleEnum;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
-import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.AuthExceptionMessage;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.users.AuthExceptionMessage;
 import com.nmt.freelancermarketplacespringboot.common.utils.JwtServiceUtil;
 import com.nmt.freelancermarketplacespringboot.common.utils.MailServiceUtil;
 import com.nmt.freelancermarketplacespringboot.dto.Payload;
@@ -24,14 +24,10 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.util.Date;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class AuthService implements IAuthService {

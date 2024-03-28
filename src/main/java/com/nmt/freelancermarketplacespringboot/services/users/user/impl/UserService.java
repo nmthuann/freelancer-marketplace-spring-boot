@@ -1,13 +1,10 @@
 package com.nmt.freelancermarketplacespringboot.services.users.user.impl;
 
-import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseService;
 import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileDto;
-import com.nmt.freelancermarketplacespringboot.dto.users.profile.ProfileAttributeDto;
 import com.nmt.freelancermarketplacespringboot.dto.users.profile.ProfileDto;
 import com.nmt.freelancermarketplacespringboot.dto.users.user.CreateUserPaymentDto;
 import com.nmt.freelancermarketplacespringboot.dto.users.user.UserDto;
-import com.nmt.freelancermarketplacespringboot.dto.users.user.UserPaymentDto;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.profile.ProfileEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
@@ -21,14 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static com.nmt.freelancermarketplacespringboot.common.exceptions.messages.UserExceptionMessage.USERNAME_NOT_FOUND;
+import static com.nmt.freelancermarketplacespringboot.common.exceptions.messages.users.UserExceptionMessage.USERNAME_NOT_FOUND;
 
 @Service
 public class UserService extends AbstractBaseService<UserEntity, UUID> implements IUserService {

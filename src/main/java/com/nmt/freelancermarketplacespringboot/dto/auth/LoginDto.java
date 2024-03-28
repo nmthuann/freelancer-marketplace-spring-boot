@@ -1,8 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.dto.auth;
 
-import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.AuthExceptionMessage;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 

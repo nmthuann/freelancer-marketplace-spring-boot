@@ -28,7 +28,6 @@ public class OrderEntity {
     @Column(nullable = false)
     private Date deliveryDay;
 
-
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private TransactionEntity transaction;
 
@@ -50,8 +49,6 @@ public class OrderEntity {
     @JoinColumn(name = "buyer_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_order_buyer"))
     private UserEntity buyer;
-
-
 
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)

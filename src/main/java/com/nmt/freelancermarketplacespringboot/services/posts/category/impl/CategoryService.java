@@ -1,7 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.services.posts.category.impl;
 
-import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.CategoryException;
-import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.CategoryExceptionMessage;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.posts.CategoryException;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.CategoryExceptionMessage;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseService;
 import com.nmt.freelancermarketplacespringboot.dto.posts.category.CreateCategoryDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class CategoryService extends AbstractBaseService<CategoryEntity, Integer> implements ICategoryService {
