@@ -2,7 +2,6 @@ package com.nmt.freelancermarketplacespringboot.services.posts.post.impl;
 
 import com.nmt.freelancermarketplacespringboot.common.enums.PostStatusEnum;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
-import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.posts.ImageException;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.PostExceptionMessage;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseService;
 import com.nmt.freelancermarketplacespringboot.dto.posts.post.CreatePostDto;
@@ -64,7 +63,7 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
      */
     @Override
     @Transactional
-    public PostDto createOne(String email, CreatePostDto data) throws ImageException {
+    public PostDto createOne(String email, CreatePostDto data) throws ModuleException {
 
         try {
             MajorEntity findMajor = this.majorService.getOneById(data.majorId());
@@ -97,7 +96,7 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
                     imagesCreated,
                     packagesCreated
             );
-        } catch (ImageException e) {
+        } catch (ModuleException e) {
             throw new RuntimeException(e);
         }
     }
@@ -116,7 +115,7 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
             String email,
             UUID postId,
             UpdatePostDto data
-    ) throws ImageException, ModuleException {
+    ) throws ModuleException {
 
         PostEntity findPost = this.getOneById(postId);
 
@@ -226,10 +225,14 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
             }
         } else if (bestSeller != null && bestSeller) {
             // Logic to retrieve best-selling posts
-            postsPage = postRepository.findByBestSellerTrue(pageRequest);
+            // postsPage = postRepository.findByBestSellerTrue(pageRequest);
+            System.out.println("bestSeller" + bestSeller);
+            postsPage = Page.empty();
         } else if (topFeedback != null && topFeedback) {
             // Logic to retrieve posts with top feedback
-            postsPage = postRepository.findByTopFeedbackTrue(pageRequest);
+            // postsPage = postRepository.findByTopFeedbackTrue(pageRequest);
+            System.out.println("topFeedback" + topFeedback);
+            postsPage = Page.empty();
         } else {
             // Fetch all posts if no specific criteria are provided
             postsPage = postRepository.findAll(pageRequest);

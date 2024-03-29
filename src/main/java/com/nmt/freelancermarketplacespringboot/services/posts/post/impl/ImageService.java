@@ -1,6 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.services.posts.post.impl;
 
-import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.posts.ImageException;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.ImageExceptionMessage;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseService;
 import com.nmt.freelancermarketplacespringboot.dto.posts.post.ImageDto;
@@ -10,7 +10,6 @@ import com.nmt.freelancermarketplacespringboot.repositories.posts.post.IImageRep
 import com.nmt.freelancermarketplacespringboot.services.posts.post.IImageService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class ImageService extends AbstractBaseService<ImageEntity, UUID> impleme
 
     @Override
     @Transactional
-    public List<ImageEntity> insertImages(PostEntity postCreated, List<ImageDto> data) throws ImageException {
+    public List<ImageEntity> insertImages(PostEntity postCreated, List<ImageDto> data) throws ModuleException {
         try {
             List<ImageEntity> insertedImages = new ArrayList<>();
             for (ImageDto imageDto : data) {
@@ -44,13 +43,17 @@ public class ImageService extends AbstractBaseService<ImageEntity, UUID> impleme
             }
             return insertedImages;
         } catch (Exception e) {
-            throw new ImageException(ImageExceptionMessage.INSERT_IMAGES_FAIL.getMessage());
+            throw new ModuleException(ImageExceptionMessage.INSERT_IMAGES_FAIL.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public List<ImageEntity> updateImages(PostEntity postUpdated, List<ImageDto> data) throws ImageException {
+    public List<ImageEntity> updateImages(
+            PostEntity postUpdated,
+            List<ImageDto> data
+    ) throws ModuleException {
+
         List<ImageEntity> removedImages = new ArrayList<>();
         List<ImageDto> insertList = new ArrayList<>();
         List<ImageEntity> imageEntities = this.imageRepository.findByPost(postUpdated);
@@ -94,7 +97,7 @@ public class ImageService extends AbstractBaseService<ImageEntity, UUID> impleme
 
             return imageRepository.findByPost(postUpdated);
 
-        } catch (ImageException e) {
+        } catch (ModuleException e) {
             List<ImageEntity> imagesInDatabase = this.imageRepository.findByPost(postUpdated);
             for (ImageDto imageInsertFail: insertList){
                 for (ImageEntity imageEntity: imagesInDatabase){
@@ -104,7 +107,7 @@ public class ImageService extends AbstractBaseService<ImageEntity, UUID> impleme
                 }
 
             }
-            throw new ImageException("Update fail!");
+            throw new ModuleException("Update fail!");
         }
         catch (IllegalArgumentException ex){
 
@@ -120,7 +123,7 @@ public class ImageService extends AbstractBaseService<ImageEntity, UUID> impleme
                     imageRepository.save(imageEntity);
                 }
             }
-            throw new ImageException("Update fail!");
+            throw new ModuleException("Update fail!");
         }
     }
 }

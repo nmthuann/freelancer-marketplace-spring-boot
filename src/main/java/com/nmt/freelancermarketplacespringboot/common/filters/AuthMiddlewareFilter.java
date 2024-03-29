@@ -18,16 +18,13 @@ import java.io.IOException;
 
 
 @Component
-//@RequiredArgsConstructor
 public class AuthMiddlewareFilter extends OncePerRequestFilter {
 
     @Autowired
     UserDetailsService userDetailsService;
 
-
     @Autowired
     JwtServiceUtil jwtServiceUtil;
-
 
     @Override
     protected void doFilterInternal(
@@ -43,17 +40,20 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
+        /*
+         * authHeader != null
+         * Ex: "Bearer ..." -> beginIndex: 7
+         */
         token = authHeader.substring(7);
 
-        // userEmail = jwtUtils.extractUsername(jwtToken);
-
         email = this.jwtServiceUtil.extractUsername(token);
+
         try {
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                //  UserDetails userDetails = (UserDetails) this.accountService.getOneById(email); // bug in here???
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email); // may be throw exception
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 if (jwtServiceUtil.isTokenValid(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -69,7 +69,6 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-            // }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             throw ex;

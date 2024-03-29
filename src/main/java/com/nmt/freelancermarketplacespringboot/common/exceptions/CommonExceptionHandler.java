@@ -11,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.time.LocalDateTime;
 
 @ControllerAdvice
-public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
+public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ AuthenticationException.class })
     @ResponseBody
     public ResponseEntity<RestError> handleAuthenticationException(Exception ex) {

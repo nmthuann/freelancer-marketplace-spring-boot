@@ -3,15 +3,16 @@ package com.nmt.freelancermarketplacespringboot.common.exceptions.messages.users
 import lombok.Getter;
 
 @Getter
-public enum UserExceptionMessage {
-    USERNAME_NOT_FOUND("USERNAME_NOT_FOUND."),
-    CREATE_USER_PAYMENT_FAIL("CREATE_USER_PAYMENT_FAIL."),
+public enum JwtExceptionMessages {
+
+    EXTRACT_USERNAME_FAILED("Failed to extract email from token."),
+
     ;
 
 
     private final String message;
 
-    UserExceptionMessage(String message){
+    JwtExceptionMessages(String message){
         this.message = message;
     }
 }

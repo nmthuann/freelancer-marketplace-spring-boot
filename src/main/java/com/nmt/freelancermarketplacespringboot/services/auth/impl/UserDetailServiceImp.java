@@ -1,6 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.services.auth.impl;
 
-import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.users.AuthExceptionMessage;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.users.AuthExceptionMessages;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
 import com.nmt.freelancermarketplacespringboot.services.users.account.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class UserDetailServiceImp implements UserDetailsService {
                     .roles(account.getRole().getRole_name())
                     .build();
         } else {
-            throw new UsernameNotFoundException(AuthExceptionMessage.USERNAME_NOT_FOUND + username);
+            throw new UsernameNotFoundException(AuthExceptionMessages.USERNAME_NOT_FOUND + username);
         }
     }
 }

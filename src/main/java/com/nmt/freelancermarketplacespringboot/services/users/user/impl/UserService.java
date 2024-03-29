@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.nmt.freelancermarketplacespringboot.common.exceptions.messages.users.UserExceptionMessage.USERNAME_NOT_FOUND;
+import static com.nmt.freelancermarketplacespringboot.common.exceptions.messages.users.UserExceptionMessages.USERNAME_NOT_FOUND;
 
 @Service
 public class UserService extends AbstractBaseService<UserEntity, UUID> implements IUserService {

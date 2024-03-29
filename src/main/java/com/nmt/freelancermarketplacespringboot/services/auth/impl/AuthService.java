@@ -3,7 +3,7 @@ package com.nmt.freelancermarketplacespringboot.services.auth.impl;
 import com.nmt.freelancermarketplacespringboot.common.enums.AuthMethodEnum;
 import com.nmt.freelancermarketplacespringboot.common.enums.RoleEnum;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
-import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.users.AuthExceptionMessage;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.users.AuthExceptionMessages;
 import com.nmt.freelancermarketplacespringboot.common.utils.JwtServiceUtil;
 import com.nmt.freelancermarketplacespringboot.common.utils.MailServiceUtil;
 import com.nmt.freelancermarketplacespringboot.dto.Payload;
@@ -104,10 +104,10 @@ public class AuthService implements IAuthService {
             Boolean checkPass = this.comparePassword(data.password(), findAccount.getPassword());
 
             if (!checkPass) {
-                throw new AuthException(AuthExceptionMessage.PASSWORD_WRONG.getMessage());
+                throw new AuthException(AuthExceptionMessages.PASSWORD_WRONG.getMessage());
             }
         } else {
-            throw new AuthException(AuthExceptionMessage.LOGIN_INVALID.getMessage());
+            throw new AuthException(AuthExceptionMessages.LOGIN_INVALID.getMessage());
         }
 
         // ensure findAccount != null ///assert  findAccount != null;
@@ -132,7 +132,7 @@ public class AuthService implements IAuthService {
         AccountEntity findAccount = this.accountService.getOneById(data.email());
         if (findAccount != null) {
             // email tồn tại
-            throw new AuthException(AuthExceptionMessage.EMAIL_EXIST.getMessage());
+            throw new AuthException(AuthExceptionMessages.EMAIL_EXIST.getMessage());
         }
 
         // step 2: prepare value for create Account
@@ -192,7 +192,7 @@ public class AuthService implements IAuthService {
             AccountEntity checkUser = accountService.getOneById(email);
 
             if (checkUser != null) {
-                throw new AuthException(AuthExceptionMessage.EMAIL_EXIST.getMessage());
+                throw new AuthException(AuthExceptionMessages.EMAIL_EXIST.getMessage());
             } else {
                 String baseString = "0123456789";
                 String defaultPassword = randomPassword(8, baseString);

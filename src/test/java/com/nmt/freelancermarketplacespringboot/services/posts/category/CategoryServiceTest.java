@@ -1,6 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.services.posts.category;
 
-import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.posts.CategoryException;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.CategoryExceptionMessage;
 import com.nmt.freelancermarketplacespringboot.dto.posts.category.CreateCategoryDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
@@ -16,8 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -93,7 +91,7 @@ public class CategoryServiceTest {
         // when and then
         assertThatThrownBy(() -> {
             categoryService.createOne(createCategoryDto);
-        }).isInstanceOf(CategoryException.class)
+        }).isInstanceOf(ModuleException.class)
                 .hasMessageContaining(CategoryExceptionMessage.CATEGORY_PARENT_NOT_FOUND.getMessage());
     }
 

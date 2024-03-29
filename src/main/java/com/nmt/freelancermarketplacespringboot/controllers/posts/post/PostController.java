@@ -3,12 +3,10 @@ package com.nmt.freelancermarketplacespringboot.controllers.posts.post;
 
 import com.nmt.freelancermarketplacespringboot.common.enums.PostStatusEnum;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
-import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.posts.ImageException;
 import com.nmt.freelancermarketplacespringboot.dto.posts.post.CreatePostDto;
 import com.nmt.freelancermarketplacespringboot.dto.posts.post.PostDto;
 import com.nmt.freelancermarketplacespringboot.dto.posts.post.UpdatePackageDto;
 import com.nmt.freelancermarketplacespringboot.dto.posts.post.UpdatePostDto;
-import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PackageEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.nmt.freelancermarketplacespringboot.services.posts.post.IPostService;
@@ -77,10 +75,10 @@ public class PostController {
 
 
 
-    @PutMapping("/stop{id}")
+    @PutMapping("/stop")
     public ResponseEntity<?> stopPostById (
             @Valid @RequestBody UpdatePostDto data,
-            @PathVariable UUID id,
+            @RequestParam UUID id,
             @AuthenticationPrincipal UserDetails userDetails
     ) throws ImageException, ModuleException {
         UpdatePostDto updatePostDto = new UpdatePostDto(
@@ -96,7 +94,7 @@ public class PostController {
 
 
     @PutMapping("/{postId}/package") //"posts/2/package?id=5"
-    public ResponseEntity<?> updatePackageOfPost (
+    public ResponseEntity<?> updatePackage (
             @PathVariable UUID postId,
             @RequestParam int id,
             @Valid @RequestBody UpdatePackageDto data
@@ -153,6 +151,8 @@ public class PostController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+
+    @GetMapping("/all")
     public ResponseEntity<?> getAllPosts(
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "0") int page,
@@ -161,7 +161,14 @@ public class PostController {
             @RequestParam(required = false) Boolean bestSeller,
             @RequestParam(required = false) Boolean topFeedback
     ) {
-        Page<PostEntity> result = postService.getAllPosts(size, page, majorId, latest, bestSeller, topFeedback);
+        Page<PostEntity> result = postService.getAllPosts(
+                size,
+                page,
+                majorId,
+                latest,
+                bestSeller,
+                topFeedback
+        );
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

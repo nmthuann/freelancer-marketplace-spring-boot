@@ -11,7 +11,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -23,14 +22,14 @@ import java.util.Objects;
 public class GlobalException  { //extends ResponseEntityExceptionHandler
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<?> authModuleException(@NonNull Exception ex, WebRequest req){
-        ErrorDetail errorDetail = new ErrorDetail(
+        RestError errorDetail = new RestError(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
                 "",
                 LocalDateTime.now()
         );
 
-        return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<RestError>(errorDetail, HttpStatus.NOT_FOUND);
     }
 
     // something the other method
@@ -59,14 +58,14 @@ public class GlobalException  { //extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(InvalidException.class)
     public ResponseEntity<?> invalidException(@NonNull Exception ex, WebRequest req){
-        ErrorDetail errorDetail = new ErrorDetail(
+        RestError errorDetail = new RestError(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
                 "",
                 LocalDateTime.now()
         );
 
-        return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<RestError>(errorDetail, HttpStatus.NOT_FOUND);
 
 //        return handleExceptionInternal(
 //                ex,

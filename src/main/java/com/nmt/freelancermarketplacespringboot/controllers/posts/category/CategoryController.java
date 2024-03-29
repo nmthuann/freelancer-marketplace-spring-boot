@@ -1,7 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.controllers.posts.category;
 
 
-import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.posts.CategoryException;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
 import com.nmt.freelancermarketplacespringboot.dto.posts.category.CreateCategoryDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
 import com.nmt.freelancermarketplacespringboot.services.posts.category.ICategoryService;
@@ -47,7 +47,7 @@ public class CategoryController {
     @PostMapping("/create")
     public ResponseEntity<?> createOne (
             @Valid @RequestBody CreateCategoryDto data
-    ) throws CategoryException {
+    ) throws ModuleException {
         System.out.println(data.toString());
         CategoryEntity result = this.categoryService.createOne(data);
         return new ResponseEntity<>(result, HttpStatus.OK);
