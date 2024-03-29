@@ -16,7 +16,7 @@ import java.util.UUID;
 public interface IPostService extends IBaseService<PostEntity, UUID> {
 
     PostDto createOne(String email, CreatePostDto data) throws ModuleException;
-    PostEntity updateOneById(String email, UUID postId, UpdatePostDto data) throws ModuleException, ImageException;
+    PostEntity updateOneById(String email, UUID postId, UpdatePostDto data) throws ModuleException;
     List<PostEntity> getPostsByUserId(String email);
     Page<PostEntity> getPostsByMajorId(int majorId, int size, int page);
     List<PostEntity> getPostsByCategoryId(int categoryId);

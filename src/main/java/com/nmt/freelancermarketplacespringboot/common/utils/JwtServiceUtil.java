@@ -7,8 +7,10 @@ import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -19,26 +21,19 @@ import java.util.function.Function;
 
 @Service
 public class JwtServiceUtil {
-    @Value("${jwt.secret-key}")
-    private final String jwtSecretKey; //= "873f47869c454e32b09a992174b280631234ab77720" static final
 
-    @Value("${jwt.refresh-secret-key}")
-    //private static final String refreshJwtSecretKey = "873f47869c454e32b09a992174b880731234ab77720";
-    private final String refreshJwtSecretKey ;
+    String jwtSecretKey;
 
+    String refreshJwtSecretKey;
+    Long accessTokenExpiration;
+    Long refreshTokenExpiration;
 
-    @Value("${jwt.access.token.expiration}")
-    private final Long accessTokenExpiration;
-
-    @Value("${refresh.jwt.access.token.expiration}")
-    private final Long refreshTokenExpiration;
-
-
+    @Autowired
     public JwtServiceUtil(
-            String jwtSecretKey,
-            String refreshJwtSecretKey,
-            Long accessTokenExpiration,
-            Long refreshTokenExpiration
+            @Value("${jwt.secret-key}") String jwtSecretKey,
+            @Value("${jwt.refresh-secret-key}") String refreshJwtSecretKey,
+            @Value("${jwt.access.token.expiration}") Long accessTokenExpiration,
+            @Value("${refresh.jwt.access.token.expiration}") Long refreshTokenExpiration
     ) {
         this.jwtSecretKey = jwtSecretKey;
         this.refreshJwtSecretKey = refreshJwtSecretKey;
@@ -164,3 +159,30 @@ public class JwtServiceUtil {
 //                Payload payload = new ObjectMapper().convertValue(payloadMap, Payload.class);
 //                return payload.email();
 //            });
+
+//    @Value("${jwt.secret-key}")
+//    private final String jwtSecretKey; //= "873f47869c454e32b09a992174b280631234ab77720" static final
+
+//    @Value("${jwt.refresh-secret-key}")
+//    //private static final String refreshJwtSecretKey = "873f47869c454e32b09a992174b880731234ab77720";
+//    private final String refreshJwtSecretKey ;
+//
+//    @Value("${jwt.access.token.expiration}")
+//    private final Long accessTokenExpiration;
+//
+//    @Value("${refresh.jwt.access.token.expiration}")
+//    private final Long refreshTokenExpiration;
+//
+//
+//    public JwtServiceUtil(
+//            String jwtSecretKey,
+//            String refreshJwtSecretKey,
+//            Long accessTokenExpiration,
+//            Long refreshTokenExpiration
+//    ) {
+//        this.jwtSecretKey = jwtSecretKey;
+//        this.refreshJwtSecretKey = refreshJwtSecretKey;
+//        this.accessTokenExpiration = accessTokenExpiration;
+//        this.refreshTokenExpiration = refreshTokenExpiration;
+//    }
+

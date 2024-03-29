@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,21 +34,21 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        final String email;
-        final String token;
+
 
         if (authHeader == null || authHeader.isBlank()) {
             filterChain.doFilter(request, response);
             return;
+            // throw new ServletException("Missing authorization information");
         }
+
 
         /*
          * authHeader != null
-         * Ex: "Bearer ..." -> beginIndex: 7
+         * Ex: "Bearer eyJhbGciOiJIUzI1NiJ9..." -> beginIndex: 7
          */
-        token = authHeader.substring(7);
-
-        email = this.jwtServiceUtil.extractUsername(token);
+        final String token = authHeader.substring(7);
+        final String email = this.jwtServiceUtil.extractUsername(token);
 
         try {
 
@@ -70,9 +71,8 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("AuthMiddlewareFilter" + ex.getMessage());
             throw ex;
-
         }
 
     }

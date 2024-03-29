@@ -4,25 +4,19 @@ package com.nmt.freelancermarketplacespringboot.core.configs;
 import com.nmt.freelancermarketplacespringboot.common.filters.AuthMiddlewareFilter;
 import com.nmt.freelancermarketplacespringboot.components.security.DelegatedAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
-
 import org.springframework.security.config.Customizer;
-
-
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+
 
 @Configuration
 @EnableWebSecurity
@@ -30,7 +24,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 public class SecurityFilterConfig {
 
     @Autowired
-    // @Qualifier("delegatedAuthenticationEntryPoint")
     DelegatedAuthenticationEntryPoint authEntryPoint;
 
     private final AuthMiddlewareFilter authMiddlewareFilter;
@@ -48,6 +41,7 @@ public class SecurityFilterConfig {
                         // .requestMatchers("/admin/**").hasAnyAuthority("WRITE_PRODUCT") // admin
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/users/**").hasRole("USER") // user
+                        .requestMatchers("/posts/**").hasRole("USER")
                         //.requestMatchers("/users/get-sellers/**").hasRole("USER")
                         // .requestMatchers("/auth/user/logout").authenticated() // user
                         .anyRequest().authenticated()) // private

@@ -17,7 +17,7 @@ import java.util.UUID;
 public interface IPostRepository extends JpaRepository<PostEntity, UUID> {
     List<PostEntity> findByUser(UserEntity user);
     Page<PostEntity> findByMajor(MajorEntity major, Pageable pageable);
-    Page<PostEntity> findTopNByOrderByCreatedAtDesc(MajorEntity major);
-    @Query("SELECT p FROM PostEntity o JOIN o.packageEntity p JOIN p.post post WHERE post.bestSeller = true")
-    List<PostEntity> findByBestSellerPosts();
+//    Page<PostEntity> findTopNByOrderByCreatedAtDesc(MajorEntity major);
+//    @Query("SELECT p FROM PostEntity o JOIN o.packageEntity p JOIN p.post post WHERE post.bestSeller = true")
+//    List<PostEntity> findByBestSellerPosts();
 }

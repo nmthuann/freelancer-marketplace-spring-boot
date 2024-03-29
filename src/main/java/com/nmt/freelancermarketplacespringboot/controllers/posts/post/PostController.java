@@ -55,7 +55,7 @@ public class PostController {
     public ResponseEntity<?> createOne (
             @Valid @RequestBody CreatePostDto data,
             @AuthenticationPrincipal UserDetails userDetails
-    ) throws ImageException {
+    ) throws ModuleException {
         System.out.println(data.toString());
         PostDto result = this.postService.createOne(userDetails.getUsername(), data);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -67,7 +67,7 @@ public class PostController {
             @Valid @RequestBody UpdatePostDto data,
             @PathVariable UUID id,
             @AuthenticationPrincipal UserDetails userDetails
-    ) throws ImageException, ModuleException {
+    ) throws ModuleException {
 
         PostEntity result = this.postService.updateOneById(userDetails.getUsername(), id, data);
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -80,7 +80,7 @@ public class PostController {
             @Valid @RequestBody UpdatePostDto data,
             @RequestParam UUID id,
             @AuthenticationPrincipal UserDetails userDetails
-    ) throws ImageException, ModuleException {
+    ) throws ModuleException {
         UpdatePostDto updatePostDto = new UpdatePostDto(
                 data.title(),
                 data.description(),

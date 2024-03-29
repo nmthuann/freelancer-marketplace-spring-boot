@@ -107,7 +107,7 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
      * @param postId
      * @param data
      * @return
-     * @throws ImageException
+     * @throws ModuleException
      */
     @Override
     @Transactional
