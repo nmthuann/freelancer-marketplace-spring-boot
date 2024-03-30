@@ -13,16 +13,16 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     @Autowired
     UserDetailsService userDetailsService;
 
-
     @Bean
-    public AuthenticationProvider authenticationProvider() { // can add parameter UserDetailService and PasswordEncoder
+    public AuthenticationProvider authenticationProvider() {
+        // can add parameter UserDetailService and PasswordEncoder
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());

@@ -37,10 +37,13 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
 
 
         if (authHeader == null || authHeader.isBlank()) {
+            // response.setStatus(403);
+            request.setAttribute("message", "Missing authorization information");
             filterChain.doFilter(request, response);
             return;
-            // throw new ServletException("Missing authorization information");
+
         }
+        // throw new ServletException("Missing authorization information");
 
 
         /*
@@ -57,7 +60,7 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
                 if (jwtServiceUtil.isTokenValid(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken (
                             userDetails,
                             null,
                             userDetails.getAuthorities()
@@ -66,6 +69,7 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
                     authToken.setDetails(
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
+
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }

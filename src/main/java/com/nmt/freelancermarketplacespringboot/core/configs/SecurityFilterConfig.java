@@ -46,9 +46,8 @@ public class SecurityFilterConfig {
                         // .requestMatchers("/auth/user/logout").authenticated() // user
                         .anyRequest().authenticated()) // private
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider).addFilterBefore(
-                        authMiddlewareFilter, UsernamePasswordAuthenticationFilter.class
-                )
+                .authenticationProvider(authenticationProvider)
+                    .addFilterBefore(authMiddlewareFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .logout((logout) -> logout.logoutUrl("/auth/user/logout/uri"))//"/auth/user/logout/uri"
                 .exceptionHandling(
@@ -57,6 +56,7 @@ public class SecurityFilterConfig {
                                         // .accessDeniedHandler(DefaultExceptionHandler)
                                        // .accessDeniedPage("/errors/access-denied")
                                         .authenticationEntryPoint(authEntryPoint)
+
                 )
                 ;
         return httpSecurity.build();

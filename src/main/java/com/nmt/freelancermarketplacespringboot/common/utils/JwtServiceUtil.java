@@ -21,9 +21,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtServiceUtil {
-
     String jwtSecretKey;
-
     String refreshJwtSecretKey;
     Long accessTokenExpiration;
     Long refreshTokenExpiration;
@@ -66,11 +64,6 @@ public class JwtServiceUtil {
 
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
-//        try {
-//            return extractExpiration(token).before(new Date());
-//        } catch (Exception e) {
-//            throw new RuntimeException("Failed to extract expiration from token", e);
-//        }
     }
 
     private Date extractExpiration(String token) {
