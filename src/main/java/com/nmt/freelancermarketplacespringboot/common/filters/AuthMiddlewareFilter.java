@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -50,11 +49,11 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
          * authHeader != null
          * Ex: "Bearer eyJhbGciOiJIUzI1NiJ9..." -> beginIndex: 7
          */
-        final String token = authHeader.substring(7);
-        final String email = this.jwtServiceUtil.extractUsername(token);
+
 
         try {
-
+            final String token = authHeader.substring(7);
+            final String email = this.jwtServiceUtil.extractUsername(token);
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
@@ -76,7 +75,9 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (Exception ex) {
             System.out.println("AuthMiddlewareFilter" + ex.getMessage());
-            throw ex;
+            logger.error("An error occurred in AuthMiddlewareFilter", ex);
+            request.setAttribute("message", ex.getMessage());
+            throw new ServletException("An error occurred while processing authentication", ex);
         }
 
     }

@@ -1,7 +1,5 @@
 package com.nmt.freelancermarketplacespringboot.controllers.auth;
 
-import com.nmt.freelancermarketplacespringboot.common.enums.AuthMethodEnum;
-import com.nmt.freelancermarketplacespringboot.common.enums.RoleEnum;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
 
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;

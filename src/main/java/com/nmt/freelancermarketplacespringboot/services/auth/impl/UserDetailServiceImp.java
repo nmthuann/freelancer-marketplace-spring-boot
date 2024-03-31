@@ -16,15 +16,6 @@ public class UserDetailServiceImp implements UserDetailsService {
     @Autowired
     IAccountService accountService;
 
-//    @Autowired
-//    PasswordEncoder passwordEncoder;
-//    private final PasswordEncoder passwordEncoder;
-//
-//    @Autowired
-//    public UserDetailServiceImp(PasswordEncoder passwordEncoder) {
-//        this.passwordEncoder = passwordEncoder;
-//    }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AccountEntity account = this.accountService.getOneById(username);
@@ -45,24 +36,3 @@ public class UserDetailServiceImp implements UserDetailsService {
         }
     }
 }
-
-
-
-//@Override
-//// from UserDetail interface
-//public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//
-//    AccountEntity account = this.accountService.getOneById(username);
-//
-//    if (account != null) {
-//        return org.springframework.security.core.userdetails.User
-//                .withUsername(username)
-//                // .password("{noop}password")
-//                .password(this.passwordEncoder.encode("password"))
-//                // {noop} để sử dụng mật khẩu không mã hóa (trong thực tế, bạn sẽ sử dụng mật khẩu từ account)
-//                .roles(account.getRole().getRole_name())
-//                .build();
-//    } else {
-//        throw new UsernameNotFoundException(AuthExceptionMessage.USERNAME_NOT_FOUND + username);
-//    }
-//}

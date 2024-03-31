@@ -23,12 +23,13 @@ public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoi
         this.resolver = resolver;
     }
 
-    @Override   
+    @Override
     public void commence(
             HttpServletRequest request,
             HttpServletResponse response,
             AuthenticationException authException
     ) throws IOException, ServletException {
+//        request.setAttribute("message", authException.getCause());
         resolver.resolveException(request, response, null, authException);
     }
 }

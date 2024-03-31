@@ -2,7 +2,10 @@ package com.nmt.freelancermarketplacespringboot.common.exceptions;
 
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.InvalidException;
+import io.jsonwebtoken.JwtException;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -19,7 +22,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @ControllerAdvice
+@Log4j2
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
@@ -32,6 +37,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getMessage(),
                 request.getAttribute("message").toString(),
                 LocalDateTime.now());
+        log.error(request.getAttribute("message").toString());
         return new ResponseEntity<>(re, statusCode);
     }
 
@@ -44,6 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "IllegalStateException: " + ex.getMessage(),
                 "Spring Security Access Denied Error",
                 LocalDateTime.now());
+
         return new ResponseEntity<>(re, statusCode);
     }
 
@@ -72,16 +79,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleBindException(@NonNull MethodArgumentNotValidException ex, WebRequest req) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) ->{
-            String fieldName = ((FieldError) error).getField();
-            String message = error.getDefaultMessage();
-            errors.put(fieldName, message);
-        });
-        return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<?> handleBindException(@NonNull MethodArgumentNotValidException ex, WebRequest req) {
+//        Map<String, String> errors = new HashMap<>();
+//        ex.getBindingResult().getAllErrors().forEach((error) ->{
+//            String fieldName = ((FieldError) error).getField();
+//            String message = error.getDefaultMessage();
+//            errors.put(fieldName, message);
+//        });
+//        return new ResponseEntity<Object>(errors, HttpStatus.BAD_REQUEST);
+//    }
 
 
     @ExceptionHandler(InvalidException.class)
@@ -94,6 +101,44 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<RestError>(errorDetail, HttpStatus.NOT_FOUND);
     }
+
+//    @ExceptionHandler(RuntimeException.class)
+//    @ResponseBody
+//    public ResponseEntity<RestError> handleRuntimeException(RuntimeException ex) {
+//        HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+//        RestError re = new RestError(
+//                statusCode.value(),
+//                ex.getMessage(),
+//                "Internal Server Error",
+//                LocalDateTime.now());
+//        return new ResponseEntity<>(re, statusCode);
+//    }
+
+
+    @ExceptionHandler(ServletException.class)
+    @ResponseBody
+    public ResponseEntity<RestError> handleServletException(ServletException ex) {
+        HttpStatus statusCode = HttpStatus.INTERNAL_SERVER_ERROR; // Hoặc HttpStatus.BAD_REQUEST tùy thuộc vào ngữ cảnh
+        RestError re = new RestError(
+                statusCode.value(),
+                ex.getMessage(), // Hoặc thông báo lỗi tùy chỉnh
+                "Servlet Exception",
+                LocalDateTime.now());
+        return new ResponseEntity<>(re, statusCode);
+    }
+
+    @ExceptionHandler(JwtException.class)
+    @ResponseBody
+    public ResponseEntity<RestError> handleJwtException(JwtException ex) {
+        HttpStatus statusCode = HttpStatus.UNAUTHORIZED; // Hoặc HttpStatus.BAD_REQUEST tùy thuộc vào ngữ cảnh
+        RestError re = new RestError(
+                statusCode.value(),
+                ex.getMessage(), // Hoặc thông báo lỗi tùy chỉnh
+                "JWT Exception",
+                LocalDateTime.now());
+        return new ResponseEntity<>(re, statusCode);
+    }
+
 
 
 }
