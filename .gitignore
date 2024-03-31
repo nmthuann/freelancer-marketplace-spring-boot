@@ -34,3 +34,5 @@ build/
 .env
 
 **/src/main/java/resources/
+/logs
+*.log

@@ -11,6 +11,8 @@ import com.nmt.freelancermarketplacespringboot.entities.posts.post.PackageEntity
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.nmt.freelancermarketplacespringboot.services.posts.post.IPostService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -44,6 +46,8 @@ public class PostController {
     @Autowired
     IPostService postService;
 
+    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
+
 
     public PostController (IPostService postService){
         this.postService = postService;
@@ -57,6 +61,7 @@ public class PostController {
             @AuthenticationPrincipal UserDetails userDetails
     ) throws ModuleException {
         System.out.println(data.toString());
+        logger.info("POST " + data.toString());
         PostDto result = this.postService.createOne(userDetails.getUsername(), data);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

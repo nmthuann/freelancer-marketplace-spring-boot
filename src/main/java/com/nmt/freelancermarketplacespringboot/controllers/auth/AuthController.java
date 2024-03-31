@@ -2,6 +2,7 @@ package com.nmt.freelancermarketplacespringboot.controllers.auth;
 
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
 
+import com.nmt.freelancermarketplacespringboot.controllers.posts.post.PostController;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import com.nmt.freelancermarketplacespringboot.dto.auth.LoginDto;
 import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterDto;
@@ -10,6 +11,8 @@ import com.nmt.freelancermarketplacespringboot.dto.auth.ResultLogoutDto;
 import com.nmt.freelancermarketplacespringboot.services.auth.IAuthService;
 
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +36,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
     IAuthService authService;
@@ -43,6 +47,8 @@ public class AuthController {
         System.out.println("LOGIN.....");
         // @AuthenticationPrincipal UserDetails userDetails,
         // System.out.println(userDetails.getUsername());
+        logger.info("POST /user/login" + data.toString());
+
         Tokens tokens = this.authService.login(data);
         return new ResponseEntity<>(tokens, HttpStatus.OK);
     }

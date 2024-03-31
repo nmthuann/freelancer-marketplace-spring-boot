@@ -75,7 +75,7 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (Exception ex) {
             System.out.println("AuthMiddlewareFilter" + ex.getMessage());
-            logger.error("An error occurred in AuthMiddlewareFilter", ex);
+            // logger.error("An error occurred in AuthMiddlewareFilter", ex);
             request.setAttribute("message", ex.getMessage());
             throw new ServletException("An error occurred while processing authentication", ex);
         }
