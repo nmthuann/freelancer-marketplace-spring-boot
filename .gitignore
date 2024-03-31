@@ -33,6 +33,6 @@ build/
 .vscode/
 .env
 
-**/src/main/java/resources/
+**/src/main/**/resources/
 /logs
 *.log
