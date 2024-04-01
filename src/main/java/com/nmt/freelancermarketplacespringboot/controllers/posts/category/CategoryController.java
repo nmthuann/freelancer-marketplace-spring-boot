@@ -5,10 +5,16 @@ import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleEx
 import com.nmt.freelancermarketplacespringboot.dto.posts.category.CreateCategoryDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
 import com.nmt.freelancermarketplacespringboot.services.posts.category.ICategoryService;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +31,9 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/categories")
+@PreAuthorize("hasRole('ADMIN')")
+//@SecurityRequirement(name = "bearerAuth") // -> specific for each Controller.
+@Tag(name = "Category")
 public class CategoryController {
 
     @Autowired
@@ -36,7 +45,23 @@ public class CategoryController {
     }
 
 
+
+    @Operation(
+        description = "",
+        summary = "",
+        responses = {
+                @ApiResponse (
+                        description = "Success",
+                        responseCode = "200"
+                ),
+                @ApiResponse(
+                        description = "Unauthorized",
+                        responseCode = "401"
+                )
+        }
+    )
     @GetMapping("/init")
+    @Hidden
     public ResponseEntity<?> initCategory (
     ) {
         CategoryEntity result = this.categoryService.initCategory();
@@ -45,6 +70,7 @@ public class CategoryController {
 
 
     @PostMapping("/create")
+    // @PreAuthorize("hasAuthority('admin:read')")
     public ResponseEntity<?> createOne (
             @Valid @RequestBody CreateCategoryDto data
     ) throws ModuleException {

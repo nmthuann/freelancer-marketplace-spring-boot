@@ -36,7 +36,19 @@ public class SecurityFilterConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/**", "/public/**", "/categories/**").permitAll() // public
+                        .requestMatchers(
+                                "/auth/**",
+                                "/public/**",
+                                "/categories/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/webjar/**",
+                                "/javainuse-openapi/**",
+                                "/configuration-ui",
+                                "/configuration-security",
+                                "/swagger-ui.html"
+                        ).permitAll() // public
                         .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
                         // .requestMatchers("/admin/**").hasAnyAuthority("WRITE_PRODUCT") // admin
                         .requestMatchers("/admin/**").hasRole("ADMIN")
