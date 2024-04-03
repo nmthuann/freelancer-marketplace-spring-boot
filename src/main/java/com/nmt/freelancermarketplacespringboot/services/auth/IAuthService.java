@@ -13,24 +13,17 @@ import java.util.concurrent.CompletableFuture;
 public interface IAuthService {
 
 //    CompletableFuture<Tokens> getTokens(Payload payload);
-
     String hashPassword(String password);
-
     Boolean comparePassword(String password, String storePasswordHash);
-
     String randomPassword(int length, String base);
-
     // CompletableFuture<Tokens> login(LoginDto data);
     Tokens login (LoginDto data) throws AuthException, ConstraintViolationException;
-
-    RegisterResultDto register(RegisterDto data) throws AuthException;
-
-    String verifyEmail(String email);
-
+    RegisterResultDto registerAsync(RegisterDto data) throws AuthException;
+    RegisterResultDto registerSync(RegisterDto data) throws AuthException;
+    Boolean verifyEmail(String firstName, String email);
+    String resetPassword(String email);
     String changePassword(String email);
-
     String forgetPassword(String email);
-
     String logout(String email);
 
 }

@@ -6,6 +6,7 @@ import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthExce
 import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.users.AuthExceptionMessages;
 import com.nmt.freelancermarketplacespringboot.common.utils.JwtServiceUtil;
 import com.nmt.freelancermarketplacespringboot.common.utils.MailServiceUtil;
+import com.nmt.freelancermarketplacespringboot.controllers.auth.AuthController;
 import com.nmt.freelancermarketplacespringboot.dto.Payload;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import com.nmt.freelancermarketplacespringboot.dto.auth.LoginDto;
@@ -20,18 +21,22 @@ import com.nmt.freelancermarketplacespringboot.services.users.account.IAccountSe
 import com.nmt.freelancermarketplacespringboot.services.users.account.IAuthMethodService;
 import com.nmt.freelancermarketplacespringboot.services.users.account.IRoleService;
 import com.nmt.freelancermarketplacespringboot.services.users.user.IUserService;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class AuthService implements IAuthService {
-
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     @Autowired
     JwtServiceUtil jwtService;
 
@@ -118,34 +123,144 @@ public class AuthService implements IAuthService {
         ));
     }
 
+
     /**
      * 1. get email, password
-     * -> find acc by email -> [find role, find method] -> generate tokens -> create acc -> create user -> return
-     * @param data
-     * @return
+     * -> find acc by email
+     * -> [find role, find method]
+     * -> generate tokens
+     * -> create acc -> create user
+     * -> return
+     * @param data RegisterDto
+     * @return RegisterResultDto
      */
     @Override
     @Transactional
-    public RegisterResultDto register ( RegisterDto data) throws AuthException {
+    public RegisterResultDto registerAsync ( RegisterDto data) throws AuthException {
 
-        // step 1: find Acc
+        // step 1: find Acc and verify email
+        // 1.1 find Acc
+        AccountEntity findAccount = this.accountService.getOneById(data.email());
+        System.out.println(findAccount);
+        if (findAccount != null) {
+            // email tồn tại
+            throw new AuthException(AuthExceptionMessages.EMAIL_EXIST.getMessage());
+        }
+        // 1.2 verify email
+        //
+
+        // step 2: prepare value for create Account
+        try {
+            long startTime = System.currentTimeMillis();
+
+
+            CompletableFuture<String> hashedPasswordFuture
+                    = CompletableFuture.supplyAsync(() -> hashPassword(data.password()));
+
+            CompletableFuture<AuthMethodEntity> authMethodFuture
+                    = CompletableFuture.supplyAsync(() -> authMethodService.getOneById(AuthMethodEnum.LOCAL_AUTHENTICATION.getAuthMethodId()));
+
+            CompletableFuture<RoleEntity> roleFuture
+                    = CompletableFuture.supplyAsync(() -> roleService.getOneById(RoleEnum.USER.getRoleId()));
+
+            // Kết hợp các kết quả khi tất cả các CompletableFuture hoàn thành
+            CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(
+                    hashedPasswordFuture, authMethodFuture, roleFuture
+            );
+
+            // Đợi cho đến khi tất cả các CompletableFuture hoàn thành
+            combinedFuture.join();
+
+            // Lấy giá trị từ mỗi CompletableFuture
+            String hashedPassword = hashedPasswordFuture.join();
+            AuthMethodEntity authMethod = authMethodFuture.join();
+            RoleEntity role = roleFuture.join();
+
+            // Tiếp tục với xử lý khi đã có tất cả các giá trị
+            // Ví dụ:
+            Tokens tokens = jwtService.getTokens(new Payload(
+                    data.email(),
+                    role.getRole_name(),
+                    null
+            ));
+
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+            System.out.println("Thời gian thực thi: " + executionTime + " milliseconds");
+            logger.info("Thời gian thực thi: " + executionTime);
+
+//            // step 3: create Account
+//            // 3.1 new entity
+//            AccountEntity newAccount = new AccountEntity();
+//            newAccount.setEmail(data.email());
+//            newAccount.setPassword(hashedPassword);
+//            newAccount.setRefreshToken(tokens.refreshToken());
+//            newAccount.setStatus(true);
+//            newAccount.setSub(null);
+//            newAccount.setAuthMethod(authMethod);
+//            newAccount.setRole(role);
+//
+//            // 3.2 write in DB
+//            AccountEntity accountCreated = this.accountService.createOne(newAccount);
+//
+//            // step 4: create Info User
+//            // 4.1
+//            UserEntity newUser = new UserEntity();
+//            newUser.setAccount(accountCreated);
+//            newUser.setFirstName(data.firstName());
+//            newUser.setLastName(data.lastName());
+//            newUser.setBirthday(data.birthday());
+//            newUser.setGender(data.gender());
+//            newUser.setPhone(data.phone());
+//            newUser.setLocation(data.location());
+//
+//            // 4.2 create User
+//            UserEntity userCreated = this.userService.createOne(newUser);
+
+            // 5. return result.
+            return new RegisterResultDto(tokens.accessToken(), data.firstName()+data.lastName());
+        }
+        catch (Exception ex ){
+            System.out.println("ĐĂNG KÝ:::: " + ex.getMessage());
+            throw new RuntimeException("REGISTER FAIL");
+        }
+    }
+
+    @Override
+    @Transactional
+    public RegisterResultDto registerSync ( RegisterDto data) throws AuthException {
+
+        // step 1: find Acc and verify email
+        // 1.1 find Acc
         AccountEntity findAccount = this.accountService.getOneById(data.email());
         if (findAccount != null) {
             // email tồn tại
             throw new AuthException(AuthExceptionMessages.EMAIL_EXIST.getMessage());
         }
+        // 1.2 verify email
+//        Boolean checkMail = this.verifyEmail(data.firstName(), data.email());
+//        if (!checkMail){
+//            throw new AuthException(AuthExceptionMessages.VERIFY_MAIL_FAILED.getMessage());
+//        }
 
         // step 2: prepare value for create Account
         try {
+            long startTime = System.currentTimeMillis();
+
+
+            // 2.1 prepare hashPassword
             String hashedPassword =
                     this.hashPassword(data.password());
 
+            // 2.2 prepare authMethod
             AuthMethodEntity authMethod =
                     this.authMethodService.getOneById(AuthMethodEnum.LOCAL_AUTHENTICATION.getAuthMethodId());
 
+            // 2.3 prepare role
             RoleEntity role =
                     this.roleService.getOneById(RoleEnum.USER.getRoleId());
 
+            // 2.4 prepare tokens
             Tokens tokens =
                     this.jwtService.getTokens(new Payload(
                             data.email(),
@@ -154,6 +269,13 @@ public class AuthService implements IAuthService {
                     ));
 
 
+            long endTime = System.currentTimeMillis();
+            long executionTime = endTime - startTime;
+//            System.out.println("Thời gian thực thi: " + executionTime + " milliseconds");
+            logger.info("Thời gian thực thi: " + executionTime);
+
+            // step 3: create Account
+            // 3.1 new entity
             AccountEntity newAccount = new AccountEntity();
             newAccount.setEmail(data.email());
             newAccount.setPassword(hashedPassword);
@@ -163,9 +285,11 @@ public class AuthService implements IAuthService {
             newAccount.setAuthMethod(authMethod);
             newAccount.setRole(role);
 
-            // step 3: create Account
+            // 3.2 write in DB
             AccountEntity accountCreated = this.accountService.createOne(newAccount);
 
+            // step 4: create Info User
+            // 4.1
             UserEntity newUser = new UserEntity();
             newUser.setAccount(accountCreated);
             newUser.setFirstName(data.firstName());
@@ -175,19 +299,21 @@ public class AuthService implements IAuthService {
             newUser.setPhone(data.phone());
             newUser.setLocation(data.location());
 
-            // create User
+            // 4.2 create User
             UserEntity userCreated = this.userService.createOne(newUser);
 
-            return new RegisterResultDto(tokens.accessToken(), userCreated.getFirstName());
+            // 5. return result.
+            return new RegisterResultDto(tokens.accessToken(),
+                    userCreated.getFirstName() + userCreated.getLastName());
         }
-        catch (Exception ex ){
-            System.out.println("ĐĂNG KÝ:::: " + ex.getMessage());
-            throw new RuntimeException("REGISTER FAIL");
+        catch (Exception ex){
+            // System.out.println("ĐĂNG KÝ:::: " + ex.getMessage());
+            throw new RuntimeException(AuthExceptionMessages.REGISTER_USER_FAILED.getMessage());
         }
     }
 
     @Override
-    public String verifyEmail(String email) {
+    public String resetPassword(String email) {
         try {
             AccountEntity checkUser = accountService.getOneById(email);
 
@@ -212,6 +338,32 @@ public class AuthService implements IAuthService {
         } catch (AuthException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Boolean verifyEmail(String firstName, String email) {
+        String subject = "Email Address Successfully Confirmed";
+        String htmlContent = "Hello " + firstName + ",<br><br>" +
+                "We're pleased to inform you that your email address has been successfully confirmed. " +
+                "<p>Your account on <strong>Freelancer App</strong> is now active and ready to use.</p>" +
+                "<br>" +
+                "If you have any questions or need assistance, please feel free to contact us at " +
+                "<a href=\"https://mail.google.com/mail/u/0/#inbox?compose=CllgCJlLWsjNjfQlmcdbmWHBnJftRmLCxjLQwBlbrrwKRJFSxVnwQZrpgnBMPRfvhKkgKDBXbQq\">nmt.m10.2862001@gmail.com</a>." +
+                "<br><br>" +
+                "Thank you for choosing <strong>Freelancer App</strong>." +
+                "<br><br>" +
+                "Best regards," +
+                "<p><strong>Admin Freelancer App</strong></p>";
+        try{
+            mailSender.sendHtmlEmail(email, subject, htmlContent);
+            return true;
+        }catch (RuntimeException ex){
+            throw new RuntimeException(AuthExceptionMessages.VERIFY_MAIL_FAILED.getMessage());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
     @Override

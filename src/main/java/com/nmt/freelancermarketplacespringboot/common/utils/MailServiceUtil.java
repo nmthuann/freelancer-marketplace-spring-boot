@@ -15,6 +15,8 @@ public class MailServiceUtil {
     @Autowired
     JavaMailSender mailSender;
 
+    @Value("${spring.mail.username}")
+    private String userName;
 
     public void sendEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -24,15 +26,15 @@ public class MailServiceUtil {
         mailSender.send(message);
     }
 
-    public void sendHtmlEmail(String to, String subject) throws MessagingException {
+    public void sendHtmlEmail(String to, String subject, String htmlContent) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
 
-        message.setFrom(new InternetAddress("nmt.m10.2862001@gmail.com"));
+        message.setFrom(new InternetAddress(userName));// "nmt.m10.2862001@gmail.com"
         message.setRecipients(MimeMessage.RecipientType.TO, to);
         message.setSubject(subject);
 
-        String htmlContent = "<h1>This is a test Spring Boot email</h1>" +
-                "<p>It can contain <strong>HTML</strong> content.</p>";
+//        String htmlContent = "<h1>This is a test Spring Boot email</h1>" +
+//                "<p>It can contain <strong>HTML</strong> content.</p>";
         message.setContent(htmlContent, "text/html; charset=utf-8");
 
         mailSender.send(message);

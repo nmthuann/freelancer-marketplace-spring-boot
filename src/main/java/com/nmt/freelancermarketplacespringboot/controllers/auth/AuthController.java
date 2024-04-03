@@ -4,13 +4,11 @@ import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthExce
 
 import com.nmt.freelancermarketplacespringboot.controllers.posts.post.PostController;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
-import com.nmt.freelancermarketplacespringboot.dto.auth.LoginDto;
-import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterDto;
-import com.nmt.freelancermarketplacespringboot.dto.auth.RegisterResultDto;
-import com.nmt.freelancermarketplacespringboot.dto.auth.ResultLogoutDto;
+import com.nmt.freelancermarketplacespringboot.dto.auth.*;
 import com.nmt.freelancermarketplacespringboot.services.auth.IAuthService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,28 +34,32 @@ import java.util.Date;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    private static final Logger logger = LoggerFactory.getLogger(PostController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     IAuthService authService;
 
 
     @PostMapping("/user/login")
-    public ResponseEntity<?> login ( @Valid @RequestBody LoginDto data) throws AuthException {
+    public ResponseEntity<?> login (@Valid @RequestBody LoginDto data) throws AuthException {
         System.out.println("LOGIN.....");
-        // @AuthenticationPrincipal UserDetails userDetails,
-        // System.out.println(userDetails.getUsername());
         logger.info("POST /user/login" + data.toString());
-
         Tokens tokens = this.authService.login(data);
         return new ResponseEntity<>(tokens, HttpStatus.OK);
     }
 
 
+    @PostMapping("/admin/registerAsync")
+    public ResponseEntity<?> registerAsync (@Valid @RequestBody RegisterDto data) throws AuthException {
+        System.out.println("REGISTER registerAsync.....");
+        RegisterResultDto result = this.authService.registerAsync(data);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @PostMapping("/user/register")
-    public ResponseEntity<?> register (@Valid @RequestBody RegisterDto data) throws AuthException {
-        System.out.println("REGISTER.....");
-        RegisterResultDto result = this.authService.register(data);
+    public ResponseEntity<?> registerSync (@Valid @RequestBody RegisterDto data) throws AuthException {
+        System.out.println("REGISTER registerSync.....");
+        RegisterResultDto result = this.authService.registerSync(data);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -65,14 +67,17 @@ public class AuthController {
     @GetMapping("/user/verify-email/{email}")
     public ResponseEntity<?> verifyEmail (@Valid @PathVariable String email) {
         System.out.println("VERIFY EMAIL.....");
-        String result = this.authService.verifyEmail(email);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        Boolean result = this.authService.verifyEmail("Test", email);
+        if (result){
+            return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("FAIL", HttpStatus.OK);
     }
 
 
     // will need access Token -> for logout Method
     @PostMapping("/user/logout")
-    public ResponseEntity<?> logout (@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> logout (@AuthenticationPrincipal @NotNull UserDetails userDetails) {
         System.out.println("LOGOUT.....");
         String logout = this.authService.logout(userDetails.getUsername());
         ResultLogoutDto result = new ResultLogoutDto(
@@ -87,9 +92,12 @@ public class AuthController {
 
     // will need access Token -> for changePassword Method
     @PostMapping("/user/change-password")
-    public ResponseEntity<?> changePassword (@Valid @RequestBody String email) {
+    public ResponseEntity<?> changePassword (
+            @Valid @RequestBody ChangePasswordDto data
+            // @RequestParam String token
+    ) {
         System.out.println("CHANGE PASSWORD.....");
-        String result = this.authService.changePassword(email);
+        String result = this.authService.changePassword(data.email());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

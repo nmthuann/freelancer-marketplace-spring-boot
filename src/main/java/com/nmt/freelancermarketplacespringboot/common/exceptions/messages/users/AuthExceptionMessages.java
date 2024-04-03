@@ -10,7 +10,7 @@ public enum AuthExceptionMessages {
     EMAIL_EXIST("Email đã tồn tại."),
     VERIFY_MAIL_FAILED("Xác thực email thất bại."),
     SEND_MAIL_FAILED("Gửi mail thất bại."),
-    REGISTER_EMPLOYEE_FAILED("Đăng ký Tài khoản nhân viên thất bại."),
+    REGISTER_USER_FAILED("Đăng ký Tài khoản nhân viên thất bại."),
     USERNAME_NOT_FOUND("User not found with username: "),
     PASSWORD_NOT_EMPTY("Password is required"),
     EMAIL_INVALID("Invalid email format"),
