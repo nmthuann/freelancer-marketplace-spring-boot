@@ -13,18 +13,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
+import java.security.Key;
+import java.security.PublicKey;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 
 @Service
 public class JwtServiceUtil {
-    String jwtSecretKey;
+    String  jwtSecretKey ;
     String refreshJwtSecretKey;
     Long accessTokenExpiration;
-    Long refreshTokenExpiration;
+    Long refreshTokenExpiration ;
 
     @Autowired
     public JwtServiceUtil(
@@ -45,21 +48,45 @@ public class JwtServiceUtil {
         return claimsResolver.apply(claims);
     }
 
+    /**
+     * has a problem
+     * @param token
+     * @return
+     */
     private Claims extractAllClaims(String token) {
         try {
             return Jwts.parser()
                     .verifyWith(convertStringToSecretKey())
                     .build()
-                    .parseSignedClaims(token).getPayload();
+                    .parseSignedClaims(token)
+                    .getPayload();
         }
         catch (JwtException ex ){
             throw new JwtException(ex.getMessage());
         }
     }
 
+
+
+
     private SecretKey convertStringToSecretKey(){
         byte[] keyBytes= Decoders.BASE64.decode(jwtSecretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private SecretKey createSecretKey(){
+        return Jwts.SIG.HS256.key().build();
+    }
+
+
+//    SecretKey key = Jwts.SIG.HS256.key().build();
+
+//    String jws = Jwts.builder().subject("Joe").subject("5").signWith(key).compact();
+
+
+    private PublicKey getSignInKey(){
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
+        return (PublicKey) Keys.hmacShaKeyFor(keyBytes);
     }
 
     private boolean isTokenExpired(String token) {
@@ -78,15 +105,14 @@ public class JwtServiceUtil {
      * @return EX: String jwt.builder().subject("Joe").signWith(key).compact();
      * Note: signWith -> 'signWith(io.jsonwebtoken.SignatureAlgorithm, java.security.Key)' is deprecated
      */
-    private String generateToken(Payload payload, String secretKey, Long expiration) {
+    private String generateToken(Payload payload, String secretKey, Long expiration) {// String secretKey
         Map<String, Object> claims = new HashMap<>();
         claims.put("payload", payload);
-
         return Jwts.builder()
                 .subject(payload.sub())
                 .claims(claims)
                 .expiration(new Date(System.currentTimeMillis() + expiration * 1000L))
-                .signWith(SignatureAlgorithm.HS256, Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)))
+                .signWith(SignatureAlgorithm.HS256, Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)))//
                 .compact();
     }
 
@@ -128,6 +154,8 @@ public class JwtServiceUtil {
                                 .convertValue(claims.get("payload"), Payload.class);
                 return payload.email();
             });
+
+
         } catch (ExpiredJwtException
                  | UnsupportedJwtException
                  | MalformedJwtException

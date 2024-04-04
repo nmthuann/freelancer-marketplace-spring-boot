@@ -39,7 +39,6 @@ public class SecurityFilterConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/public/**",
-                                "/categories/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",
@@ -50,11 +49,10 @@ public class SecurityFilterConfig {
                                 "/swagger-ui.html"
                         ).permitAll() // public
                         .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
-                        // .requestMatchers("/admin/**").hasAnyAuthority("WRITE_PRODUCT") // admin
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/users/**").hasRole("USER") // user
-                        .requestMatchers("/posts/**").hasRole("USER")
+                        .requestMatchers("/admin/**", "/categories/**").hasRole("ADMIN")
+                        .requestMatchers("/users/**", "/posts/**").hasRole("USER") // user
                         //.requestMatchers("/users/get-sellers/**").hasRole("USER")
+                        // .requestMatchers("/admin/**").hasAnyAuthority("WRITE_PRODUCT") // admin
                         // .requestMatchers("/auth/user/logout").authenticated() // user
                         .anyRequest().authenticated()) // private
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -78,3 +76,6 @@ public class SecurityFilterConfig {
 
 
 }
+
+
+

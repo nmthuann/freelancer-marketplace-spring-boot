@@ -35,6 +35,7 @@ import java.security.SecureRandom;
 import java.util.concurrent.CompletableFuture;
 
 @Service
+@Transactional
 public class AuthService implements IAuthService {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     @Autowired
@@ -158,10 +159,12 @@ public class AuthService implements IAuthService {
                     = CompletableFuture.supplyAsync(() -> hashPassword(data.password()));
 
             CompletableFuture<AuthMethodEntity> authMethodFuture
-                    = CompletableFuture.supplyAsync(() -> authMethodService.getOneById(AuthMethodEnum.LOCAL_AUTHENTICATION.getAuthMethodId()));
+                    = CompletableFuture.supplyAsync(
+                            () -> authMethodService.getOneById(AuthMethodEnum.LOCAL_AUTHENTICATION.getAuthMethodId()));
 
             CompletableFuture<RoleEntity> roleFuture
-                    = CompletableFuture.supplyAsync(() -> roleService.getOneById(RoleEnum.USER.getRoleId()));
+                    = CompletableFuture.supplyAsync(
+                            () -> roleService.getOneById(RoleEnum.ADMIN.getRoleId()));
 
             // Kết hợp các kết quả khi tất cả các CompletableFuture hoàn thành
             CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(
@@ -189,33 +192,33 @@ public class AuthService implements IAuthService {
             System.out.println("Thời gian thực thi: " + executionTime + " milliseconds");
             logger.info("Thời gian thực thi: " + executionTime);
 
-//            // step 3: create Account
-//            // 3.1 new entity
-//            AccountEntity newAccount = new AccountEntity();
-//            newAccount.setEmail(data.email());
-//            newAccount.setPassword(hashedPassword);
-//            newAccount.setRefreshToken(tokens.refreshToken());
-//            newAccount.setStatus(true);
-//            newAccount.setSub(null);
-//            newAccount.setAuthMethod(authMethod);
-//            newAccount.setRole(role);
-//
-//            // 3.2 write in DB
-//            AccountEntity accountCreated = this.accountService.createOne(newAccount);
-//
-//            // step 4: create Info User
-//            // 4.1
-//            UserEntity newUser = new UserEntity();
-//            newUser.setAccount(accountCreated);
-//            newUser.setFirstName(data.firstName());
-//            newUser.setLastName(data.lastName());
-//            newUser.setBirthday(data.birthday());
-//            newUser.setGender(data.gender());
-//            newUser.setPhone(data.phone());
-//            newUser.setLocation(data.location());
-//
-//            // 4.2 create User
-//            UserEntity userCreated = this.userService.createOne(newUser);
+            // step 3: create Account
+            // 3.1 new entity
+            AccountEntity newAccount = new AccountEntity();
+            newAccount.setEmail(data.email());
+            newAccount.setPassword(hashedPassword);
+            newAccount.setRefreshToken(tokens.refreshToken());
+            newAccount.setStatus(true);
+            newAccount.setSub(null);
+            newAccount.setAuthMethod(authMethod);
+            newAccount.setRole(role);
+
+            // 3.2 write in DB
+            AccountEntity accountCreated = this.accountService.createOne(newAccount);
+
+            // step 4: create Info User
+            // 4.1
+            UserEntity newUser = new UserEntity();
+            newUser.setAccount(accountCreated);
+            newUser.setFirstName(data.firstName());
+            newUser.setLastName(data.lastName());
+            newUser.setBirthday(data.birthday());
+            newUser.setGender(data.gender());
+            newUser.setPhone(data.phone());
+            newUser.setLocation(data.location());
+
+            // 4.2 create User
+            UserEntity userCreated = this.userService.createOne(newUser);
 
             // 5. return result.
             return new RegisterResultDto(tokens.accessToken(), data.firstName()+data.lastName());
@@ -288,6 +291,8 @@ public class AuthService implements IAuthService {
             // 3.2 write in DB
             AccountEntity accountCreated = this.accountService.createOne(newAccount);
 
+
+
             // step 4: create Info User
             // 4.1
             UserEntity newUser = new UserEntity();
@@ -304,7 +309,7 @@ public class AuthService implements IAuthService {
 
             // 5. return result.
             return new RegisterResultDto(tokens.accessToken(),
-                    userCreated.getFirstName() + userCreated.getLastName());
+                    userCreated.getFirstName() +" "+ userCreated.getLastName());
         }
         catch (Exception ex){
             // System.out.println("ĐĂNG KÝ:::: " + ex.getMessage());

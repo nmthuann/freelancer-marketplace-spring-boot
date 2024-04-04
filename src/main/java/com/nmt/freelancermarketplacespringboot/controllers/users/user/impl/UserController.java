@@ -1,4 +1,23 @@
 package com.nmt.freelancermarketplacespringboot.controllers.users.user.impl;
+
+
+import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileDto;
+import com.nmt.freelancermarketplacespringboot.dto.users.profile.ProfileDto;
+import com.nmt.freelancermarketplacespringboot.dto.users.user.CreateUserPaymentDto;
+import com.nmt.freelancermarketplacespringboot.dto.users.user.UserDto;
+import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
+import com.nmt.freelancermarketplacespringboot.entities.users.user.UserPaymentEntity;
+import com.nmt.freelancermarketplacespringboot.services.users.user.IUserService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+
 /**
  * - 1. Create Profile (Seller) -> OK
  * - 2. Create User Payment(Seller) -> OK
@@ -11,29 +30,6 @@ package com.nmt.freelancermarketplacespringboot.controllers.users.user.impl;
  * - 9. Get Users (Page)
  * =>  Call API in User Controller affect to handle User Service too much code line.
  */
-
-import com.nmt.freelancermarketplacespringboot.controllers.users.user.IUserController;
-import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileDto;
-import com.nmt.freelancermarketplacespringboot.dto.users.profile.ProfileDto;
-import com.nmt.freelancermarketplacespringboot.dto.users.user.CreateUserPaymentDto;
-import com.nmt.freelancermarketplacespringboot.dto.users.user.UserDto;
-import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
-import com.nmt.freelancermarketplacespringboot.entities.users.user.UserPaymentEntity;
-import com.nmt.freelancermarketplacespringboot.services.users.user.IUserService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
-
-
-
 @RestController
 @RequestMapping("/users")
 public class UserController { // implements IUserController
@@ -127,8 +123,8 @@ public class UserController { // implements IUserController
 
     @GetMapping("/get-buyers") //  require TOKEN # get All User
     public ResponseEntity<?> getUsersIsBuyer(
-            @RequestParam(defaultValue = "1") int page, // careful the default value.
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam int page, // careful the default value.
+            @RequestParam int size
     ) {
         Page<UserEntity> result = this.userService.getUsersIsSellerOrBuyer(false, page, size);
         return new ResponseEntity<>(result, HttpStatus.OK);

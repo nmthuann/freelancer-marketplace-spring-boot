@@ -1,6 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.services.users.profile.impl;
 
 
+import com.nmt.freelancermarketplacespringboot.common.enums.ProfileLevelEnum;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseService;
 import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileAttributeDto;
 import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileDto;
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@Transactional
 public class ProfileService extends AbstractBaseService<ProfileEntity, Integer> implements IProfileService {
 
 
@@ -54,7 +56,7 @@ public class ProfileService extends AbstractBaseService<ProfileEntity, Integer> 
 
         ProfileEntity newProfile = new ProfileEntity();
         newProfile.setOccupation(data.occupation());
-        newProfile.setLevel(data.level());
+        newProfile.setLevel(ProfileLevelEnum.NEW_SELLER.getLevel());
 
         // fix error JSon -> fix in Entity file
         ProfileEntity profileCreated = this.profileRepository.save(newProfile);
@@ -96,38 +98,6 @@ public class ProfileService extends AbstractBaseService<ProfileEntity, Integer> 
         return null;
     }
 }
-
-
-
-
-
-
-//ObjectMapper objectMapper = new ObjectMapper();
-//JsonNode profileJson = objectMapper.readTree(String.valueOf(data));
-//
-///// CreateProfileDto profileDto = objectMapper.readValue(data, )
-//
-//ProfileEntity newProfile = new ProfileEntity();
-//        newProfile.setOccupation(String.valueOf(profileJson.get("occupation")));
-//
-//ProfileEntity profileCreated = this.createOne(newProfile);
-//
-//
-//        for (JsonNode attribute : profileJson.get("profileAttributes")){
-//ProfileValueEntity profileValueEntity = new ProfileValueEntity();
-//            profileValueEntity.setProfileAttribute(
-//        profileAttributeService.getOneById(attribute.get("profileAttributeId").asInt()));
-//        profileValueEntity.setProfile(profileCreated);
-//            for (JsonNode value : attribute.get("profileValues")){
-//        profileValueEntity.setProfileValue(value[1]);
-//                this.profileValueService.createOne(profileValueEntity);
-//            }
-//                    }
-//
-//
-//
-//
-//                    return null;
         /*
          * 1. for loop json array
          * 2. if element

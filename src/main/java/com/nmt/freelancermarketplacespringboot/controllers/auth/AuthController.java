@@ -43,18 +43,18 @@ public class AuthController {
     @PostMapping("/user/login")
     public ResponseEntity<?> login (@Valid @RequestBody LoginDto data) throws AuthException {
         System.out.println("LOGIN.....");
-        logger.info("POST /user/login" + data.toString());
+        logger.info("POST /user/login" + data.email());
         Tokens tokens = this.authService.login(data);
         return new ResponseEntity<>(tokens, HttpStatus.OK);
     }
 
 
-    @PostMapping("/admin/registerAsync")
-    public ResponseEntity<?> registerAsync (@Valid @RequestBody RegisterDto data) throws AuthException {
-        System.out.println("REGISTER registerAsync.....");
-        RegisterResultDto result = this.authService.registerAsync(data);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
+//    @PostMapping("/admin/registerAsync")
+//    public ResponseEntity<?> registerAsync (@Valid @RequestBody RegisterDto data) throws AuthException {
+//        System.out.println("REGISTER registerAsync.....");
+//        RegisterResultDto result = this.authService.registerAsync(data);
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
 
     @PostMapping("/user/register")
     public ResponseEntity<?> registerSync (@Valid @RequestBody RegisterDto data) throws AuthException {

@@ -31,7 +31,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/categories")
-@PreAuthorize("hasRole('ADMIN')")
+//@PreAuthorize("hasRole('ADMIN')")
 //@SecurityRequirement(name = "bearerAuth") // -> specific for each Controller.
 @Tag(name = "Category")
 public class CategoryController {

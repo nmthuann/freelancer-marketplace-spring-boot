@@ -61,7 +61,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         RestError re = new RestError(
                 statusCode.value(),
                 "Internal Server Error",
-                "Spring Security Internal Server Error",
+                "Spring Security Internal Server Error. Detail: " + ex.getMessage(),
                 LocalDateTime.now());
         return new ResponseEntity<>(re, statusCode);
     }
