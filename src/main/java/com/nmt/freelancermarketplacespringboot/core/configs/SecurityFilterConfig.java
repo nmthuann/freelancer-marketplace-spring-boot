@@ -18,6 +18,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
 
+/**
+ * Khoi tao dau tien
+ */
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -48,10 +51,15 @@ public class SecurityFilterConfig {
                                 "/configuration-security",
                                 "/swagger-ui.html"
                         ).permitAll() // public
-                        .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
-                        .requestMatchers("/admin/**", "/categories/**").hasRole("ADMIN")
+                        .requestMatchers(
+                                HttpMethod.GET, "/users/**"
+                        ).permitAll()
+                        .requestMatchers(
+                                "/admin/**",
+                                "/categories/**",
+                                "/major/**"
+                        ).hasRole("ADMIN")
                         .requestMatchers("/users/**", "/posts/**").hasRole("USER") // user
-                        //.requestMatchers("/users/get-sellers/**").hasRole("USER")
                         // .requestMatchers("/admin/**").hasAnyAuthority("WRITE_PRODUCT") // admin
                         // .requestMatchers("/auth/user/logout").authenticated() // user
                         .anyRequest().authenticated()) // private

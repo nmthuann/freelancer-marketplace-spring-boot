@@ -3,14 +3,15 @@ package com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts
 import lombok.Getter;
 
 @Getter
-public enum CategoryExceptionMessage {
-    CATEGORY_PARENT_NOT_FOUND("CATEGORY_PARENT_NOT_FOUND."),
+public enum MajorExceptionMessages {
+    CATEGORY_NOT_FOUND("CATEGORY_NOT_FOUND for creation Major ."),
+    CREATE_MAJOR_FAIL("CREATE_MAJOR_FAIL.")
     ;
 
 
     private final String message;
 
-    CategoryExceptionMessage(String message){
+    MajorExceptionMessages(String message){
         this.message = message;
     }
 }

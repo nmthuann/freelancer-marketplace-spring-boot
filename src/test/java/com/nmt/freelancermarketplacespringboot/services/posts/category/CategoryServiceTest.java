@@ -1,7 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.services.posts.category;
 
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
-import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.CategoryExceptionMessage;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.CategoryExceptionMessages;
 import com.nmt.freelancermarketplacespringboot.dto.posts.category.CreateCategoryDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
 import com.nmt.freelancermarketplacespringboot.repositories.posts.category.ICategoryRepository;
@@ -92,7 +92,7 @@ public class CategoryServiceTest {
         assertThatThrownBy(() -> {
             categoryService.createOne(createCategoryDto);
         }).isInstanceOf(ModuleException.class)
-                .hasMessageContaining(CategoryExceptionMessage.CATEGORY_PARENT_NOT_FOUND.getMessage());
+                .hasMessageContaining(CategoryExceptionMessages.CATEGORY_PARENT_NOT_FOUND.getMessage());
     }
 
 }

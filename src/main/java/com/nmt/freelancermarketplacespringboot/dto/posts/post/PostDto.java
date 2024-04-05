@@ -7,13 +7,20 @@ import java.util.List;
 import java.util.UUID;
 
 public record PostDto(
+        int majorId,
         UUID postId,
         String title,
         String description,
         String faq,
-        int majorId,
+
+        String sellerEmail,
+        String sellerFullName,
         // String userId, -> get into Token
+//        List<ImageDto> images,
+//        List<PackageDto>packages
         List<ImageEntity> images,
         List<PackageEntity>packages
 ) {
 }
+//List<ImageEntity> images,
+//List<PackageEntity>packages

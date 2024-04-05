@@ -2,12 +2,9 @@ package com.nmt.freelancermarketplacespringboot.services.posts.post.impl;
 
 import com.nmt.freelancermarketplacespringboot.common.enums.PostStatusEnum;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
-import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.PostExceptionMessage;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.PostExceptionMessages;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseService;
-import com.nmt.freelancermarketplacespringboot.dto.posts.post.CreatePostDto;
-import com.nmt.freelancermarketplacespringboot.dto.posts.post.PostDto;
-import com.nmt.freelancermarketplacespringboot.dto.posts.post.UpdatePackageDto;
-import com.nmt.freelancermarketplacespringboot.dto.posts.post.UpdatePostDto;
+import com.nmt.freelancermarketplacespringboot.dto.posts.post.*;
 import com.nmt.freelancermarketplacespringboot.entities.posts.major.MajorEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.ImageEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PackageEntity;
@@ -27,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService extends AbstractBaseService<PostEntity, UUID> implements IPostService {
@@ -67,8 +65,13 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
 
         try {
             MajorEntity findMajor = this.majorService.getOneById(data.majorId());
-
+            if (findMajor == null){
+               throw new ModuleException(PostExceptionMessages.MAJOR_INVALID.getMessage());
+            }
             UserEntity findUser = this.userService.getUserByEmail(email);
+            if (findUser.getProfile() == null) {
+                throw new ModuleException(PostExceptionMessages.USER_NOT_PROFILE.getMessage());
+            }
 
             PostEntity newPost = new PostEntity();
             newPost.setTitle(data.title());
@@ -87,17 +90,25 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
             List<PackageEntity> packagesCreated =
                     this.packageService.createPackageByPost(postCreated, data.packages()); // transaction
 
+
+//            List<ImageDto> imageDtos = imagesCreated.stream()
+//                    .map(imageEntity -> new ImageDto(imageEntity.getUrl()))
+//                    .toList();
+
+
             return new PostDto (
+                    postCreated.getMajor().getMajorId(),
                     postCreated.getPostId(),
                     postCreated.getTitle(),
                     postCreated.getDescription(),
                     postCreated.getFAQ(),
-                    postCreated.getMajor().getMajorId(),
+                    findUser.getAccount().getEmail(),
+                    findUser.getLastName() +" "+findUser.getFirstName(),
                     imagesCreated,
                     packagesCreated
             );
         } catch (ModuleException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -120,7 +131,7 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
         PostEntity findPost = this.getOneById(postId);
 
         if(this.userService.getUserByEmail(email).equals(findPost.getUser())){
-            throw new ModuleException(PostExceptionMessage.NOT_THE_OWNER_POST.getMessage());
+            throw new ModuleException(PostExceptionMessages.NOT_THE_OWNER_POST.getMessage());
         }
 
 
@@ -194,7 +205,7 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
     ) throws ModuleException {
         PackageEntity findPackage  = this.packageService.getOneById(packageId);
         if (findPackage.getPost().getPostId() != postId) {
-            throw new ModuleException(PostExceptionMessage.PACKAGE_NOT_FOUND.getMessage());
+            throw new ModuleException(PostExceptionMessages.PACKAGE_NOT_FOUND.getMessage());
         }
         return this.packageService.updateOneById(findPackage, data);
     }

@@ -1,7 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.services.posts.category.impl;
 
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
-import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.CategoryExceptionMessage;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.CategoryExceptionMessages;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseService;
 import com.nmt.freelancermarketplacespringboot.dto.posts.category.CreateCategoryDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
@@ -38,7 +38,7 @@ public class CategoryService extends AbstractBaseService<CategoryEntity, Integer
         CategoryEntity findParentNode = this.getOneById(data.parentId());
 
         if (findParentNode == null){
-            throw new ModuleException(CategoryExceptionMessage.CATEGORY_PARENT_NOT_FOUND.getMessage());
+            throw new ModuleException(CategoryExceptionMessages.CATEGORY_PARENT_NOT_FOUND.getMessage());
         }
 
         /*

@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.services.users.user.impl;
 
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.users.UserExceptionMessages;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseService;
 import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileDto;
 import com.nmt.freelancermarketplacespringboot.dto.users.profile.ProfileDto;
@@ -161,7 +162,8 @@ public class UserService extends AbstractBaseService<UserEntity, UUID> implement
 
         AccountEntity findAcc = this.accountService.getOneById(email);
         if (findAcc == null || !findAcc.isStatus()){
-            throw new RuntimeException("Not Found Email or Email Invalid");
+            throw new RuntimeException(
+                    UserExceptionMessages.USER_NOT_FOUND_OR_EMAIL_INVALID.getMessage());
         }
 
         return this.userRepository.findByAccountEmail(findAcc.getEmail());

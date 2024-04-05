@@ -34,6 +34,7 @@ public class PackageEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_package_post"))
+    @JsonIgnore
     private PostEntity post;
 
 //    @OneToMany(mappedBy = "package", cascade = CascadeType.ALL)

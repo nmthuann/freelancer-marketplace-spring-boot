@@ -3,14 +3,14 @@ package com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts
 import lombok.Getter;
 
 @Getter
-public enum ImageExceptionMessage {
+public enum ImageExceptionMessages {
     INSERT_IMAGES_FAIL("INSERT_IMAGES_FAIL."),
     ;
 
 
     private final String message;
 
-    ImageExceptionMessage(String message){
+    ImageExceptionMessages(String message){
         this.message = message;
     }
 }

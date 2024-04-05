@@ -1,6 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.entities.posts.post;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.major.MajorEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.review.ReviewEntity;
@@ -45,21 +46,26 @@ public class PostEntity  extends AbstractBaseEntity  {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_post_user"))
+    @JsonIgnore
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "major_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_post_major"))
+    @JsonIgnore
     private MajorEntity major;
 
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ImageEntity> images;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<PackageEntity> packages;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ReviewEntity> reviews;
 
     // Getter and setter methods

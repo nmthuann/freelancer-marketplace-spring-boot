@@ -1,13 +1,12 @@
 package com.nmt.freelancermarketplacespringboot.dto.posts.major;
 
-import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileAttributeDto;
+import jakarta.validation.constraints.NotEmpty;
+import org.springframework.lang.NonNull;
 
-import java.util.Set;
-
-public record CreateMajorDto (
-        Integer categoryId,
-        String majorName,
-        Set<CreateMajorAttributeDto> majorAttributes
-
+public record CreateMajorDto(
+        @NonNull
+        int categoryId,
+        @NotEmpty
+        String majorName
 ) {
 }

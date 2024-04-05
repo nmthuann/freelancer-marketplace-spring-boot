@@ -1,7 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.services.posts.post.impl;
 
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
-import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.ImageExceptionMessage;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.ImageExceptionMessages;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseService;
 import com.nmt.freelancermarketplacespringboot.dto.posts.post.ImageDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.ImageEntity;
@@ -43,7 +43,7 @@ public class ImageService extends AbstractBaseService<ImageEntity, UUID> impleme
             }
             return insertedImages;
         } catch (Exception e) {
-            throw new ModuleException(ImageExceptionMessage.INSERT_IMAGES_FAIL.getMessage());
+            throw new ModuleException(ImageExceptionMessages.INSERT_IMAGES_FAIL.getMessage());
         }
     }
 

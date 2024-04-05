@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.entities.posts.post;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class ImageEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id", nullable = false,
             foreignKey = @ForeignKey(name = "fk_image_post"))
+    @JsonIgnore
     private PostEntity post;
 
     @Column(name = "url", nullable = false)

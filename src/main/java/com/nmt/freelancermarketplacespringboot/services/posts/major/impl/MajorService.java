@@ -1,15 +1,15 @@
 package com.nmt.freelancermarketplacespringboot.services.posts.major.impl;
 
+import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.messages.posts.MajorExceptionMessages;
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseService;
 import com.nmt.freelancermarketplacespringboot.dto.posts.major.CreateMajorAttributeDto;
 import com.nmt.freelancermarketplacespringboot.dto.posts.major.CreateMajorDto;
+import com.nmt.freelancermarketplacespringboot.dto.posts.major.CreateMajorEavDto;
 import com.nmt.freelancermarketplacespringboot.dto.posts.major.CreateMajorValueDto;
-import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileAttributeDto;
-import com.nmt.freelancermarketplacespringboot.dto.users.profile.CreateProfileValueDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.category.CategoryEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.major.MajorEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.major.MajorValueEntity;
-import com.nmt.freelancermarketplacespringboot.entities.users.profile.ProfileValueEntity;
 import com.nmt.freelancermarketplacespringboot.repositories.posts.major.IMajorRepository;
 import com.nmt.freelancermarketplacespringboot.services.posts.category.ICategoryService;
 import com.nmt.freelancermarketplacespringboot.services.posts.major.IMajorAttributeService;
@@ -55,7 +55,7 @@ public class MajorService
 
     @Override
     @Transactional
-    public MajorEntity createOne(CreateMajorDto data) {
+    public MajorEntity createMajorEav(CreateMajorEavDto data) {
 
         CategoryEntity findCategory = this.categoryService.getOneById(data.categoryId());
 
@@ -94,6 +94,20 @@ public class MajorService
         }
         // this.profileValueService.saveAll(profileValueEntities);
         return majorCreated;
+    }
+
+
+    @Override
+    @Transactional
+    public MajorEntity createOne(CreateMajorDto data) throws ModuleException{
+        CategoryEntity findCategory = this.categoryService.getOneById(data.categoryId());
+        if(findCategory == null){
+            throw new ModuleException(MajorExceptionMessages.CATEGORY_NOT_FOUND.getMessage());
+        }
+        MajorEntity newMajor = new MajorEntity();
+        newMajor.setMajorName(data.majorName());
+        newMajor.setCategory(findCategory);
+        return this.majorRepository.save(newMajor);
     }
 
 

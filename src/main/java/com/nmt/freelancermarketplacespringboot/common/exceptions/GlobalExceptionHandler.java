@@ -2,6 +2,7 @@ package com.nmt.freelancermarketplacespringboot.common.exceptions;
 
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.InvalidException;
+import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -61,6 +62,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         RestError re = new RestError(
                 statusCode.value(),
                 "Internal Server Error",
+                "Spring Security Internal Server Error. Detail: " + ex.getMessage(),
+                LocalDateTime.now());
+        return new ResponseEntity<>(re, statusCode);
+    }
+
+
+    @ExceptionHandler(ModuleException.class)
+    @ResponseBody
+    public ResponseEntity<RestError> handleException(ModuleException ex) {
+        HttpStatus statusCode = HttpStatus.BAD_REQUEST;
+        RestError re = new RestError(
+                statusCode.value(),
+                ex.getMessage(),
                 "Spring Security Internal Server Error. Detail: " + ex.getMessage(),
                 LocalDateTime.now());
         return new ResponseEntity<>(re, statusCode);
