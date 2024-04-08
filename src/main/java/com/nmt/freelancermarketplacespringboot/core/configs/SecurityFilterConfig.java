@@ -52,8 +52,8 @@ public class SecurityFilterConfig {
                                 "/swagger-ui.html"
                         ).permitAll() // public
                         .requestMatchers(
-                                HttpMethod.GET, "/users/**"
-                        ).permitAll()
+                                HttpMethod.GET, "/categories/**"
+                        ).permitAll() //"/users/**"
                         .requestMatchers(
                                 "/admin/**",
                                 "/categories/**",

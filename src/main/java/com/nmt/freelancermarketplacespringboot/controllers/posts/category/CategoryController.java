@@ -97,10 +97,9 @@ public class CategoryController {
     }
 
 
-    @GetMapping("/get-categories-by-parent-id")
+    @GetMapping("/")
     public ResponseEntity<?> getCategoriesByParentId (
             @RequestParam int id
-
     ) {
         List<CategoryEntity> result = this.categoryService.getCategoriesByParentId(id);
         if (result.isEmpty()) {
@@ -108,6 +107,16 @@ public class CategoryController {
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+//    @GetMapping("/all")
+//    public ResponseEntity<?> getCategoriesByParentIds () {
+//        List<CategoryEntity> result = this.categoryService.getCategoriesByParentId(id);
+//        if (result.isEmpty()) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
+
 
 
 
