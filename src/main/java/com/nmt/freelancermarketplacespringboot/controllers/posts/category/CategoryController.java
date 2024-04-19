@@ -45,7 +45,7 @@ import java.util.List;
 public class CategoryController {
 
     private static final Logger logger = LoggerFactory.getLogger(PostController.class);
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss");
+    // private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss");
     @Autowired
     ICategoryService categoryService;
 
@@ -86,7 +86,8 @@ public class CategoryController {
     ) throws ModuleException {
         System.out.println(data.toString());
         CategoryEntity result = this.categoryService.createOne(data);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
 
@@ -117,11 +118,8 @@ public class CategoryController {
         if (result.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-//        response.getWriter().println(result);
-//        response.flushBuffer();
-//        int responseSize = response.getBufferSize();
         LocalDateTime currentTime = LocalDateTime.now();
-        String formattedTime = currentTime.format(formatter);
+        // String formattedTime = currentTime.format(formatter);
         logger.info(String.format("%s - - [%s + 0000] \"%s %s HTTP/1.1\" 200 %s \"%s\" \"%s\"",
                 request.getRemoteAddr(),
                 LocalDateTime.now(),

@@ -2,6 +2,7 @@ package com.nmt.freelancermarketplacespringboot.entities.posts.review;
 
 import com.nmt.freelancermarketplacespringboot.core.bases.AbstractBaseEntity;
 //import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
+import com.nmt.freelancermarketplacespringboot.entities.orders.OrderEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.profile.ProfileEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
@@ -42,8 +43,13 @@ public class ReviewEntity extends AbstractBaseEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "post_id", nullable = false,
+//            foreignKey = @ForeignKey(name = "fk_review_post"))
+//    private PostEntity post;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id", nullable = false,
-            foreignKey = @ForeignKey(name = "fk_review_post"))
-    private PostEntity post;
+    @JoinColumn(name = "order_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_review_order"))
+    private OrderEntity order;
 }

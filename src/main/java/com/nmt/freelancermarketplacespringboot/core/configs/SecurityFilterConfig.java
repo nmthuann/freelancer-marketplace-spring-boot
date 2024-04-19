@@ -57,9 +57,13 @@ public class SecurityFilterConfig {
                         .requestMatchers(
                                 "/admin/**",
                                 "/categories/**",
-                                "/major/**"
+                                "/majors/**"
                         ).hasRole("ADMIN")
-                        .requestMatchers("/users/**", "/posts/**").hasRole("USER") // user
+                        .requestMatchers(
+                                "/users/**",
+                                "/posts/**",
+                                "/reviews/**"
+                        ).hasRole("USER") // user
                         // .requestMatchers("/admin/**").hasAnyAuthority("WRITE_PRODUCT") // admin
                         // .requestMatchers("/auth/user/logout").authenticated() // user
                         .anyRequest().authenticated()) // private

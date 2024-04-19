@@ -37,7 +37,7 @@ import java.util.UUID;
  * 9. updateImages -> OK
  * 10.stopPost -> OK
  * 11.deletePost -> OK
- *
+ * 12. getPostTopRating
  */
 @RestController
 @RequestMapping("/posts")
