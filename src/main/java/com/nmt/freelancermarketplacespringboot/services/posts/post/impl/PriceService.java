@@ -13,7 +13,16 @@ import org.springframework.stereotype.Service;
 public class PriceService extends AbstractBaseService <PriceEntity, PriceIdEntity> implements IPriceService {
 
     @Autowired
+    IPriceRepository priceRepository;
+
+    @Autowired
     public PriceService(IPriceRepository priceRepository) {
         super(priceRepository);
+    }
+
+
+    @Override
+    public PriceEntity findNearestBeginAtByPackageId(int packageId) {
+        return this.priceRepository.findNearestBeginAtByPackageId(packageId);
     }
 }

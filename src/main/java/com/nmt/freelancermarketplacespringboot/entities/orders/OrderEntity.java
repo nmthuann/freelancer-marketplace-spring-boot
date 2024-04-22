@@ -25,8 +25,12 @@ public class OrderEntity {
     @Column(nullable = false)
     private String status;
 
-    @Column(nullable = false)
+    @Column(name="delivery_day", nullable = false)
     private Date deliveryDay;
+
+    @Column(name = "total_price", nullable = false)
+    private Double totalPrice;
+
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private TransactionEntity transaction;

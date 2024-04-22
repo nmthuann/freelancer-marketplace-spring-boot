@@ -9,6 +9,7 @@ import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.review.ReviewEntity;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface IPackageService extends IBaseService<PackageEntity, Integer> {
 
@@ -16,4 +17,7 @@ public interface IPackageService extends IBaseService<PackageEntity, Integer> {
 
     PackageEntity updateOneById(PackageEntity packageCreated, UpdatePackageDto data);
 
+    List<PackageEntity> getPackagesByPostId(PostEntity postCreated);
+
+    PackageDto getPackageByPriceId(PackageEntity packageCreated);
 }

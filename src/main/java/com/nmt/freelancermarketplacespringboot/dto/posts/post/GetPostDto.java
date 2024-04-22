@@ -6,7 +6,7 @@ import com.nmt.freelancermarketplacespringboot.entities.posts.post.PackageEntity
 import java.util.List;
 import java.util.UUID;
 
-public record PostDto(
+public record GetPostDto(
         int majorId,
         UUID postId,
         String title,
@@ -14,12 +14,7 @@ public record PostDto(
         String faq,
         String sellerEmail,
         String sellerFullName,
-        // String userId, -> get into Token
-//        List<ImageDto> images,
-//        List<PackageDto>packages
-        List<ImageEntity> images,
-        List<PackageEntity>packages
+        List<ImageDto> images,
+        List<PackageDto>packages
 ) {
 }
-//List<ImageEntity> images,
-//List<PackageEntity>packages

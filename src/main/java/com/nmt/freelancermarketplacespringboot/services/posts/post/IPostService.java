@@ -20,6 +20,7 @@ public interface IPostService extends IBaseService<PostEntity, UUID> {
     List<PostEntity> getPostsByUserId(String email);
     Page<PostEntity> getPostsByMajorId(int majorId, int size, int page);
     List<PostEntity> getPostsByCategoryId(int categoryId);
+
     void softDelete(UUID postId);
     PackageEntity updatePackageByPost(UUID postId, int packageId, UpdatePackageDto data) throws ModuleException;
     Page<PostEntity> getAllPosts(
@@ -30,6 +31,6 @@ public interface IPostService extends IBaseService<PostEntity, UUID> {
             Boolean bestSeller,
             Boolean topFeedback
     );
-
+    PostDto getPostByPackages(UUID postId);
 
 }

@@ -184,6 +184,9 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
     }
 
 
+
+
+
     @Override
     public void softDelete(UUID id) {
         Date now = new Date();
@@ -252,6 +255,23 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
         return postsPage;
 
     }
+
+    @Override
+    public PostDto getPostByPackages(UUID postId) {
+        PostEntity findPost = this.getOneById(postId);
+        return new PostDto (
+                findPost.getMajor().getMajorId(),
+                findPost.getPostId(),
+                findPost.getTitle(),
+                findPost.getDescription(),
+                findPost.getFAQ(),
+                findPost.getUser().getAccount().getEmail(),
+                findPost.getUser().getFirstName() + " " + findPost.getUser().getFirstName(),
+                findPost.getImages(),
+                this.packageService.getPackagesByPostId(findPost)
+        );
+    }
+
 
 
 }

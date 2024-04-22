@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PackageService
@@ -103,6 +104,24 @@ public class PackageService
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public List<PackageEntity> getPackagesByPostId(PostEntity postCreated) {
+        return this.packageRepository.findByPost(postCreated);
+    }
+
+    @Override
+    public PackageDto getPackageByPriceId(PackageEntity packageCreated) {
+        PriceEntity findPrice = this.priceService.findNearestBeginAtByPackageId(packageCreated.getPackageId());
+        return new PackageDto(
+                packageCreated.getPackageName(),
+                packageCreated.getCaption(),
+                packageCreated.getRevision(),
+                packageCreated.getDeliveryDay(),
+                findPrice.getUnitPrice(),
+                findPrice.getPriceId().getBeginAt()
+        );
     }
 
 
