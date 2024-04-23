@@ -50,6 +50,7 @@ public class SecurityFilterConfig {
                                 "/configuration-ui",
                                 "/configuration-security",
                                 "/swagger-ui.html"
+//                                "/actuator/**" -> lib handled
                         ).permitAll() // public
                         .requestMatchers(
                                 HttpMethod.GET, "/categories/**"

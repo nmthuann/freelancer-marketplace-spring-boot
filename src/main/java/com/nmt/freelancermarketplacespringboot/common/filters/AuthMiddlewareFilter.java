@@ -34,13 +34,16 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
 
-
+        /*
+         * recommend in YouTube:
+         * - Place the following code inside a try-catch block.
+         * - Create an API endpoint list that allows access without requiring a token.
+         */
         if (authHeader == null || authHeader.isBlank()) {
             // response.setStatus(403);
             request.setAttribute("message", "Missing authorization information");
             filterChain.doFilter(request, response);
             return;
-
         }
         // throw new ServletException("Missing authorization information");
 
@@ -49,7 +52,6 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
          * authHeader != null
          * Ex: "Bearer eyJhbGciOiJIUzI1NiJ9..." -> beginIndex: 7
          */
-
 
         try {
             final String token = authHeader.substring(7);
