@@ -37,12 +37,12 @@ public class PackageEntity {
     @JsonIgnore
     private PostEntity post;
 
-//    @OneToMany(mappedBy = "package", cascade = CascadeType.ALL)
-//    private List<PriceEntity> prices;
 
     @JsonIgnore
     @OneToMany(mappedBy = "packageEntity", cascade = CascadeType.ALL)
     private List<OrderEntity> orders;
-
-    // Getter and setter methods
 }
+
+
+//@OneToMany(mappedBy = "packageEntity", cascade = CascadeType.ALL)
+//private List<PriceIdEntity> prices;

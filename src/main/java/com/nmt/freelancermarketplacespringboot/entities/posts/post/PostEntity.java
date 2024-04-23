@@ -57,11 +57,11 @@ public class PostEntity  extends AbstractBaseEntity  {
 
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    @JsonIgnore
+//    @JsonIgnore
     private List<ImageEntity> images;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    @JsonIgnore
+//    @JsonIgnore
     private List<PackageEntity> packages;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)

@@ -31,7 +31,6 @@ public class OrderEntity {
     @Column(name = "total_price", nullable = false)
     private Double totalPrice;
 
-
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private TransactionEntity transaction;
 

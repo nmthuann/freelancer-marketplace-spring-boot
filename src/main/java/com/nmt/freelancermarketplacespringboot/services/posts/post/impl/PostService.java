@@ -190,14 +190,13 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
     @Override
     public void softDelete(UUID id) {
         Date now = new Date();
-
         Optional<PostEntity> findById = this.postRepository.findById(id);
-
         findById.ifPresent(post -> {
             post.setDeletedAt(now);
             this.postRepository.save(post);
         });
     }
+
 
     @Override
     @Transactional
@@ -227,13 +226,12 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
         // Pagination logic
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
         if (latest != null && latest) {
-            // Logic to retrieve latest posts
             postsPage = postRepository.findAll(pageRequest);
         } else if (majorId != 0) {
-            // Logic to filter posts by major ID
             MajorEntity major = this.majorService.getOneById(majorId);
             if (major != null) {
                 postsPage = postRepository.findByMajor(major, pageRequest);
+
             } else {
                 postsPage = Page.empty(); // No posts found for the provided majorId
             }
@@ -272,6 +270,43 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
         );
     }
 
+    @Override
+    public List<GetPostDto> getAllPost() {
+        return null;
+    }
 
+    @Override
+    public GetPostDto getPostById(UUID postId) {
+        PostEntity findById = this.getOneById(postId);
+
+        List<PackageEntity> findPackagesOfPost =  this.packageService.getPackagesByPostId(findById);
+        List<PackageDto> packageDtos = new ArrayList<>();
+        for (PackageEntity packageEntity: findPackagesOfPost){
+            packageDtos.add(this.packageService.getPackageByPriceId(packageEntity));
+        }
+
+
+        return new GetPostDto(
+                findById.getMajor().getMajorId(),
+                findById.getPostId(),
+                findById.getTitle(),
+                findById.getDescription(),
+                findById.getFAQ(),
+                findById.getUser().getAccount().getEmail(),
+                findById.getUser().getFirstName() + " " + findById.getUser().getFirstName(),
+                findById.getImages(),
+                packageDtos
+
+        );
+    }
+//    int majorId,
+//    UUID postId,
+//    String title,
+//    String description,
+//    String faq,
+//    String sellerEmail,
+//    String sellerFullName,
+//    List<ImageDto> images,
+//    List<PackageDto>packages
 
 }

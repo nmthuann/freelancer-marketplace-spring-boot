@@ -16,11 +16,6 @@ public class PriceEntity {
     @Column(name = "unit_price", nullable = false)
     private Double unitPrice;
 
-    //    @ManyToOne(fetch = FetchType.EAGER)
-//    @MapsId("packageId")
-//    @JoinColumn(name = "package_id", nullable = false,
-//            foreignKey = @ForeignKey(name = "fk_price_package"))
-//    private PackageEntity packageEntity;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false
@@ -33,3 +28,10 @@ public class PriceEntity {
     }
 }
 
+
+
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @MapsId("packageId")
+//    @JoinColumn(name = "package_id", nullable = false,
+//            foreignKey = @ForeignKey(name = "fk_price_package"))
+//    private PackageEntity packageEntity;

@@ -3,10 +3,7 @@ package com.nmt.freelancermarketplacespringboot.controllers.posts.post;
 
 import com.nmt.freelancermarketplacespringboot.common.enums.PostStatusEnum;
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
-import com.nmt.freelancermarketplacespringboot.dto.posts.post.CreatePostDto;
-import com.nmt.freelancermarketplacespringboot.dto.posts.post.PostDto;
-import com.nmt.freelancermarketplacespringboot.dto.posts.post.UpdatePackageDto;
-import com.nmt.freelancermarketplacespringboot.dto.posts.post.UpdatePostDto;
+import com.nmt.freelancermarketplacespringboot.dto.posts.post.*;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PackageEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.nmt.freelancermarketplacespringboot.services.posts.post.IPostService;
@@ -152,7 +149,7 @@ public class PostController {
     public ResponseEntity<?> getOneById (
             @PathVariable UUID id
     ) {
-        PostEntity result = this.postService.getOneById(id);
+        GetPostDto result = this.postService.getPostById(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

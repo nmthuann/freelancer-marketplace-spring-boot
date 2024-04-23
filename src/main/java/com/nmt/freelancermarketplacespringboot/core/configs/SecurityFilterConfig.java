@@ -49,11 +49,13 @@ public class SecurityFilterConfig {
                                 "/javainuse-openapi/**",
                                 "/configuration-ui",
                                 "/configuration-security",
-                                "/swagger-ui.html"
-//                                "/actuator/**" -> lib handled
+                                "/swagger-ui.html",
+                                "/actuator/**" //-> lib handled
                         ).permitAll() // public
                         .requestMatchers(
-                                HttpMethod.GET, "/categories/**"
+                                HttpMethod.GET,
+                                "/categories/**",
+                                "/posts/**"
                         ).permitAll() //"/users/**"
                         .requestMatchers(
                                 "/admin/**",

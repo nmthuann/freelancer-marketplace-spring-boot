@@ -14,7 +14,7 @@ public record GetPostDto(
         String faq,
         String sellerEmail,
         String sellerFullName,
-        List<ImageDto> images,
+        List<ImageEntity> images,
         List<PackageDto>packages
 ) {
 }

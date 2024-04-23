@@ -12,17 +12,3 @@ public record PackageDto(
 ) {
 }
 
-
-//@Column(name = "package_name", length = 50, nullable = false)
-//private String packageName;
-//
-//@Column(name = "caption")
-//private String caption;
-//
-//@Column(name = "revision", length = 255)
-//private String revision;
-//
-//@Column(name = "delivery_day", nullable = false)
-//private Integer deliveryDay;
-
-
