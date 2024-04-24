@@ -17,10 +17,7 @@ import com.nmt.freelancermarketplacespringboot.services.posts.post.IPostService;
 import com.nmt.freelancermarketplacespringboot.services.users.user.IUserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -80,6 +77,8 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
             newPost.setFAQ(data.faq());
             newPost.setUser(findUser);
             newPost.setMajor(findMajor);
+            newPost.setRating(0.0F);
+            newPost.setVote(0);
 
             PostEntity postCreated =
                     this.postRepository.save(newPost);
@@ -102,6 +101,8 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
                     postCreated.getTitle(),
                     postCreated.getDescription(),
                     postCreated.getFAQ(),
+                    postCreated.getRating(),
+                    postCreated.getVote(),
                     findUser.getAccount().getEmail(),
                     findUser.getLastName() +" "+findUser.getFirstName(),
                     imagesCreated,
@@ -150,44 +151,6 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
 
 
     @Override
-    public List<PostEntity> getPostsByUserId(String email) {
-        UserEntity findUser = this.userService.getUserByEmail(email);
-        return this.postRepository.findByUser(findUser);
-    }
-
-
-    @Override
-    public Page<PostEntity> getPostsByMajorId(int majorId, int size, int page) {
-        MajorEntity findMajor = this.majorService.getOneById(majorId);
-        Pageable pageable = PageRequest.of(page - 1, size - 1);
-        return this.postRepository.findByMajor(findMajor, pageable);
-    }
-
-
-    @Override
-    public List<PostEntity> getPostsByCategoryId(int categoryId) {
-
-        int size = 10;
-        int page = 1;
-        List<PostEntity> posts = new ArrayList<>();
-
-        List<MajorEntity> findMajors = this.majorService.getMajorsByCategory(categoryId);
-
-        for (MajorEntity major: findMajors){
-            Pageable pageable = PageRequest.of(page - 1, size - 1);
-
-            Page<PostEntity> getPostsByMajorId =  this.postRepository.findByMajor(major, pageable);
-            posts.addAll((Collection<? extends PostEntity>) getPostsByMajorId);
-        }
-
-        return posts;
-    }
-
-
-
-
-
-    @Override
     public void softDelete(UUID id) {
         Date now = new Date();
         Optional<PostEntity> findById = this.postRepository.findById(id);
@@ -212,8 +175,75 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
         return this.packageService.updateOneById(findPackage, data);
     }
 
+
     @Override
-    public Page<PostEntity> getAllPosts(
+    public List<PostEntity> getPostsByUserId(String email) {
+        UserEntity findUser = this.userService.getUserByEmail(email);
+        return this.postRepository.findByUser(findUser);
+    }
+
+
+    @Override
+    public Page<GetPostDto> getPostsByMajorId(int majorId, int size, int page) {
+        MajorEntity findMajor = this.majorService.getOneById(majorId);
+        Pageable pageable = PageRequest.of(page - 1, size - 1);
+
+        Page<PostEntity> postsEntityPage = this.postRepository.findByMajor(findMajor, pageable);
+        List<GetPostDto> postDtoList = new ArrayList<>();
+
+        for (PostEntity postEntity: postsEntityPage){
+            GetPostDto findPostById = this.getPostById(postEntity.getPostId());
+            postDtoList.add(findPostById);
+        }
+
+        return new PageImpl<>(postDtoList, pageable, postDtoList.size());
+    }
+
+
+    @Override
+    public Page<GetPostDto> getPostsByCategoryId(int categoryId, int size, int page) {
+        Pageable pageable = PageRequest.of(page - 1, size - 1);
+        List<MajorEntity> findMajors = this.majorService.getMajorsByCategory(categoryId);
+        List<GetPostDto> postDtoList = new ArrayList<>();
+
+        for (MajorEntity major: findMajors){
+            Page<GetPostDto> getPostsByMajor = this.getPostsByMajorId(major.getMajorId(), 0, 9);
+            postDtoList.addAll((Collection<? extends GetPostDto>) getPostsByMajor);
+        }
+
+        return new PageImpl<>(postDtoList, pageable, postDtoList.size());
+    }
+
+
+    @Override
+    public Page<GetPostDto> getAllPost(int page, int size, boolean latest) {
+        if(latest){
+            PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
+            List<PostEntity> findPosts = this.postRepository.findAll();
+            List <GetPostDto> getPostList = new ArrayList<>();
+            for (PostEntity findPost: findPosts){
+                GetPostDto getPostDto = this.getPostById(findPost.getPostId());
+                getPostList.add(getPostDto);
+            }
+            return new PageImpl<>(getPostList, pageRequest, getPostList.size());
+        }
+        else {
+            Pageable pageable = PageRequest.of(page - 1, size - 1);
+            List<PostEntity> findPosts = this.postRepository.findAll();
+            List <GetPostDto> getPostList = new ArrayList<>();
+            for (PostEntity findPost: findPosts){
+                GetPostDto getPostDto = this.getPostById(findPost.getPostId());
+                getPostList.add(getPostDto);
+            }
+            return new PageImpl<>(getPostList, pageable, getPostList.size());
+        }
+
+    }
+
+
+
+    @Override
+    public Page<GetPostDto> getAllPosts(
             int size,
             int page,
             int majorId,
@@ -221,17 +251,18 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
             Boolean bestSeller,
             Boolean topFeedback
     ) {
-        Page<PostEntity> postsPage;
+        Page<GetPostDto> postsPage;
 
         // Pagination logic
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
         if (latest != null && latest) {
-            postsPage = postRepository.findAll(pageRequest);
+            postsPage = this.getAllPost(page, size, true);
+            // postsPage = postRepository.findAll(pageRequest);
         } else if (majorId != 0) {
             MajorEntity major = this.majorService.getOneById(majorId);
             if (major != null) {
-                postsPage = postRepository.findByMajor(major, pageRequest);
-
+                postsPage = this.getPostsByMajorId(majorId, page, size);
+                // postsPage = postRepository.findByMajor(major, pageRequest);
             } else {
                 postsPage = Page.empty(); // No posts found for the provided majorId
             }
@@ -247,7 +278,7 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
             postsPage = Page.empty();
         } else {
             // Fetch all posts if no specific criteria are provided
-            postsPage = postRepository.findAll(pageRequest);
+            postsPage = this.getAllPost(page, size, false);
         }
 
         return postsPage;
@@ -263,6 +294,8 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
                 findPost.getTitle(),
                 findPost.getDescription(),
                 findPost.getFAQ(),
+                findPost.getRating(),
+                findPost.getVote(),
                 findPost.getUser().getAccount().getEmail(),
                 findPost.getUser().getFirstName() + " " + findPost.getUser().getFirstName(),
                 findPost.getImages(),
@@ -270,10 +303,7 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
         );
     }
 
-    @Override
-    public List<GetPostDto> getAllPost() {
-        return null;
-    }
+
 
     @Override
     public GetPostDto getPostById(UUID postId) {
@@ -292,6 +322,8 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
                 findById.getTitle(),
                 findById.getDescription(),
                 findById.getFAQ(),
+                findById.getRating(),
+                findById.getVote(),
                 findById.getUser().getAccount().getEmail(),
                 findById.getUser().getFirstName() + " " + findById.getUser().getFirstName(),
                 findById.getImages(),
@@ -299,14 +331,5 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
 
         );
     }
-//    int majorId,
-//    UUID postId,
-//    String title,
-//    String description,
-//    String faq,
-//    String sellerEmail,
-//    String sellerFullName,
-//    List<ImageDto> images,
-//    List<PackageDto>packages
 
 }

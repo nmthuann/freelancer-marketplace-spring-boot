@@ -127,20 +127,22 @@ public class PostController {
 
     @GetMapping("/get-post-by-major") //"posts/get-post-by-major?id"
     public ResponseEntity<?> getPostByMajor(
-            @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
             @RequestParam int id
     ) {
-        Page<PostEntity> result = this.postService.getPostsByMajorId(id, size, page);
+        Page<GetPostDto> result = this.postService.getPostsByMajorId(id, page, size);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
     @GetMapping("/get-post-by-category") //"posts/get-post-by-major?id"
     public ResponseEntity<?> getPostByCategory(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
             @RequestParam int id
     ) {
-        List<PostEntity> result = this.postService.getPostsByCategoryId(id);
+        Page<GetPostDto> result = this.postService.getPostsByCategoryId(id, page, size);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -156,14 +158,14 @@ public class PostController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllPosts(
-            @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) int majorId,
             @RequestParam(required = false) Boolean latest,
             @RequestParam(required = false) Boolean bestSeller,
             @RequestParam(required = false) Boolean topFeedback
     ) {
-        Page<PostEntity> result = postService.getAllPosts(
+        Page<GetPostDto> result = postService.getAllPosts(
                 size,
                 page,
                 majorId,

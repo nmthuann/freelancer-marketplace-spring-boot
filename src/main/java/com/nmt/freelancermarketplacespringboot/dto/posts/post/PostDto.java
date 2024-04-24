@@ -12,6 +12,8 @@ public record PostDto(
         String title,
         String description,
         String faq,
+        Float rating,
+        Integer vote,
         String sellerEmail,
         String sellerFullName,
         // String userId, -> get into Token

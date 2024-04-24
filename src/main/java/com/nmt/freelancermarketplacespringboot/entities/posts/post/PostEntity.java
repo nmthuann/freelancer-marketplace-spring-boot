@@ -40,6 +40,14 @@ public class PostEntity  extends AbstractBaseEntity  {
     private String FAQ;
 
 
+    @Column(name = "rating", nullable = false)
+    private Float rating;
+
+
+    @Column(name = "vote", nullable = false)
+    private int vote;
+
+
 //    @Column(name = "seller", nullable = false)
 //    private String seller;
 

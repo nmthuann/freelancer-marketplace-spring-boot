@@ -1,5 +1,6 @@
 package com.nmt.freelancermarketplacespringboot.repositories.posts.post;
 
+import com.nmt.freelancermarketplacespringboot.dto.posts.post.GetPostDto;
 import com.nmt.freelancermarketplacespringboot.entities.posts.major.MajorEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
@@ -17,7 +18,9 @@ import java.util.UUID;
 public interface IPostRepository extends JpaRepository<PostEntity, UUID> {
     List<PostEntity> findByUser(UserEntity user);
     Page<PostEntity> findByMajor(MajorEntity major, Pageable pageable);
+
+}
+
 //    Page<PostEntity> findTopNByOrderByCreatedAtDesc(MajorEntity major);
 //    @Query("SELECT p FROM PostEntity o JOIN o.packageEntity p JOIN p.post post WHERE post.bestSeller = true")
 //    List<PostEntity> findByBestSellerPosts();
-}

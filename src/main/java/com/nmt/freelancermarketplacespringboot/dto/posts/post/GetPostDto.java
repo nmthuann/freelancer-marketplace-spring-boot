@@ -12,6 +12,8 @@ public record GetPostDto(
         String title,
         String description,
         String faq,
+        Float rating,
+        Integer vote,
         String sellerEmail,
         String sellerFullName,
         List<ImageEntity> images,

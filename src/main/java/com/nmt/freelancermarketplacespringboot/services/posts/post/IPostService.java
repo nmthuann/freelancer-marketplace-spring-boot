@@ -13,12 +13,18 @@ import java.util.UUID;
 public interface IPostService extends IBaseService<PostEntity, UUID> {
     PostDto createOne(String email, CreatePostDto data) throws ModuleException;
     PostEntity updateOneById(String email, UUID postId, UpdatePostDto data) throws ModuleException;
-    List<PostEntity> getPostsByUserId(String email);
-    Page<PostEntity> getPostsByMajorId(int majorId, int size, int page);
-    List<PostEntity> getPostsByCategoryId(int categoryId);
     void softDelete(UUID postId);
     PackageEntity updatePackageByPost(UUID postId, int packageId, UpdatePackageDto data) throws ModuleException;
-    Page<PostEntity> getAllPosts(
+
+    List<PostEntity> getPostsByUserId(String email);
+    Page<GetPostDto> getPostsByMajorId(int majorId,  int page, int size);
+    Page<GetPostDto> getPostsByCategoryId(int categoryId, int page, int size);
+    Page<GetPostDto> getAllPost(int page, int size, boolean latest);
+    GetPostDto getPostById(UUID postId);
+
+
+
+    Page<GetPostDto> getAllPosts(
             int size,
             int page,
             int majorId,
@@ -27,6 +33,5 @@ public interface IPostService extends IBaseService<PostEntity, UUID> {
             Boolean topFeedback
     );
     PostDto getPostByPackages(UUID postId);
-    List<GetPostDto> getAllPost();
-    GetPostDto getPostById(UUID postId);
+
 }
