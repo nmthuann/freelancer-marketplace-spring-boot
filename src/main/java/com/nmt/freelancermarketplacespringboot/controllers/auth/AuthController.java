@@ -1,12 +1,9 @@
 package com.nmt.freelancermarketplacespringboot.controllers.auth;
 
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.AuthException;
-
-import com.nmt.freelancermarketplacespringboot.controllers.posts.post.PostController;
 import com.nmt.freelancermarketplacespringboot.dto.Tokens;
 import com.nmt.freelancermarketplacespringboot.dto.auth.*;
 import com.nmt.freelancermarketplacespringboot.services.auth.IAuthService;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -17,10 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
+
 
 
 /**
@@ -36,8 +31,12 @@ import java.util.Date;
 public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
+    private final IAuthService authService;
+
     @Autowired
-    IAuthService authService;
+    public AuthController(IAuthService authService) {
+        this.authService = authService;
+    }
 
 
     @PostMapping("/user/login")
@@ -49,12 +48,6 @@ public class AuthController {
     }
 
 
-//    @PostMapping("/admin/registerAsync")
-//    public ResponseEntity<?> registerAsync (@Valid @RequestBody RegisterDto data) throws AuthException {
-//        System.out.println("REGISTER registerAsync.....");
-//        RegisterResultDto result = this.authService.registerAsync(data);
-//        return new ResponseEntity<>(result, HttpStatus.OK);
-//    }
 
     @PostMapping("/user/register")
     public ResponseEntity<?> registerSync (@Valid @RequestBody RegisterDto data) throws AuthException {
@@ -110,7 +103,16 @@ public class AuthController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+
+//    @PostMapping("/admin/registerAsync")
+//    public ResponseEntity<?> registerAsync (@Valid @RequestBody RegisterDto data) throws AuthException {
+//        System.out.println("REGISTER registerAsync.....");
+//        RegisterResultDto result = this.authService.registerAsync(data);
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
+
 }
+
 
 /*
     Auth Module:

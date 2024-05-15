@@ -46,11 +46,11 @@ public class CategoryController {
 
     private static final Logger logger = LoggerFactory.getLogger(PostController.class);
     // private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MMM/yyyy:HH:mm:ss");
-    @Autowired
-    ICategoryService categoryService;
+
+    private final ICategoryService categoryService;
 
     @Autowired
-    public CategoryController(ICategoryService categoryService) {
+    public CategoryController( ICategoryService categoryService) {
         this.categoryService = categoryService;
     }
 

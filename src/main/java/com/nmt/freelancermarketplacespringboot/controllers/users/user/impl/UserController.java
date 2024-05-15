@@ -35,25 +35,16 @@ import org.springframework.web.bind.annotation.*;
 public class UserController { // implements IUserController
 
 
-    @Autowired
-    IUserService userService;
+    // @Autowired
+    private final IUserService userService;
 
 
     @Autowired
     public UserController(IUserService userService){
         this.userService = userService;
-
     }
 
-    // @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/update")
-    public ResponseEntity<UserEntity> updateUserInformation (
-            @Valid @RequestBody UserDto data,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
-        UserEntity result = this.userService.updateUserInformation(userDetails.getUsername(), data);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
+
 
     @PostMapping("/create-profile")
     public ResponseEntity<?> createProfile (
@@ -82,6 +73,17 @@ public class UserController { // implements IUserController
         UserPaymentEntity result = this.userService.createUserPayment(userDetails.getUsername(), data);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    // @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/update")
+    public ResponseEntity<UserEntity> updateUserInformation (
+            @Valid @RequestBody UserDto data,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        UserEntity result = this.userService.updateUserInformation(userDetails.getUsername(), data);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 
     @GetMapping("/get-user")
     public ResponseEntity<UserEntity> getUserByEmail(@AuthenticationPrincipal UserDetails userDetails) {

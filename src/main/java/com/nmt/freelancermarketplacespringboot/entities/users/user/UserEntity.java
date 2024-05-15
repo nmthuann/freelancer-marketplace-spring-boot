@@ -55,6 +55,7 @@ public class UserEntity {
             unique=true,
             nullable = false
     )
+    // ? @JsonIgnore
     private AccountEntity account;
 
     @OneToOne(cascade = CascadeType.ALL)
