@@ -20,17 +20,27 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 
 /**
  * Khoi tao dau tien
+ * initialization in the program ...
  */
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class SecurityFilterConfig {
 
-    @Autowired
-    DelegatedAuthenticationEntryPoint authEntryPoint;
-
+    private final DelegatedAuthenticationEntryPoint authEntryPoint;
     private final AuthMiddlewareFilter authMiddlewareFilter;
     private final AuthenticationProvider authenticationProvider;
+
+    @Autowired
+    public SecurityFilterConfig (
+            DelegatedAuthenticationEntryPoint authEntryPoint,
+            AuthMiddlewareFilter authMiddlewareFilter,
+            AuthenticationProvider authenticationProvider
+    ) {
+        this.authEntryPoint = authEntryPoint;
+        this.authMiddlewareFilter = authMiddlewareFilter;
+        this.authenticationProvider = authenticationProvider;
+    }
 
 
     @Bean
@@ -81,15 +91,9 @@ public class SecurityFilterConfig {
                                         // .accessDeniedHandler(DefaultExceptionHandler)
                                        // .accessDeniedPage("/errors/access-denied")
                                         .authenticationEntryPoint(authEntryPoint)
-
-                )
-                ;
+                );
         return httpSecurity.build();
     }
-
-
-
-
 }
 
 
