@@ -1,10 +1,8 @@
 package com.nmt.freelancermarketplacespringboot.entities.users.user;
 
 
-// import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nmt.freelancermarketplacespringboot.entities.orders.OrderEntity;
-import com.nmt.freelancermarketplacespringboot.entities.orders.RevisionEntity;
 import com.nmt.freelancermarketplacespringboot.entities.posts.review.ReviewEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.account.AccountEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.profile.ProfileEntity;
@@ -13,7 +11,6 @@ import lombok.Data;
 import org.hibernate.annotations.Nationalized;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 @Data

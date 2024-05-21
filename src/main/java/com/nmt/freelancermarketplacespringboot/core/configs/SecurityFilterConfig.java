@@ -1,6 +1,7 @@
 package com.nmt.freelancermarketplacespringboot.core.configs;
 
 
+import com.nmt.freelancermarketplacespringboot.common.filters.ApiVersionFilter;
 import com.nmt.freelancermarketplacespringboot.common.filters.AuthMiddlewareFilter;
 import com.nmt.freelancermarketplacespringboot.components.security.DelegatedAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -28,18 +29,21 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 public class SecurityFilterConfig {
 
     private final DelegatedAuthenticationEntryPoint authEntryPoint;
-    private final AuthMiddlewareFilter authMiddlewareFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final ApiVersionFilter apiVersionFilter;
+    private final AuthMiddlewareFilter authMiddlewareFilter;
 
     @Autowired
     public SecurityFilterConfig (
             DelegatedAuthenticationEntryPoint authEntryPoint,
-            AuthMiddlewareFilter authMiddlewareFilter,
-            AuthenticationProvider authenticationProvider
+            AuthenticationProvider authenticationProvider,
+            ApiVersionFilter apiVersionFilter,
+            AuthMiddlewareFilter authMiddlewareFilter
     ) {
         this.authEntryPoint = authEntryPoint;
-        this.authMiddlewareFilter = authMiddlewareFilter;
         this.authenticationProvider = authenticationProvider;
+        this.authMiddlewareFilter = authMiddlewareFilter;
+        this.apiVersionFilter = apiVersionFilter;
     }
 
 
@@ -60,7 +64,8 @@ public class SecurityFilterConfig {
                                 "/configuration-ui",
                                 "/configuration-security",
                                 "/swagger-ui.html",
-                                "/actuator/**" //-> lib handled
+                                "/actuator/**", //-> lib handled
+                                "/api/v1/**"
                         ).permitAll() // public
                         .requestMatchers(
                                 HttpMethod.GET,
@@ -71,6 +76,7 @@ public class SecurityFilterConfig {
                                 "/admin/**",
                                 "/categories/**",
                                 "/majors/**"
+                                //"/api/v1/**"
                         ).hasRole("ADMIN")
                         .requestMatchers(
                                 "/users/**",
@@ -83,7 +89,7 @@ public class SecurityFilterConfig {
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                     .addFilterBefore(authMiddlewareFilter, UsernamePasswordAuthenticationFilter.class)
-
+                    .addFilterBefore(apiVersionFilter, AuthMiddlewareFilter.class)
                 .logout((logout) -> logout.logoutUrl("/auth/user/logout/uri"))//"/auth/user/logout/uri"
                 .exceptionHandling(
                         (exceptionHandling) ->

@@ -47,24 +47,8 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         // Kiểm tra version API từ header
-        String timestampVersion = request.getHeader("API-Version");
-        if (timestampVersion.equals(ApiVersionEnum.API_VERSION_V1.getTimestamp())) {
-            String requestURI = request.getRequestURI();
-            String newURI = "/api/v1" + requestURI;
-            // Chuyển tiếp yêu cầu đến URL mới
-            RequestDispatcher dispatcher = request.getRequestDispatcher(newURI);
-            dispatcher.forward(request, response);
-        } else if (timestampVersion.equals(ApiVersionEnum.API_VERSION_V2.getTimestamp())) {
-            String requestURI = request.getRequestURI();
-            String newURI = "/api/v2" + requestURI;
-            // Chuyển tiếp yêu cầu đến URL mới
-            RequestDispatcher dispatcher = request.getRequestDispatcher(newURI);
-            dispatcher.forward(request, response);
-        }
-        else {
-            request.setAttribute("message", AuthExceptionMessages.AUTH_MISSING_INFORMATION);
-            filterChain.doFilter(request, response);
-        }
+
+
 
 
 

@@ -27,6 +27,7 @@ public abstract class AbstractBaseService<T, ID> implements IBaseService<T, ID>{
     public T getOneById(ID id) {
 //        return Optional.ofNullable(baseRepository.findById(id).orElse(null))
 //                .orElseThrow(() -> new EntityNotFoundException("Entity with id " + id + " not found"));
+        // return baseRepository.findById(id).orElse(null);
         return baseRepository.findById(id).orElse(null);
     }
 
@@ -58,6 +59,23 @@ public abstract class AbstractBaseService<T, ID> implements IBaseService<T, ID>{
             return findEntity;
         }
         return null;
+
+//        return getOneById(id).map(findEntity -> {
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            try {
+//                JsonNode originalNode = objectMapper.convertValue(findEntity, JsonNode.class);
+//                JsonNode updateNode = objectMapper.convertValue(data, JsonNode.class);
+//
+//                ((ObjectNode) originalNode).setAll((ObjectNode) updateNode);
+//
+//                T updatedEntity = objectMapper.treeToValue(originalNode, (Class<T>) findEntity.getClass());
+//
+//                return baseRepository.save(updatedEntity);
+//            } catch (IOException e) {
+//                e.printStackTrace(); // or handle the exception appropriately
+//                return findEntity;
+//            }
+//        });
     }
 
     public void deleteOneById(ID id) {
