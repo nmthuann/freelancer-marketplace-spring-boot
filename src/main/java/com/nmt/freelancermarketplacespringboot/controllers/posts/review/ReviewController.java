@@ -24,11 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/reviews")
 public class ReviewController {
-    @Autowired
-    IReviewService reviewService;
+    private final IReviewService reviewService;
 
     // logging
-
+    @Autowired
     public ReviewController(IReviewService reviewService){
         this.reviewService = reviewService;
     }

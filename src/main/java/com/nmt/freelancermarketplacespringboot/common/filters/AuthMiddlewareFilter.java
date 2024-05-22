@@ -61,7 +61,7 @@ public class AuthMiddlewareFilter extends OncePerRequestFilter {
          * - Create an API endpoint list that allows access without requiring a token.
          */
         if (authHeader == null || authHeader.isBlank()) {
-            request.setAttribute("message", AuthExceptionMessages.AUTH_MISSING_INFORMATION);
+            request.setAttribute("message", AuthExceptionMessages.AUTH_MISSING_INFORMATION.getMessage());
             filterChain.doFilter(request, response);
             return;
         }

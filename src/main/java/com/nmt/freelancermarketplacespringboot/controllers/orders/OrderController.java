@@ -2,6 +2,8 @@ package com.nmt.freelancermarketplacespringboot.controllers.orders;
 
 import com.nmt.freelancermarketplacespringboot.common.exceptions.errors.ModuleException;
 import com.nmt.freelancermarketplacespringboot.dto.orders.CreateOrderDto;
+import com.nmt.freelancermarketplacespringboot.dto.orders.CreateTransactionDto;
+import com.nmt.freelancermarketplacespringboot.entities.orders.OrderEntity;
 import com.nmt.freelancermarketplacespringboot.services.orders.IOrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/orders")
 public class OrderController {
 
-    @Autowired
-    IOrderService orderService;
+    private final IOrderService orderService;
 
     public OrderController(IOrderService orderService){
         this.orderService = orderService;
@@ -46,10 +47,18 @@ public class OrderController {
             @Valid @RequestBody CreateOrderDto data,
             @AuthenticationPrincipal UserDetails userDetails
     ) throws ModuleException {
-
-        return new ResponseEntity<>("", HttpStatus.OK);
+        OrderEntity createOrder = this.orderService.createOne(userDetails.getUsername(), data);
+        return new ResponseEntity<>(createOrder, HttpStatus.OK);
     }
 
 
+    @PostMapping("/create-transaction")
+    public ResponseEntity<?> createTransaction (
+            @Valid @RequestBody CreateTransactionDto data,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) throws ModuleException {
+        OrderEntity createOrder = this.orderService.createTransaction(userDetails.getUsername(), data);
+        return new ResponseEntity<>(createOrder, HttpStatus.OK);
+    }
 
 }

@@ -12,6 +12,7 @@ import com.nmt.freelancermarketplacespringboot.entities.posts.post.PostEntity;
 import com.nmt.freelancermarketplacespringboot.entities.users.user.UserEntity;
 import com.nmt.freelancermarketplacespringboot.repositories.posts.post.IPostRepository;
 import com.nmt.freelancermarketplacespringboot.services.posts.major.IMajorService;
+import com.nmt.freelancermarketplacespringboot.services.posts.post.IImageService;
 import com.nmt.freelancermarketplacespringboot.services.posts.post.IPackageService;
 import com.nmt.freelancermarketplacespringboot.services.posts.post.IPostService;
 import com.nmt.freelancermarketplacespringboot.services.users.user.IUserService;
@@ -35,7 +36,7 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
     IUserService userService;
 
     @Autowired
-    ImageService imageService;
+    IImageService imageService;
 
     @Autowired
     IPackageService packageService;

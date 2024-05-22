@@ -22,8 +22,6 @@ public class ImageService extends AbstractBaseService<ImageEntity, UUID> impleme
     @Autowired
     IImageRepository imageRepository;
 
-//    @Autowired
-//    IPostService postService;
 
     @Autowired
     public ImageService(IImageRepository imageRepository) {

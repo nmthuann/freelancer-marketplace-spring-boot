@@ -27,7 +27,6 @@ public class ApiVersionFilter  extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String timestampVersion = request.getHeader("X-GitHub-Api-Version");
 
-
         try {
             if (timestampVersion != null) {
                 String requestURI = request.getRequestURI();
@@ -40,7 +39,7 @@ public class ApiVersionFilter  extends OncePerRequestFilter {
                 } else if (timestampVersion.equals(ApiVersionEnum.API_VERSION_V2.getTimestamp())) {
                     newURI = "/api/v2" + requestURI;
                 } else {
-                    request.setAttribute("message", AuthExceptionMessages.AUTH_INVALID_API_VERSION);
+                    request.setAttribute("message", AuthExceptionMessages.AUTH_INVALID_API_VERSION.getMessage());
                     throw new ServletException(AuthExceptionMessages.AUTH_INVALID_API_VERSION.getMessage());
                 }
 
@@ -62,8 +61,7 @@ public class ApiVersionFilter  extends OncePerRequestFilter {
                     // return;
                 }
             } else {
-
-                request.setAttribute("message", AuthExceptionMessages.AUTH_MISSING_API_VERSION);
+                request.setAttribute("message", AuthExceptionMessages.AUTH_MISSING_API_VERSION.getMessage());
                 throw new ServletException(AuthExceptionMessages.AUTH_MISSING_API_VERSION.getMessage());
             }
 

@@ -14,12 +14,11 @@ import java.util.UUID;
 public class TransactionService
         extends AbstractBaseService<TransactionEntity, UUID>
         implements ITransactionService {
-
-    @Autowired
-    ITransactionRepository transactionRepository;
+    private final ITransactionRepository transactionRepository;
 
     @Autowired
     public TransactionService(ITransactionRepository transactionRepository) {
         super(transactionRepository);
+        this.transactionRepository = transactionRepository;
     }
 }

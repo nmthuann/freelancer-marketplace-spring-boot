@@ -6,6 +6,6 @@ public record CreateReviewDto(
     int rating,
     String feedback,
     String imageUrl,
-    UUID postId
+    int packageId
 ) {
 }

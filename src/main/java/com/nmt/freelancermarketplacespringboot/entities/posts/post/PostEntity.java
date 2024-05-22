@@ -72,9 +72,7 @@ public class PostEntity  extends AbstractBaseEntity  {
 //    @JsonIgnore
     private List<PackageEntity> packages;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<ReviewEntity> reviews;
+
 
     // Getter and setter methods
 }
