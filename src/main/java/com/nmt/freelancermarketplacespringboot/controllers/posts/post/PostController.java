@@ -37,15 +37,14 @@ import java.util.UUID;
  * 12. getPostTopRating
  */
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/api/v1/posts")
 public class PostController {
-
-    @Autowired
-    IPostService postService;
 
     private static final Logger logger = LoggerFactory.getLogger(PostController.class);
 
+    private final IPostService postService;
 
+    @Autowired
     public PostController (IPostService postService){
         this.postService = postService;
     }

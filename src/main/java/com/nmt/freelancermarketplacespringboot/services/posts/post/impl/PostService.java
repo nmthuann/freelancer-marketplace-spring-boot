@@ -26,24 +26,30 @@ import java.util.stream.Collectors;
 
 @Service
 public class PostService extends AbstractBaseService<PostEntity, UUID> implements IPostService {
-    @Autowired
-    IPostRepository postRepository;
+    private final IPostRepository postRepository;
+
+    private final IMajorService majorService;
+
+    private final IUserService userService;
+
+    private final IImageService imageService;
+
+    private final IPackageService packageService;
 
     @Autowired
-    IMajorService majorService;
-
-    @Autowired
-    IUserService userService;
-
-    @Autowired
-    IImageService imageService;
-
-    @Autowired
-    IPackageService packageService;
-
-    @Autowired
-    public PostService (IPostRepository postRepository){
+    public PostService (
+            IPostRepository postRepository,
+            IMajorService majorService,
+            IUserService userService,
+            IImageService imageService,
+            IPackageService packageService
+    ){
         super(postRepository);
+        this.postRepository = postRepository;
+        this.majorService = majorService;
+        this.userService = userService;
+        this.imageService = imageService;
+        this.packageService = packageService;
     }
 
     /**
@@ -242,7 +248,16 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
     }
 
 
-
+    /**
+     *
+     * @param size -> required
+     * @param page -> required
+     * @param majorId -> option
+     * @param latest -> option
+     * @param bestSeller -> option
+     * @param topFeedback -> option
+     * @return -> PAGEs
+     */
     @Override
     public Page<GetPostDto> getAllPosts(
             int size,
@@ -258,32 +273,23 @@ public class PostService extends AbstractBaseService<PostEntity, UUID> implement
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
         if (latest != null && latest) {
             postsPage = this.getAllPost(page, size, true);
-            // postsPage = postRepository.findAll(pageRequest);
         } else if (majorId != 0) {
             MajorEntity major = this.majorService.getOneById(majorId);
             if (major != null) {
                 postsPage = this.getPostsByMajorId(majorId, page, size);
-                // postsPage = postRepository.findByMajor(major, pageRequest);
             } else {
                 postsPage = Page.empty(); // No posts found for the provided majorId
             }
         } else if (bestSeller != null && bestSeller) {
-            // Logic to retrieve best-selling posts
-            // postsPage = postRepository.findByBestSellerTrue(pageRequest);
             System.out.println("bestSeller" + bestSeller);
             postsPage = Page.empty();
         } else if (topFeedback != null && topFeedback) {
-            // Logic to retrieve posts with top feedback
-            // postsPage = postRepository.findByTopFeedbackTrue(pageRequest);
             System.out.println("topFeedback" + topFeedback);
             postsPage = Page.empty();
         } else {
-            // Fetch all posts if no specific criteria are provided
             postsPage = this.getAllPost(page, size, false);
         }
-
         return postsPage;
-
     }
 
     @Override

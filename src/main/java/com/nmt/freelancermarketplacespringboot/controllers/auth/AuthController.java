@@ -27,7 +27,7 @@ import java.time.LocalDateTime;
  * 6. change password
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
